@@ -1,0 +1,10 @@
+{% comment %} {% if latest_question_list %}
+    <ul>
+        
+    {% for client in latest_question_list %}
+    <li><a href="{% url 'client:detail' client.id %}">{{ client.client_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %} {% endcomment %}

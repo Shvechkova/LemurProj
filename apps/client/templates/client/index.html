@@ -1,0 +1,33 @@
+
+<h4>Список всех клиентов</h4>
+ {% if latest_question_list %}
+    <ul>
+        
+    {% for client in latest_question_list %}
+    <h3
+    >{{ client.client_name }} id={{ client.id }}  
+  </h3>
+      <br>
+      <div>Добавить услугу</div>
+      <form  method="post" >
+        {% csrf_token %} 
+        <input type="hidden" name="window" value="service_add">
+        <input type="submit" value="Добавить" />
+      </form>
+      {% if service_list %}
+      {% include 'client/form_add_service.html' %}
+     
+      {% endif %}
+    <br>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No </p>
+{% endif %}  
+
+<select name="services_name">
+
+
+{% include 'client/form.html' %}
+
+

@@ -1,0 +1,31 @@
+<form  method="post" >
+  <input type="hidden" name="window" value="service">
+  {% csrf_token %} 
+  <input
+      id="client_name"
+      type="hidden"
+      name="client_name"
+      
+      value="{{ client.id }}  " />
+   <label for="services_name">Выберите услугу</label>
+  
+
+   <select name="timezone_offset">
+    {% for value,name in participant_form.fields.timezone_offset.choices %}
+      <option value="{{ value }}"{% if participant_form.timezone_offset.value == value %}
+              selected{% endif %}>{{ name }}</option>
+    {% endfor %}
+  </select>
+
+
+    {% comment %} <select name="services_name" id="services_name">
+      <option value="">-- Выберите услугу --</option>
+      <option value="ADV">ADV</option>
+      <option value="SEO">SEO</option>
+      <option value="SUP">SUP</option>
+      <option value="DEV">DEV</option>
+      <option value="SMM">SMM</option>
+     
+    </select> {% endcomment %}
+    <input type="submit" value="OK" />
+  </form>

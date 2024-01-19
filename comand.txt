@@ -1,0 +1,2 @@
+ python manage.py startapp core ./apps/core
+py manage.py makemigrations  
