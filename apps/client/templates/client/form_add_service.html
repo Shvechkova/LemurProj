@@ -1,31 +1,62 @@
 <form  method="post" >
+ 
   <input type="hidden" name="window" value="service">
   {% csrf_token %} 
+  {% comment %} {% for ServiceClient in service_listis %}
+  <h3
+  >{{ ServiceClient.services_name }} 
+  {% endfor %} {% endcomment %}
+ <br>
+ <h2>{{ client_id }} </h2>
   <input
       id="client_name"
       type="hidden"
       name="client_name"
       
       value="{{ client.id }}  " />
+
    <label for="services_name">Выберите услугу</label>
   
+ <input type="hidden" name="services_name" value="{{ services_name.services_name.value }}">
 
-   <select name="timezone_offset">
-    {% for value,name in participant_form.fields.timezone_offset.choices %}
-      <option value="{{ value }}"{% if participant_form.timezone_offset.value == value %}
+   <select name="services_name">
+    {% for value,name in services_name.fields.services_name.choices %}
+      <option value="{{ value }}"{% if services_name.services_name.value == value %}
               selected{% endif %}>{{ name }}</option>
     {% endfor %}
   </select>
 
 
-    {% comment %} <select name="services_name" id="services_name">
-      <option value="">-- Выберите услугу --</option>
-      <option value="ADV">ADV</option>
-      <option value="SEO">SEO</option>
-      <option value="SUP">SUP</option>
-      <option value="DEV">DEV</option>
-      <option value="SMM">SMM</option>
-     
-    </select> {% endcomment %}
     <input type="submit" value="OK" />
   </form>
+
+
+
+
+
+<form  method="post" >
+ 
+    <input type="hidden" name="window" value="contract">
+    {% csrf_token %} 
+   <br>
+   <h2>{{ client_id }} </h2>
+  
+  
+     <label for="services_name">Добавить контракт</label>
+    
+ 
+   <p>номер контракта</p>
+   <input
+   id="сlient"
+   type="hidden"
+   name="сlient"
+   
+   value="{{ client_id }}  " />
+   <input type="text" name="contract_number" value="">
+   <p>сумма контракта</p>
+   <input type="number" name="contract_sum" value="">
+ 
+  
+  
+      <input type="submit" value="OK" />
+    </form> 

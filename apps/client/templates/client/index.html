@@ -1,6 +1,7 @@
 
 <h4>Список всех клиентов</h4>
  {% if latest_question_list %}
+
     <ul>
         
     {% for client in latest_question_list %}
@@ -8,24 +9,30 @@
     >{{ client.client_name }} id={{ client.id }}  
   </h3>
       <br>
-      <div>Добавить услугу</div>
-      <form  method="post" >
+      {% comment %} <div>Добавить услугу</div> {% endcomment %}
+      <a href="{% url 'client' p.pk %}"> Добавить услугу</a>
+
+      {% comment %} <form  method="post" >
         {% csrf_token %} 
         <input type="hidden" name="window" value="service_add">
+        <input type="hidden" name="client_id" value="{{ client.id }}">
         <input type="submit" value="Добавить" />
-      </form>
-      {% if service_list %}
-      {% include 'client/form_add_service.html' %}
-     
-      {% endif %}
+      </form> {% endcomment %}
+      
+      
     <br>
     {% endfor %}
     </ul>
 {% else %}
     <p>No </p>
-{% endif %}  
 
-<select name="services_name">
+{% endif %}  
+{% if service_list %}
+      
+      {% include 'client/form_add_service.html' with client_id=client.id %}
+     
+      {% endif %}
+
 
 
 {% include 'client/form.html' %}
