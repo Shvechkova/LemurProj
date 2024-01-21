@@ -52,7 +52,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'apps.core.apps.CoreConfig',
+    "apps.core.apps.CoreConfig",
     'apps.service.apps.ServiceConfig',
     'apps.client.apps.ClientConfig',
     "debug_toolbar",

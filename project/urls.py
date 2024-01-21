@@ -18,14 +18,16 @@ Including another URLconf
 # from django.urls import path
 from django.contrib import admin
 from django.urls import path, include
+import debug_toolbar
 
 # from . import views
 urlpatterns = [
-    path("client/", include("apps.client.urls")),
-    # path("core/", include("apps.core.urls")),
-  
+    path('__debug__/', include('debug_toolbar.urls')),
     path("admin/", admin.site.urls),
-    # path("__debug__/", include("debug_toolbar.urls"))
     
-    # path('', include('apps.core.urls')),
+    path('', include('apps.core.urls', namespace='main')),
+    path('service/', include('apps.service.urls', namespace='service')),
+    path('clients/', include('apps.client.urls', namespace='clients')),
+    
+  
 ]

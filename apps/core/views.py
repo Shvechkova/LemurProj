@@ -1,15 +1,11 @@
-# # from django.shortcuts import render
-# from django.http import HttpResponse
-# from django.shortcuts import render
-# from apps.service.models import ServiceClient 
-# from apps.client.models import Client, Contract
+from django.http import HttpResponse
+from django.shortcuts import render
 
-# # Create your views here.
+def index(request):
+    title='Главная'
+    context = {
+        'title': title,
+        # 'content': "Магазин мебели HOME",
+    }
 
-# def index(request):
-#     latest_question_list = Client.objects.order_by("-id")
-#     context = {"latest_question_list": latest_question_list}
-#     return render(request, "/index.html", context)
-
-# # def detail(request, client_name):
-# #     return HttpResponse(client_name)
+    return render(request, 'core/index.html', context)
