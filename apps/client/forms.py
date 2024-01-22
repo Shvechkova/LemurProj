@@ -11,14 +11,20 @@ class ClientNew(forms.ModelForm):
 class NewServiceClient(forms.ModelForm):
     class Meta:
         model = ServiceClient
-        # fields = ['services_name', 'client'] 
-        fields = ('__all__')      
+        fields = ['services_name', 'client'] 
+        # fields = ('__all__')      
         
-class AddService(forms.Form):
-    client_id = forms.IntegerField()  
+# class AddService(forms.Form):
+#     client_id = forms.IntegerField()  
     
-class AddContract(forms.Form):
-     class Meta:
+class AddContract(forms.ModelForm):
+    contract_number = forms.CharField()
+    contract_sum = forms.IntegerField()
+    date_start = forms.DateField()
+    date_end = forms.DateField()
+    
+    
+    class Meta:
          model = Contract
          fields = ('__all__')
                            

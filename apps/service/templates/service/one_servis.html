@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+
+
+{% block content %}
+
+{% for service_client in service_client %}
+
+<h6>{{service_client.client}}</h6>
+{% comment %} {% for actual_contract in actual_contract %}
+
+<p>{{actual_contract}}</p>
+{% endfor %} {% endcomment %}
+
+
+{% endfor %}
+
+<p>{{actual_contract}}</p>
+
+{% endblock %}

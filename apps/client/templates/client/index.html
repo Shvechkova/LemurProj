@@ -1,17 +1,35 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-    <h2>222222222</h2>
-
-
+   
+<div class="container">
+    <div class="row">
+    <div class="col">
 {% for client in client_list  %}
     <ul>
         <li><a href="{% url 'clients:client' client.id %}">{{client.client_name}}</a></li>
     </ul>
 {% endfor %}
+</div>
+<div class="col">
+<h4>Добавить клиента</h4>
+<form method="post">
+  <input type="hidden" name="window" value="client_add">  
+  {% csrf_token %}
+    <label for="client_name">Имя клиента</label>
+    <input
+      id="client_name"
+      type="text"
+      name="client_name"
+      
+      value="" />
+    <input type="submit" value="OK" />
+  </form>
+</div>
 
 
-
+</div>
+</div>
 
 {% endblock %}
 

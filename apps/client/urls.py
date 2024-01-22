@@ -9,6 +9,8 @@ app_name = 'client'
 urlpatterns = [
     path("", views.clients, name="index" ),
     path("client/<int:client_id>", views.client, name="client" ),
+    path("client/<int:client_id>/<slug:slug>", views.addContract, name="contract" ),
+
     
 ]
 
