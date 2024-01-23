@@ -30,15 +30,20 @@
     </select>
   
   
-      <input class='btn btn-dark' type="submit" value="OK" />
+      <input class='btn btn-dark mt-2' type="submit" value="OK" />
     </form>
   
   
 <br>
  
 
-    <h5>Услуги</h5>
+<h5>Услуги</h5>
 {% for service in client_service %}
+
+
+
+
+
 <p>{{service.services_name}}</p>
 <a class='btn btn-dark' href="{% url 'clients:contract' client.id service.services_name%}">Добавить договор</a>
 
@@ -56,6 +61,49 @@
 
 
 {% endfor %}
+
+
+
+
+
+
+
+
+
+
+{% comment %} 
+
+            <div class="col-lg-6 pe-lg-2 mb-3">
+              <div class="card h-lg-100 overflow-hidden">
+                <div class="card-header bg-body-tertiary">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <h6 class="mb-0">Заголовок</h6>
+                    </div>
+                    <div class="col-auto text-center pe-x1">Доп описание</div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="row g-0 align-items-center py-2 position-relative border-bottom border-200">
+                    <div class="col ps-x1 py-1 position-static">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar avatar-xl me-3">
+                          <div class="avatar-name rounded-circle bg-success-subtle text-dark"><span class="fs-9 text-success">R</span></div>
+                        </div>
+                        <div class="flex-1">
+                          <h6 class="mb-0 d-flex align-items-center"><a class="text-800 stretched-link" href="#!">Ссылка</a></h6>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+               
+              </div>
+            </div>
+ {% endcomment %}
+
+
+
+
 
 
 
