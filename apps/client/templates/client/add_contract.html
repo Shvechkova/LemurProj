@@ -49,12 +49,15 @@
 
 
 {% for contract in contract %}
+{% if contract.service_id == service.id %}
 <p>
     {{contract.id}}  
       {{contract.contract_number}}
     {{contract.date_start}}
     {{contract.date_end}}
+    {{contract.service_id}}
 </p>
+{% endif %}
 {% endfor %}
 
 

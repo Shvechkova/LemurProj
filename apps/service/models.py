@@ -37,22 +37,27 @@ class ServiceClient(models.Model):
     # contract_sum = models.PositiveIntegerField(default="0")
     account = models.CharField( max_length=4, choices=ACCOUNT, default="NONE")
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
-    
+    adv_all_sum = models.PositiveIntegerField(default="0")
 
     def __str__(self):
         return str(self.services_name)
         
 class SubcontractAll(models.Model):
     service_client = models.ForeignKey(ServiceClient, on_delete=models.CASCADE,blank=True, null=True)
+    
     seosub_people = models.CharField(max_length=200,blank=True, null=True)
     seosub_sum = models.PositiveIntegerField(default="0") 
     seosub_people_other=models.CharField(max_length=200,blank=True, null=True)
-    seosub_sum_other=models.PositiveIntegerField(default="0") 
+    seosub_sum_other=models.PositiveIntegerField(default="0")
+     
     drvsub_people = models.CharField(max_length=200,blank=True, null=True)
     drvsub_sum = models.PositiveIntegerField(default="0")
+    
     designersub_people = models.CharField(max_length=200,blank=True, null=True)
     designersub_sum = models.PositiveIntegerField(default="0")
-    adv_all_sum = models.PositiveIntegerField(default="0")
+    
+    
+    
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     
     

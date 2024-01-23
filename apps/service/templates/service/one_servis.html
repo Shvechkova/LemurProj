@@ -5,15 +5,46 @@
 
 {% for service_client in service_client %}
 
-<h6>{{service_client.client}}</h6>
-{% comment %} {% for actual_contract in actual_contract %}
+<h5>{{service_client.client}}{{service_client.client_id}}</h5>
 
-<p>{{actual_contract}}</p>
-{% endfor %} {% endcomment %}
+<h6>Договор</h6>
+{% for actual_contract in actual_contract %}
+
+
+{% if actual_contract.client_id == service_client.client_id %}
+<p> Hомер:{{actual_contract.id }} </p>
+<p> Сумма:{{actual_contract.contract_sum }} </p>
+<p> Действует до:{{actual_contract.date_end }} </p>
+<p class="border-bottom"> номер:{{actual_contract.id }} </p>
+
+
+
+    {% if title == 'ADV' %}
+    
+  
+
+    {% elif title == 'SEO' %}
+    
+
+    {% else %}
+
+   
+    
+    
+    {% endif %}
+
+
+
+
+
+
+{% endif %}
+
+{% endfor %}
 
 
 {% endfor %}
 
-<p>{{actual_contract}}</p>
+
 
 {% endblock %}

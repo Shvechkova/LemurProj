@@ -1,0 +1,86 @@
+{% extends "core/base.html" %}
+
+
+{% block content %}
+<h2>"{{ client.client_name}}"</h2>
+<h2>Услуга: {{ service}}</h2>
+
+
+<form  method="post" >
+    {% csrf_token %}
+ <h5>Добавить площадку</h5>
+ <input type="hidden" name="window" value="adv"> 
+
+    <input
+        id="client"
+        type="hidden"
+        name="client"
+        
+        value="{{ client.id }}   " /> 
+  
+     <label for="adv_name">Выберите площадку</label>
+
+    <input type="hidden" name="adv_name" value="{{ form.adv_name.value }}">
+    
+     <select class="form-select" name="adv_name">
+      {% for value,name in form.fields.adv_name.choices %}
+        <option value="{{ value }}"{% if form.adv_name.value == value %}
+                selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  
+  
+      <input class='btn btn-dark' type="submit" value="Добавить" />
+    </form>
+  
+
+
+    <form  method="post" >
+        {% csrf_token %}
+     <h5>Добавить общий рекламный бюджет</h5>
+     <input type="hidden" name="window" value="add_all_sum_adv"> 
+        <input type="hidden" name="id_service" value="{{ service.id }}" >
+        
+        
+    
+        <input id="adv_all_sum" type="number" name="adv_all_sum" value="">
+        
+        
+      
+      
+          <input class='btn btn-dark' type="submit" value="OK" />
+        </form>
+
+     
+        {% for service_client_id in service_client_id %}
+        <h5>Установленный рекламный бюджет</h5>
+        {{service_client_id.adv_all_sum}} рублей
+        <h5>Выбранные площадки</h5>
+        {{service_client_id.id}} 
+        
+        {% endfor %}
+
+
+        {% comment %} <h5>Выбранные площадки</h5>
+        {% for service_client_id in service_client_id %}
+        {{service_client_id.adv_all_sum}} 
+        {% endfor %}
+     {% endcomment %}
+    
+    
+    
+
+
+{% comment %} {% endfor %} {% endcomment %}
+
+
+
+{% comment %} {% for subcontractor in subcontractor %}
+
+{{subcontractor.id}} {{subcontractor.seosub_people}}
+<br>
+{% endfor %} {% endcomment %}
+
+
+
+{% endblock %}

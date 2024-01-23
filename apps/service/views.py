@@ -29,13 +29,17 @@ def index(request):
 
 def serviced(request, slug):
     service_client = ServiceClient.objects.filter(services_name=slug)
-    actual_contract =  Contract.objects.all()
+   
+    actual_contract =  Contract.objects.filter(service__in=service_client)
+    
+    
+  
     title='Одна услуга'
     context = {
         'title': slug,
         'service_client': service_client,
         'actual_contract': actual_contract,
-        # 'client_list': client_list,
+        # 'id_client_actuall': id_client_actuall,
         # 'form': form,
     }
     
