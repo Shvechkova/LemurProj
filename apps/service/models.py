@@ -41,6 +41,7 @@ class ServiceClient(models.Model):
 
     def __str__(self):
         return str(self.services_name)
+     
         
 class SubcontractAll(models.Model):
     service_client = models.ForeignKey(ServiceClient, on_delete=models.CASCADE,blank=True, null=True)
@@ -59,9 +60,8 @@ class SubcontractAll(models.Model):
     
     
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
-    
-    
-    
+
+  
 class SubcontractADV(models.Model): 
     service_client = models.ForeignKey(ServiceClient, on_delete=models.CASCADE,blank=True, null=True) 
     ADV = (
@@ -76,4 +76,18 @@ class SubcontractADV(models.Model):
         max_length=10, choices=ADV, default="NONE")
     adv_sum = models.PositiveIntegerField(default="0")
     created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    
+    
+class ServicesMonthlyBill:
+    service = models.ForeignKey(ServiceClient, on_delete=models.CASCADE,blank=True, null=True)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE,blank=True, null=True)
+    created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    
+    name_bill=models.CharField(max_length=200,blank=True, null=True)
+    
+    
+    
+    
+    
+    
     

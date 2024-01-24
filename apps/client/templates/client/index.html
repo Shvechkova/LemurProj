@@ -1,44 +1,28 @@
 {% extends "core/base.html" %}
-
 {% block content %}
-   
-<div class="container">
+  <div class="container">
     <div class="row">
+      <div class="col">
+        {% for client in client_list %}
+          <ul class="list-group">
+            <li class="list-group-item list-group-item-action mb-2">
+              <a href="{% url 'clients:client' client.id %}">
+              <h5>{{ client.client_name }}</h5>
+            </a>
+          </li>
+        </ul>
+      {% endfor %}
+    </div>
     <div class="col">
-      
-{% for client in client_list  %}
-    <ul  class="list-group">
-        <li class="list-group-item list-group-item-action mb-2""><a href="{% url 'clients:client' client.id %}">
-        <h5>  {{client.client_name}} </h5>
-        </a></li>
-    </ul>
-{% endfor %}
+      <h4>Добавить клиента</h4>
+      <form method="post">
+        <input type="hidden" name="window" value="client_add">
+        {% csrf_token %}
+        <label for="client_name">Имя клиента</label>
+        <input id="client_name" type="text" name="client_name"  value="" />
+        <input type="submit" value="OK" />
+      </form>
+    </div>
+  </div>
 </div>
-
-<div class="col">
-<h4>Добавить клиента</h4>
-<form method="post">
-  <input type="hidden" name="window" value="client_add">
-  {% csrf_token %}
-    <label for="client_name">Имя клиента</label>
-    <input
-      id="client_name"
-      type="text"
-      name="client_name"
-      
-      value="" />
-    <input type="submit" value="OK" />
-  </form>
-</div>
-
-
-</div>
-</div>
-
-{% endblock %}
-
-
-
-
-
- 
+{% endblock content %}

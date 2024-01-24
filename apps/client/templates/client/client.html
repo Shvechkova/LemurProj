@@ -1,77 +1,40 @@
 {% extends "core/base.html" %}
-
-
 {% block content %}
-
-<h2>"{{ client.client_name}}"</h2>
-
-<br>
-<form  method="post" >
+  <h2>"{{ client.client_name }}"</h2>
+  <br>
+  <form method="post">
     {% csrf_token %}
- <h5>Добавить услугу</h5>
+    <h5>Добавить услугу</h5>
     <input type="hidden" name="window" value="service">
-
-    <input
-        id="client"
-        type="hidden"
-        name="client"
-        
-        value="{{ client.id }}   " />
-  
-     <label for="services_name">Выберите услугу</label>
-
-    <input type="hidden" name="services_name" value="{{ form.services_name.value }}">
-    
-     <select class="form-select" name="services_name">
+    <input id="client" type="hidden" name="client"  value="{{ client.id }}   " />
+    <label for="services_name">Выберите услугу</label>
+    <input type="hidden"
+           name="services_name"
+           value="{{ form.services_name.value }}">
+    <select class="form-select" name="services_name">
       {% for value,name in form.fields.services_name.choices %}
-        <option value="{{ value }}"{% if form.services_name.value == value %}
-                selected{% endif %}>{{ name }}</option>
+        <option value="{{ value }}"
+                {% if form.services_name.value == value %}selected{% endif %}>{{ name }}</option>
       {% endfor %}
     </select>
-  
-  
-      <input class='btn btn-dark mt-2' type="submit" value="OK" />
-    </form>
-  
-  
-<br>
- 
-
-<h5>Услуги</h5>
-{% for service in client_service %}
-
-
-
-
-
-<p>{{service.services_name}}</p>
-<a class='btn btn-dark' href="{% url 'clients:contract' client.id service.services_name%}">Добавить договор</a>
-
-<a class='btn btn-dark' href="{% url 'clients:sub' client.id service.services_name %}">Добавить субподряд</a>
-
-<a class='btn btn-dark' href="{% url 'clients:employee' client.id service.services_name %}">Добавить исполнителя</a>
-
-{% if service.services_name == 'ADV' %}
-<a class='btn btn-dark' href="{% url 'clients:adv' client.id service.services_name %}">Добавить площадки</a>
-{% endif %} 
-
-
-
-
-
-
-{% endfor %}
-
-
-
-
-
-
-
-
-
-
-{% comment %} 
+    <input class="btn btn-dark mt-2" type="submit" value="OK" />
+  </form>
+  <br>
+  <h5>Услуги</h5>
+  {% for service in client_service %}
+    <p>{{ service.services_name }}</p>
+    <a class="btn btn-dark"
+       href="{% url 'clients:contract' client.id service.services_name %}">Добавить договор</a>
+    <a class="btn btn-dark"
+       href="{% url 'clients:sub' client.id service.services_name %}">Добавить субподряд</a>
+    <a class="btn btn-dark"
+       href="{% url 'clients:employee' client.id service.services_name %}">Добавить исполнителя</a>
+    {% if service.services_name == 'ADV' %}
+      <a class="btn btn-dark"
+         href="{% url 'clients:adv' client.id service.services_name %}">Добавить площадки</a>
+    {% endif %}
+  {% endfor %}
+  {% comment %} 
 
             <div class="col-lg-6 pe-lg-2 mb-3">
               <div class="card h-lg-100 overflow-hidden">
@@ -99,13 +62,5 @@
                
               </div>
             </div>
- {% endcomment %}
-
-
-
-
-
-
-
-
-    {% endblock %}
+  {% endcomment %}
+{% endblock content %}

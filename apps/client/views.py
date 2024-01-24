@@ -69,7 +69,8 @@ def addContract(request,client_id,slug):
             contract_number =  form.cleaned_data["contract_number"] 
             contract_sum =  form.cleaned_data["contract_sum"] 
             date_start =  form.cleaned_data["date_start"] 
-            date_end =  form.cleaned_data["date_end"] 
+            date_end =  form.cleaned_data["date_end"]
+            bank =  form.cleaned_data["bank"] 
             service =  service
             client =  client
             contract_new = Contract.objects.create(
@@ -77,6 +78,7 @@ def addContract(request,client_id,slug):
                 contract_sum=contract_sum,
                 date_start=date_start,
                 date_end=date_end,
+                bank=bank,
                 service=service,
                 client=client,
                 )
@@ -227,15 +229,18 @@ def add_adv(request,client_id,slug):
     # adv_sum = ServiceClient.objects.filter(id=28)
     service_client_id = ServiceClient.objects.filter(client_id=client_id ).filter(services_name=slug )
     
+    service_client_id2 = ServiceClient.objects.filter(client_id=client_id ).get(services_name=slug )
     
     
-    sub_adv = SubcontractADV.objects.filter()
+    
+    sub_adv = SubcontractADV.objects.filter(service_client=service_client_id2)
     
     context = {
         'client': client, 
         'service': service,
         'service_client_id': service_client_id,
         'sub_adv': sub_adv,
+        'service_client_id2': service_client_id2,
         
    
         

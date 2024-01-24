@@ -52,6 +52,9 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    "apps.employee.apps.EmployeeConfig",
+    "apps.operation.apps.OperationConfig",
+    "apps.bank.apps.BankConfig",
     "apps.core.apps.CoreConfig",
     'apps.service.apps.ServiceConfig',
     'apps.client.apps.ClientConfig',

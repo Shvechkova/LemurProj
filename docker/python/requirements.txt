@@ -2,6 +2,7 @@ django==4.0.10
 django-debug-toolbar
 django-environ
 pymysql
+djlint
 
 # django-phonenumber-field[phonenumbers]==7.0
 # django-static-precompiler==2.1

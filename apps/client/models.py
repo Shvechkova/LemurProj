@@ -19,7 +19,7 @@ class Client(models.Model):
         return self.client_name
     
    
-    
+
     
 class Contract(models.Model):
     contract_number = models.CharField(max_length=200)
@@ -28,5 +28,14 @@ class Contract(models.Model):
     date_start = models.DateField(blank=True, null=True)
     date_end = models.DateField(blank=True, null=True)
     service = models.ForeignKey('service.ServiceClient',  on_delete=models.CASCADE, blank=True,null=True)   
+    BANK = (
+        ("OOO", "ООО"),
+        ("IP", "ИП"),
+        ("$", "$"),
+        ("NONE", "---"),
+    ) 
+    # bank_name = models.CharField(max_length=200)
     
+    bank = models.CharField(
+        max_length=4, choices=BANK, default="NONE")
   

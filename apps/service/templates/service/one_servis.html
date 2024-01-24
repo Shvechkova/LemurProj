@@ -1,50 +1,54 @@
 {% extends "core/base.html" %}
-
-
 {% block content %}
+    {% for service_client in service_client %}
+        <h5>{{ service_client.client }}{{ service_client.client_id }}</h5>
+        <h6>Договор</h6>
+        {% for actual_contract in actual_contract %}
+            {% if actual_contract.client_id == service_client.client_id %}
+                <div>
+                    <p>Hомер:{{ actual_contract.contract_number }}</p>
+                    <div><p>
+                        Сумма:
+                        {% comment %} {% if operation_entry_chek.contract.id == actual_contract.id %}
+        <p class='border'>{{actual_contract.contract_sum }}</p>
+        {% endif %}
+        <p class='border text-warning bg-dark'>{{actual_contract.contract_sum }}</p>
+                        {% endcomment %}
+                    </p>
+                    {% for operation_entry_chek in operation_entry_chek %}
+                        {% if actual_contract.id == operation_entry_chek.contract_id %}
+                            <p class="border">{{ actual_contract.contract_sum }} ОПЛАЧЕН</p>
+                            
+                      
+                        {% else %}
+                        <p class="border text-warning bg-dark">{{ actual_contract.contract_sum }} НЕ ОПЛАЧЕН</p>
+                      {% endif %}
+                    </div>
+                {% endfor %}
+                <p>Действует до:{{ actual_contract.date_end }}</p>
+            </div>
 
-{% for service_client in service_client %}
+            <form action="" method="post">
+                <h6>Подтвердить оплату</h6>
+                {% csrf_token %}
+                <input type="hidden" name="window" value="add_cash_contract">
+                <input type="hidden" name="id_contract" value="{{ actual_contract.id }}">
+                <input id="amount" type="number" name="amount" value="">
+                <input id="bank" type="text" name="bank" value="{{ actual_contract.bank }}">
+                <p>комментарий:</p>
+                <input id="comment" type="text" name="comment" value="">
+                <input class="btn btn-dark" type="submit" value="OK" />
+            </form>
+            {% if title == 'ADV' %}
+            <h5>Рекламный бюджет</h5>
+            
 
-<h5>{{service_client.client}}{{service_client.client_id}}</h5>
+            {% elif title == 'SEO' %}
 
-<h6>Договор</h6>
-{% for actual_contract in actual_contract %}
+            {% else %}
 
-
-{% if actual_contract.client_id == service_client.client_id %}
-<p> Hомер:{{actual_contract.id }} </p>
-<p> Сумма:{{actual_contract.contract_sum }} </p>
-<p> Действует до:{{actual_contract.date_end }} </p>
-<p class="border-bottom"> номер:{{actual_contract.id }} </p>
-
-
-
-    {% if title == 'ADV' %}
-    
-  
-
-    {% elif title == 'SEO' %}
-    
-
-    {% else %}
-
-   
-    
-    
-    {% endif %}
-
-
-
-
-
-
-{% endif %}
-
+            {% endif %} 
+        {% endif %}
+    {% endfor %}
 {% endfor %}
-
-
-{% endfor %}
-
-
-
-{% endblock %}
+{% endblock content %}

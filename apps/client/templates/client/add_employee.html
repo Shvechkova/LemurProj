@@ -1,103 +1,71 @@
 {% extends "core/base.html" %}
-
-
 {% block content %}
-<h2>"{{ client.client_name}}"</h2>
-<h2>Услуга: {{ service}}</h2>
-
-<form action="" method="POST">
-    <input type="hidden"  name="window" value="dv" >
-    {% csrf_token %}
-    <div class="row">
-        <h6>Разработка</h6>
-        <div class="col-md-6 mb-3">
-            <label for="drvsub_people" class="form-label">Имя :</label>
-            <input type="text" class="form-control" id="drvsub_people"
-                value=""
-                name="drvsub_people" >
-           
+    <h2>"{{ client.client_name }}"</h2>
+    <h2>Услуга: {{ service }}</h2>
+    <form action="" method="post">
+        <input type="hidden"  name="window" value="dv">
+        {% csrf_token %}
+        <div class="row">
+            <h6>Разработка</h6>
+            <div class="col-md-6 mb-3">
+                <label for="drvsub_people" class="form-label">Имя :</label>
+                <input type="text"
+                       class="form-control"
+                       id="drvsub_people"
+                       value=""
+                       name="drvsub_people">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="drvsub_sum" class="form-label">Сумма:</label>
+                <input type="number"
+                       class="form-control"
+                       id="drvsub_sum"
+                       value="0"
+                       name="drvsub_sum">
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <label for="drvsub_sum" class="form-label">Сумма:</label>
-            <input type="number" class="form-control" id="drvsub_sum"
-                value="0"
-                name="drvsub_sum" >
-           
+        <button type="submit" class="btn btn-dark">Добавить</button>
+    </form>
+    <br>
+    {% for dev in dev %}
+        {% if dev.drvsub_people %}<p>{{ dev.drvsub_people }}</p>{% endif %}
+    {% endfor %}
+    <br>
+    <form action="" method="post">
+        <input type="hidden" name="window" value="designer">
+        {% csrf_token %}
+        <div class="row">
+            <h6>Дизайн</h6>
+            <div class="col-md-6 mb-3">
+                <label for="designersub_people" class="form-label">Имя :</label>
+                <input type="text"
+                       class="form-control"
+                       id="designersub_people"
+                       value=""
+                       name="designersub_people">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="designersub_sum" class="form-label">Сумма:</label>
+                <input type="number"
+                       class="form-control"
+                       id="designersub_sum"
+                       value="0"
+                       name="designersub_sum">
+            </div>
         </div>
-
-      
-   
-
-    
-        
-    </div>
-    <button type="submit" class="btn btn-dark">Добавить</button>
-</form>
-<br>
-
-{% for dev in dev %}
-{% if dev.drvsub_people  %}
-<p>{{dev.drvsub_people}}</p>
-
-
-
-{% endif %}
-{% endfor %}
-
-
-
-
-<br>
-<form action="" method="POST">
-    <input type="hidden" name="window" value="designer" >
-    {% csrf_token %}
-    <div class="row">
-
-        <h6>Дизайн</h6>
-        <div class="col-md-6 mb-3">
-            <label for="designersub_people" class="form-label">Имя :</label>
-            <input type="text" class="form-control" id="designersub_people"
-                value=""
-                name="designersub_people" >
-           
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="designersub_sum" class="form-label">Сумма:</label>
-            <input type="number" class="form-control" id="designersub_sum"
-                value="0"
-                name="designersub_sum" >
-           
-        </div>
-   
-
-    
-        
-    </div>
-    <button type="submit" class="btn btn-dark">Добавить</button>
-</form>
-<br>
-
-{% for designer in designer %}
-{% if designer.designersub_people  %}
-<p>{{designer.designersub_people}}</p>
-
-
-
-{% endif %}
-{% endfor %}
-
-
-
-{% comment %} 
+        <button type="submit" class="btn btn-dark">Добавить</button>
+    </form>
+    <br>
+    {% for designer in designer %}
+        {% if designer.designersub_people %}<p>{{ designer.designersub_people }}</p>{% endif %}
+    {% endfor %}
+    {% comment %}
 {% for subcontractor in subcontractor %}
 
 {{subcontractor.id}} {{subcontractor.seosub_people}}
 <br>
-{% endfor %} {% endcomment %}
-
-
-
-{% comment %} {% for service in service %}
+    {% endfor %} {% endcomment %}
+    {% comment %} {% for service in service %}
 {% if service.service == service.id %}
 <p>
     {{contract.id}}  
@@ -106,10 +74,6 @@
     {{contract.date_end}}
     {{contract.service_id}}
 </p>
-{% endif %} {% endcomment %}
-{% comment %} {% endfor %} {% endcomment %}
-
-
-
-
-{% endblock %}
+    {% endif %} {% endcomment %}
+    {% comment %} {% endfor %} {% endcomment %}
+{% endblock content %}

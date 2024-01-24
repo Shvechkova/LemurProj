@@ -1,16 +1,16 @@
 {% extends "core/base.html" %}
-
-
 {% block content %}
-<div class="list-group">
-    
-    <a href="{% url 'service:serviced' 'ADV' %}" class="list-group-item list-group-item-action">ADV</a>
-    <a href="{% url 'service:serviced' 'SEO' %}" class="list-group-item list-group-item-action">SEO</a>
-    <a href="{% url 'service:serviced' 'SUP' %}" class="list-group-item list-group-item-action">SUP</a>
-    <a href="{% url 'service:serviced' 'DEV' %}" class="list-group-item list-group-item-action">DEV</a>
-    <a href="{% url 'service:serviced' 'SMM' %}" class="list-group-item list-group-item-action">SMM</a>
-    
+  <div class="list-group">
+    <a href="{% url 'service:serviced' 'ADV' %}"
+       class="list-group-item list-group-item-action">ADV</a>
+    <a href="{% url 'service:serviced' 'SEO' %}"
+       class="list-group-item list-group-item-action">SEO</a>
+    <a href="{% url 'service:serviced' 'SUP' %}"
+       class="list-group-item list-group-item-action">SUP</a>
+    <a href="{% url 'service:serviced' 'DEV' %}"
+       class="list-group-item list-group-item-action">DEV</a>
+    <a href="{% url 'service:serviced' 'SMM' %}"
+       class="list-group-item list-group-item-action">SMM</a>
   </div>
   {% comment %} {% url 'service:serviced' SMM %} {% endcomment %}
-
-{% endblock %}
+{% endblock content %}
