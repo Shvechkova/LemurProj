@@ -1,6 +1,6 @@
 {% extends "core/base.html" %}
 {% block content %}
-    {% for service_client in service_client %}
+    {% comment %} {% for service_client in service_client %}
         <div>
             <h4>{{ service_client.client }}{{ service_client.client_id }}</h4>
             <br>
@@ -32,11 +32,6 @@
                         <input id="comment" type="text" name="comment" value="">
                         <input class="btn btn-dark" type="submit" value="OK" />
                     </form>
-                    {% comment %} {% if title == 'ADV' %}
-                    <h5>Рекламный бюджет</h5>
-                {% elif title == 'SEO' %}
-                {% else %}
-                    {% endif %} {% endcomment %}
                 {% endif %}
             {% endfor %}
             <br>
@@ -66,10 +61,7 @@
                    {% if sub_all_actual.seosub_people and sub_all_actual.service_client_id == service_client.id %}
                    <p>{{ sub_all_actual.seosub_people }}</p>
                    <input type="number">
-                   
-
                    {% endif %}
-                    
                 {% endfor %}
             {% else %} 
             <h5>субподряд  разработка \ дизайн</h5>
@@ -84,12 +76,11 @@
                <p>{{ sub_all_actual.designersub_people }}</p>
                <input type="number">
                {% endif %}
-                
             {% endfor %}   
             {% endif %}
         </div>
         <br>
+     <br>
         <br>
-        <br>
-    {% endfor %}
+    {% endfor %} {% endcomment %}
 {% endblock content %}

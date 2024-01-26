@@ -24,15 +24,15 @@
   {% for service in client_service %}
     <p>{{ service.services_name }}</p>
     <a class="btn btn-dark"
-       href="{% url 'clients:contract' client.id service.services_name %}">Добавить договор</a>
-    <a class="btn btn-dark"
+       href="{% url 'clients:contract' client.id service.services_name %}">Договоры</a>
+    {% comment %} <a class="btn btn-dark"
        href="{% url 'clients:sub' client.id service.services_name %}">Добавить субподряд</a>
     <a class="btn btn-dark"
        href="{% url 'clients:employee' client.id service.services_name %}">Добавить исполнителя</a>
     {% if service.services_name == 'ADV' %}
       <a class="btn btn-dark"
-         href="{% url 'clients:adv' client.id service.services_name %}">Добавить площадки</a>
-    {% endif %}
+         href="{% url 'clients:adv' client.id service.services_name %}">Добавить площадки</a> 
+    {% endif %}{% endcomment %}
   {% endfor %}
   {% comment %} 
 

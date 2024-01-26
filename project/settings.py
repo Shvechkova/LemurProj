@@ -37,7 +37,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # env = environ.Env(DEBUG=(bool, False))
 
 # DEBUG = os.environ.get("DEBUG"),
-DEBUG = 1
+DEBUG = True
+
 SECRET_KEY = "django-insecure-5c@y9xy*-pk7vr!rz^q^qfaj0_k2-21zjtplcs=^&ju8@z(a+="
 DJANGO_ALLOWED_HOSTS = "localhost 127.0.0.1 [::1] dyugaev.beget.tech"
 # DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
@@ -53,13 +54,13 @@ INSTALLED_APPS = [
     "apps.core.apps.CoreConfig",
     "apps.service.apps.ServiceConfig",
     "apps.client.apps.ClientConfig",
-    "debug_toolbar",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [

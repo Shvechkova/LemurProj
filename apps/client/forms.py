@@ -8,6 +8,8 @@ class ClientNew(forms.ModelForm):
         model = Client
         # fields = ('client_name',)
         fields = "__all__"
+        
+
 
 
 class NewServiceClient(forms.ModelForm):

@@ -16,6 +16,8 @@ Including another URLconf
 """
 
 # from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 import debug_toolbar
@@ -24,8 +26,12 @@ import debug_toolbar
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("admin/", admin.site.urls),
+    
     path("", include("apps.core.urls", namespace="main")),
     path("service/", include("apps.service.urls", namespace="service")),
     path("clients/", include("apps.client.urls", namespace="clients")),
     path("employee/", include("apps.employee.urls", namespace="employee")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

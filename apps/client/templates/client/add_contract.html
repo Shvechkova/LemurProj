@@ -41,26 +41,27 @@
                        name="date_end"
                        required>
             </div>
-            <label for="bank">На счет</label>
+            {% comment %} <label for="bank">На счет</label>
             <input type="hidden" name="bank" value="{{ form.bank.value }}">
             <select class="form-select" name="bank">
                 {% for value,name in form.fields.bank.choices %}
                     <option value="{{ value }}"
                             {% if form.bank.value == value %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
-            </select>
+            </select> {% endcomment %}
         </div>
         <button type="submit" class="btn btn-dark">Добавить договор</button>
     </form>
     {% for contract in contract %}
-        {% if contract.service_id == service.id %}
+        {% comment %} {% if contract.service_id == service.id %} {% endcomment %}
             <p>
                 {{ contract.id }}
                 {{ contract.contract_number }}
                 {{ contract.date_start }}
                 {{ contract.date_end }}
                 {{ contract.service_id }}
+                <button type="submit" class="btn btn-dark">Изменить договор</button>
             </p>
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
     {% endfor %}
 {% endblock content %}
