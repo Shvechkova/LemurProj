@@ -22,12 +22,10 @@ import debug_toolbar
 
 # from . import views
 urlpatterns = [
-    path('__debug__/', include('debug_toolbar.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
     path("admin/", admin.site.urls),
-    
-    path('', include('apps.core.urls', namespace='main')),
-    path('service/', include('apps.service.urls', namespace='service')),
-    path('clients/', include('apps.client.urls', namespace='clients')),
-    
-  
+    path("", include("apps.core.urls", namespace="main")),
+    path("service/", include("apps.service.urls", namespace="service")),
+    path("clients/", include("apps.client.urls", namespace="clients")),
+    path("employee/", include("apps.employee.urls", namespace="employee")),
 ]

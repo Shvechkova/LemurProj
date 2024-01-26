@@ -2,7 +2,7 @@
 {% block content %}
     <h2>"{{ client.client_name }}"</h2>
     <h2>Услуга: {{ service }}</h2>
-    <form  method="post">
+    <form method="post">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 mb-3">

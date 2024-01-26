@@ -1,22 +1,61 @@
 from django.db import models
 
-from apps.client.models import Contract
 
-# from apps.bank.models import Bank
+class CategoryOperation(models.Model):
+    name = models.CharField(max_length=200)
+    
+class MetaCategoryOperation(models.Model):
+    name = models.CharField(max_length=200)    
 
 
-# Create your models here.
+class NameOperation(models.Model):
+    name = models.CharField(max_length=200)
+
 
 class OperationEntry(models.Model):
-    
-    # bank = models.ForeignKey(Bank, on_delete=models.CASCADE, blank=True,null=True)
-    created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+    created_timestamp = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата добавления"
+    )
     sum = models.PositiveIntegerField(default="0")
-    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, blank=True,null=True) 
-    comment=models.TextField(blank=True,null=True)
+
+    comment = models.TextField("Комментарий", blank=True, null=True)
+    BANK = (
+        ("OOO", "ООО"),
+        ("IP", "ИП"),
+        ("$", "$"),
+    )
+
+    bank = models.CharField(max_length=4, choices=BANK, default="OOO")
+    name = models.ForeignKey(
+        NameOperation, on_delete=models.PROTECT, blank=True, null=True
+    )
+    category = models.ForeignKey(
+        CategoryOperation, on_delete=models.PROTECT, blank=True, null=True
+    )
+    comment = models.TextField("Комментарий", blank=True, null=True)
+
+
 
 class OperationOut(models.Model):
-    # bank = models.ForeignKey(Bank, on_delete=models.CASCADE, blank=True,null=True)
-    created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
-    sum = models.PositiveIntegerField(default="0") 
+    created_timestamp = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата добавления"
+    )
+    sum = models.PositiveIntegerField(default="0")
+    comment = models.TextField("Комментарий", blank=True, null=True)
+    BANK = (
+        ("OOO", "ООО"),
+        ("IP", "ИП"),
+        ("$", "$"),
+    )
 
+    bank = models.CharField(max_length=4, choices=BANK, verbose_name="Счет поступления",  default="OOO")
+    name = models.ForeignKey(
+        NameOperation, on_delete=models.PROTECT, verbose_name="Название операции", blank=True, null=True
+    )
+    category = models.ForeignKey(
+        CategoryOperation, on_delete=models.PROTECT,verbose_name="Категория операции",  blank=True, null=True
+    )
+    meta_category = models.ForeignKey(
+        MetaCategoryOperation, on_delete=models.PROTECT,verbose_name="Главная категория операции",  blank=True, null=True
+    )
+    comment = models.TextField("Комментарий", blank=True, null=True)

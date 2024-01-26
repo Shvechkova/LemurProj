@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
+
 def index(request):
-    title='Главная'
+    title = "Главная"
     context = {
-        'title': title,
+        "title": title,
         # 'content': "Магазин мебели HOME",
     }
 
-    return render(request, 'core/index.html', context)
+    return render(request, "core/index.html", context)

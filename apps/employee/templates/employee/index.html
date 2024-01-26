@@ -1,0 +1,40 @@
+{% extends "core/base.html" %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {% for workers in workers %}
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-action mb-2">
+                             <a href="{% url 'employee:workers' workers.id %}">
+                            <h5>{{ workers.name }} {{ workers.last_name }}</h5> 
+                        </a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+        <div class="col">
+            <h4>Добавить сотрудника</h4>
+            <form method="post">
+                <input type="hidden" name="window" value="client_add">
+                {% csrf_token %}
+                <label for="name">Имя</label>
+                <input class="form-control" id="name" type="text" name="name"  value="" />
+                <label for="last_name">Фамилия</label>
+              <input class="form-control" id="last_name" type="text" name="last_name"  value="" />
+                   <label for="type">Выберите тип сотрудника</label>
+                <input type="hidden"
+                       name="type"
+                       value="{{ form.type.value }}">
+                <select class="form-select" name="type">
+                    {% for value,name in form.fields.type.choices %}
+                        <option value="{{ value }}"
+                                {% if form.type.value == value %}selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select> 
+                <input class="btn btn-dark mt-2"  type="submit" value="OK" />
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
