@@ -7,34 +7,25 @@ from apps.service.models import ServiceClient
 from .models import Client, Contract
 from .forms import ClientNew, NewServiceClient, AddContract, UpdServiceClient
 
+# from rest_framework import generic
+from rest_framework import routers, serializers, viewsets
+from .serializers import ClientSerializer
 
-# Create your views here.
-# class ClientView(TemplateView):
-#     form_class = ClientNew
-#     template_name = "index.html"
-#     title = "Клиенты"
-#     context = {
-#         "title": title,
-        
-#     }
 
-#     def get(self, request, *args, **kwargs):
-#         form = self.form_class(initial=self.initial)
-#         return render(request, self.template_name, {"form": form}, context)
+# class ClientIpiView(viewsets.ModelViewSet):
+#     queryset = Client.objects.all()
+#     serializer_class = ClientSerializer
 
-#     def post(self, request, *args, **kwargs):
-#         form = self.form_class(request.POST)
-#         if form.is_valid():
-#             # <process form cleaned data>
-#             return HttpResponseRedirect("/success/")
 
-#         return render(request, self.template_name, {"form": form})
+
 
 
 def clients(request):
     if request.method == "POST":
-        form = ClientNew(data=request.POST)
+        form = ClientNew(data=request.POST) 
+        
         if form.is_valid():
+            
             form.save()
             return HttpResponseRedirect(reverse("clients:index"))
     else:

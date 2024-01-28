@@ -2,12 +2,14 @@ from django.urls import path
 from django.views.generic.base import TemplateView
 
 from . import views
+# from client.views import ClientIpiView
 
 
 app_name = "client"
 #  views.ResultsView.as_view(),
 urlpatterns = [
     path("", views.clients, name="index"),
+    # path("api/v1/clientlist/", ClientIpiView.as_view()),
     # path("", views.ClientView.as_view(), name="index"),
     
     path("<int:client_id>", views.client, name="client"),

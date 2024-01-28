@@ -4,7 +4,8 @@ from . import views
 
 app_name = 'service'
 
+
 urlpatterns = [
-     path("", views.index, name="index" ),
-     path("<slug:slug>", views.serviced, name="serviced" ),
+    path("", views.index, name="index"),
+    path("<slug:slug>", views.serviced, name="serviced"),
 ]
