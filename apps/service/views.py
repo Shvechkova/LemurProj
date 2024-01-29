@@ -1,11 +1,18 @@
+from rest_framework.decorators import action
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from apps.client.models import Contract
+
+from apps.client.models import Client
+from apps.client.serializers import ClientSerializer
 from apps.operation.models import OperationEntry
 from apps.service.forms import OperationEntryForm
 
 from apps.service.models import ServiceClient
+from rest_framework import routers, viewsets
+from rest_framework.response import Response
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.views import APIView
 
 
 def index(request):
@@ -25,6 +32,36 @@ def index(request):
         # 'form': form,
     }
     return render(request, "service/service.html", context)
+
+# @action(detail=False, url_path='client-categories')
+#     def client_categories(self, request):
+#         queryset = request.user.client.active_category()
+
+#         serializer = self.get_serializer(queryset, many=True)
+
+#         return Response(serializer.data)
+    
+class BillViewSet(viewsets.ModelViewSet):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+   
+    @action(detail=False, methods=["get"], url_path=r'client_list')
+    def clientsCategory(self, request,):
+        clients = Client.objects.all()
+        serializer = self.get_serializer(clients, many=True)
+        # self.object = self.get_object()
+        return Response(serializer.data)
+
+
+        # self.object = self.get_object()
+        # # return Response( template_name="service.html")
+        # return Response(self.data)
+  
+
+
+# class UserViewSet(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
 
 # def serviced(request, slug):
@@ -66,15 +103,11 @@ def index(request):
 
 #     return render(request, "service/one_servis.html", context)
 
-def serviced(request, slug):
-   
 
-    
+def serviced(request, slug):
     title = "Одна услуга"
     context = {
         "title": slug,
-      
     }
 
     return render(request, "service/one_servis.html", context)
-

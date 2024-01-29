@@ -1,0 +1,77 @@
+html,
+body {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+a {
+    color: #000;
+    font-family: Montserrat;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header_nav {
+    display: flex;
+    gap: 48 px;
+    margin-bottom: 20px;
+}
+
+
+.header_nav-link {
+    padding: 10px 19px;
+}
+
+.menu-active {
+    border-radius: 25px;
+    border: 3px solid #000;
+
+}
+
+.submenu {
+    display: flex;
+    gap: 48px;
+
+
+}
+
+.submenu-link {
+    padding: 10px 19px;
+    border-radius: 25px;
+    border: 3px solid #000;
+}
+
+.submenu-active {
+    color: #FFF;
+
+    background: #000;
+}
+.submenu-active a {
+    color: #FFF;
+
+}
+
+.tech_nav {}
+
+.tech_nav-list {}
+
+.tech_nav-link {}
+
+
+.modal{
+    display: none;
+}
+.modal-active{
+    display: block;
+}

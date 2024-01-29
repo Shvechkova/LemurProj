@@ -1,100 +1,114 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
-  <head> 
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
     <meta name="keywords" content="foo,bar"/>
     <meta name="description" content="foo"/>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>123</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous">
-  </head>
-  <body>
-    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow"
-            data-bs-theme="light">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white"
-         href="#"><ya-tr-span data-index="1-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="Company name" data-translation="Название компании" data-ch="0" data-type="trSpan">Приложение Lem</ya-tr-span></a>
-      <ul class="navbar-nav flex-row d-md-none">
-        <li class="nav-item text-nowrap">
-          <button class="nav-link px-3 text-white"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#navbarSearch"
-                  aria-controls="navbarSearch"
-                  aria-expanded="false"
-                  aria-label="Toggle search">
-            <svg class="bi">
-              <use xlink:href="#search"></use>
-            </svg>
-          </button>
-        </li>
-        <li class="nav-item text-nowrap">
-          <button class="nav-link px-3 text-white"
-                  type="button"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#sidebarMenu"
-                  aria-controls="sidebarMenu"
-                  aria-expanded="false"
-                  aria-label="Toggle navigation">
-            <svg class="bi">
-              <use xlink:href="#list"></use>
-            </svg>
-          </button>
-        </li>
-      </ul>
-    </header>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-          <div class="offcanvas-md offcanvas-end bg-body-tertiary"
-               tabindex="-1"
-               id="sidebarMenu"
-               aria-labelledby="sidebarMenuLabel">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
-              <button type="button"
-                      class="btn-close"
-                      data-bs-dismiss="offcanvas"
-                      data-bs-target="#sidebarMenu"
-                      aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center gap-2 active"
-                     aria-current="page"
-                     href="{% url 'main:home' %}">Главная</a>
-                  <a class="nav-link d-flex align-items-center gap-2 active"
-                     aria-current="page"
-                     href="{% url 'clients:index' %}">Клиенты</a>
-                  <a class="nav-link d-flex align-items-center gap-2 active"
-                     aria-current="page"
-                     href="{% url 'service:index' %}">Услуги</a>
-                     <a class="nav-link d-flex align-items-center gap-2 active"
-                     aria-current="page"
-                     href="{% url 'employee:employee' %}">Сотрудники</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 ">
-          <h2 class="border-bottom">
-            <ya-tr-span data-index="18-0" data-translated="true" data-source-lang="en" data-target-lang="ru" data-value="Section title" data-translation="Название раздела" data-ch="0" data-type="trSpan">
-            {{ title }}</ya-tr-span>
-          </h2>
-          {% block title %}{% endblock title %}
-          {% block content %}{% endblock content %}
-          {% comment %} </div>
-          </div> {% endcomment %}
-        
-      </main>
-  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% comment %} 
+    <link rel="stylesheet" href="css/fonts.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/media.css" /> {% endcomment %}
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-          crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'core/css/fonts.css' %}"/>
+    <link rel="stylesheet" href="{% static 'core/css/reset.css' %}"/>
+    <link rel="stylesheet" href="{% static 'core/css/global.css' %}"/>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}"/>
+    <link rel="stylesheet" href="{% static 'core/css/media.css' %}"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <title>1</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <nav>
+                <ul class="header_nav">
+                    <li class="header_nav-link menu-active"><a href="">Услуги</a>
+
+                    </li>
+                    <li class="header_nav-link"><a href="">Внешние счета</a>
+                        <!-- <ul class="submenu">
+                            <li class="submenu-link"><a href="">ООО</a></li>
+                            <li class="submenu-link"><a href="">ИП</a></li>
+                            <li class="submenu-link"><a href="">$</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="header_nav-link"><a href="">Внутренние счета</a>
+                        <!-- <ul class="submenu">
+                            <li class="submenu-link"><a href="">Оперсчет</a></li>
+                            <li class="submenu-link"><a href="">Налоги</a></li>
+                            <li class="submenu-link"><a href="">Банковские расходы</a></li>
+                        </ul> -->
+                    </li>
+                    <li class="header_nav-link"><a href="">Хранилище</a>
+                        <!-- <ul class="submenu">
+                            <li class="submenu-link"><a href="">Остатки рекламных бюджетов</a></li>
+                            <li class="submenu-link"><a href="">Премии</a></li>
+                            <li class="submenu-link"><a href="">Накопительные счета
+                                </a></li>
+                            <li class="submenu-link"><a href="">Вклады</a></li>
+                            <li class="submenu-link"><a href="">Валюта</a></li>
+                        </ul> -->
+                    </li>
+
+                </ul>
+                <ul class="submenu">
+                    <li class="submenu-link"><a href="">SEO</a></li>
+                    <li class="submenu-link submenu-active"><a href="">ADV</a></li>
+                    <li class="submenu-link"><a href="">SMM</a></li>
+                    <li class="submenu-link"><a href="">DEV</a></li>
+                    <li class="submenu-link"><a href="">SUP</a></li>
+                </ul>
+            </nav>
+            <div class="tech_nav">
+                <ul class="tech_nav-list">
+                    <li class="tech_nav-link"><a href="">Сотрудники</a></li>
+                    <li class="tech_nav-link"><a href="">Клиенты</a></li>
+                </ul>
+            </div>
+
+        </header>
+
+        <main class="main">
+            {% comment %} <section class="sorting">
+                <div class="sort">
+                    <p class="sort-name">Сортировка</p>
+                    <a class="sort-item">долги </a>
+                    <a class="sort-item">неоплаченные субподряды</a>
+                </div>
+            </section> {% endcomment %}
+            {% block content %}{% endblock content %}
+            {% comment %} <section class="service">
+                <div class="service-all">
+                    <div class="service-month">
+                        <div class="service-month_name">
+                            <p class="service-month_name-month">Март</p>
+                            <p class="service-month_name-year">2023</p>
+                        </div>
+                        <div class="service-table">
+                            
+                        </div>
+                    </div>
+                </div>
+            </section> {% endcomment %}
+
+        </main>
+
+        <footer class="footer"></footer>
+    </div>
+    <script src="{% static 'core/js/main.js' %}"></script>
 </body>
+
 </html>
+ 

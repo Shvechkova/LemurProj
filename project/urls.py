@@ -31,6 +31,7 @@ urlpatterns = [
     path("service/", include("apps.service.urls", namespace="service")),
     path("clients/", include("apps.client.urls", namespace="clients")),
     path("employee/", include("apps.employee.urls", namespace="employee")),
+    path('api/', include('rest_framework.urls'))
 ]
 
 if settings.DEBUG:

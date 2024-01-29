@@ -41,6 +41,8 @@ def clients(request):
     return render(request, "client/index.html", context)
 
 
+
+
 def client(request, client_id):
     if request.method == "POST" and "window" in request.POST:
         if request.POST["window"] == "service":
