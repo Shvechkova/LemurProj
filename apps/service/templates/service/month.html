@@ -1,16 +1,30 @@
 <div>
-  <p>Март 23</p>
-  <div class="clients">
+  <div class="clients_month">
+    <h3 class="clients-month_title service_title">Март 2023(тут)</h3>
+    <div class="client_titles"></div>
+    {% for month_bill_all in month_bill_all %}
     <div class="client_item">
-      <div class="client-name"></div>
-      <div class="client-contract"></div>
-      <div class="client-bill-sun"></div>
-      <div class="client-adv-sum"></div>
+      <div class="client-name table">
+        <span class="client-name_number">{{ forloop.counter }}</span>
+        <h3 class="service_title client-name_title">Клиент</h3>
+        
+        <p class="client-name_text">{{ month_bill_all.client.client_name }}</p>
+      </div>
+      <div class="client-contract table">
+        <h3 class="service_title client-contract_title">Договор</h3>
+        <p class="client-contract_text">{{ month_bill_all.additional_contract.contract_number }}</p>
+      </div>
+      <div class="client-bill-sum table">
+        <h3 class="service_title client-sum_title">Счёт</h3>
+        <p class="client-sum_text">{{ month_bill_all.additional_contract.contract_sum }}</p>
+      </div>
+      <div class="client-adv-sum table">
+        <h3 class="service_title client-adv-sum_title">Ведение</h3>
+        <p class="client-adv-sum_text">{{ month_bill_all.additional_contract.adv_all_sum }}</p>
+      </div>
     </div>
+    {% endfor %}
   </div>
 </div>
-{% for month_bill_all in month_bill_all %}
-<p>{{ forloop.counter }} {{ month_bill_all.client.client_name }}</p>
-<p>{{ month_bill_all.additional_contract.contract_sum }}</p>
-<p>{{ month_bill_all.additional_contract.adv_all_sum }}</p>
-{% endfor %}
+
+
