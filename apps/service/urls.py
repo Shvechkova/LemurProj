@@ -19,7 +19,9 @@ from rest_framework import routers
     
 # ]
 router = routers.DefaultRouter()
-router.register(r'bill', views.BillViewSet, basename="service")
+router.register(r'bill', views.BillViewSet )
+router.register(r'create-contract', views.CreateContract)
+# basename="service"
 # router.register(r'bill/client_list/', views.BillViewSet)
 
 # Wire up our API using automatic URL routing.

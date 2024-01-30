@@ -11,8 +11,8 @@ from django.urls import reverse
 class Client(models.Model):
     client_name = models.CharField(max_length=200)
 
-    def __str__(self):
-        return self.client_name
+    # def __str__(self):
+    #     return self.client_name
 
 # Основной контракт
 class Contract(models.Model):
@@ -34,8 +34,11 @@ class Contract(models.Model):
 class AdditionalContract(models.Model):
     contract_number = models.CharField("название номер контракта",max_length=200)
     client = models.ForeignKey(Client, on_delete=models.PROTECT, verbose_name="Клиент", blank=True, null=True)
+    # service = models.ForeignKey(
+    #     "service.ServiceClient", on_delete=models.PROTECT,  verbose_name="Конкретная услуга клиента",blank=True, null=True
+    # )
     service = models.ForeignKey(
-        "service.ServiceClient", on_delete=models.PROTECT,  verbose_name="Конкретная услуга клиента",blank=True, null=True
+        "service.Service", on_delete=models.PROTECT,  verbose_name="Конкретная услуга клиента",blank=True, null=True
     )
     main_contract = models.ForeignKey(
         Contract, on_delete=models.SET_NULL, verbose_name="главный контракт", blank=True, null=True
@@ -44,3 +47,4 @@ class AdditionalContract(models.Model):
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
+    adv_all_sum = models.PositiveIntegerField("", default="0")

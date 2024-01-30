@@ -1,0 +1,16 @@
+<div>
+  <p>Март 23</p>
+  <div class="clients">
+    <div class="client_item">
+      <div class="client-name"></div>
+      <div class="client-contract"></div>
+      <div class="client-bill-sun"></div>
+      <div class="client-adv-sum"></div>
+    </div>
+  </div>
+</div>
+{% for month_bill_all in month_bill_all %}
+<p>{{ forloop.counter }} {{ month_bill_all.client.client_name }}</p>
+<p>{{ month_bill_all.additional_contract.contract_sum }}</p>
+<p>{{ month_bill_all.additional_contract.adv_all_sum }}</p>
+{% endfor %}

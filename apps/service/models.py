@@ -7,8 +7,11 @@ from apps.operation.models import OperationEntry, OperationOut
 
 # Create your models here.
 # created_timestamp = models.DateTimeField(default=timezone.now)
-
-
+class Service(models.Model):
+ name = models.CharField("Категории услуг",
+        max_length=150, blank=True, null=True
+    )
+ 
 # конкретная услуга клиента
 class ServiceClient(models.Model):
     SERVICES_NAME = (
@@ -53,61 +56,18 @@ class ServicesMonthlyBill(models.Model):
     subcontract = models.ForeignKey(
         "SubcontractMonth", on_delete=models.SET_NULL, blank=True, null=True
     )
-    adv_all_sum = models.PositiveIntegerField("", default="0")
+    # adv_all_sum = models.PositiveIntegerField("", default="0")
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
-    check_entry = models.ForeignKey(
-        OperationEntry,
-        verbose_name="Проверка оплаты",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
-    comment = models.TextField("Комментарий", blank=True, null=True)
-
-
-# # надо отключить модель
-# class SubcontractAll(models.Model):
-#     service_client = models.ForeignKey(
-#         ServiceClient, on_delete=models.CASCADE, blank=True, null=True
-#     )
-
-#     seosub_people = models.CharField(max_length=200, blank=True, null=True)
-#     seosub_sum = models.PositiveIntegerField(default="0")
-#     seosub_people_other = models.CharField(max_length=200, blank=True, null=True)
-#     seosub_sum_other = models.PositiveIntegerField(default="0")
-
-#     drvsub_people = models.CharField(max_length=200, blank=True, null=True)
-#     drvsub_sum = models.PositiveIntegerField(default="0")
-
-#     designersub_people = models.CharField(max_length=200, blank=True, null=True)
-#     designersub_sum = models.PositiveIntegerField(default="0")
-
-#     created_timestamp = models.DateTimeField(
-#         auto_now_add=True, verbose_name="Дата добавления"
-#     )
-
-
-# # надо отключить модель
-# class SubcontractADV(models.Model):
-#     service_client = models.ForeignKey(
-#         ServiceClient, on_delete=models.CASCADE, blank=True, null=True
-#     )
-#     ADV = (
-#         ("YANDEX", "Яндекс Директ"),
-#         ("MAIL", "Таргет Mail.ru/VK"),
-#         ("GOOGLE", "Google Adwords"),
-#         ("OTHER", "ДРУГОЕ"),
-#         ("NONE", "---"),
-#     )
-
-#     adv_name = models.CharField(max_length=10, choices=ADV, default="NONE")
-#     adv_sum = models.PositiveIntegerField(default="0")
-#     created_timestamp = models.DateTimeField(
-#         auto_now_add=True, verbose_name="Дата добавления"
-#     )
-
+    # check_entry = models.ForeignKey(
+    #     OperationEntry,
+    #     verbose_name="Проверка оплаты",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    # )
+    # comment = models.TextField("Комментарий", blank=True, null=True)
 
 # субподряд для ежемесячного счета
 class SubcontractMonth(models.Model):
@@ -126,13 +86,13 @@ class SubcontractMonth(models.Model):
         blank=True,
         null=True,
     )
-    other = models.ForeignKey(
-        "SubcontractOther",
-        verbose_name="Рекламная площадка",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    # other = models.ForeignKey(
+    #     "SubcontractOther",
+    #     verbose_name="Рекламная площадка",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    # )
 
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
@@ -140,6 +100,9 @@ class SubcontractMonth(models.Model):
     # Запланированные траты
     amount = models.PositiveIntegerField("сумма субподряд", default="0")
     percent = models.PositiveIntegerField("процент для исполнителя", default="0")
+    month_bill = models.ForeignKey(
+        ServicesMonthlyBill, on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     # фактические оплаты
     check_entry = models.ForeignKey(
