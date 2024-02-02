@@ -6,11 +6,6 @@ from apps.employee.forms import EmployeeNewForm
 from apps.employee.models import Employee
 
 
-
-
-
-
-
 # Create your views here.
 
 
@@ -23,8 +18,8 @@ def employee(request):
             return HttpResponseRedirect(request.path)
     else:
         form = EmployeeNewForm()
-        
-    workers =  Employee.objects.all() 
+
+    workers = Employee.objects.all()
     title = "Сотрудники"
     context = {
         "title": title,
@@ -34,14 +29,13 @@ def employee(request):
 
     return render(request, "employee/index.html", context)
 
-def worker(request,worker_id):
-    worker =  Employee.objects.filter(id=worker_id) 
+
+def worker(request, worker_id):
+    worker = Employee.objects.filter(id=worker_id)
     title = worker_id
     context = {
         "title": title,
         "worker": worker,
-        
     }
 
     return render(request, "employee/worker.html", context)
-

@@ -15,7 +15,7 @@ class ClientNew(forms.ModelForm):
 class NewServiceClient(forms.ModelForm):
     class Meta:
         model = ServiceClient
-        fields = ["services_name", "client"]
+        fields = "__all__"
 
 
 class AddContract(forms.ModelForm):
@@ -68,6 +68,6 @@ class AddContract(forms.ModelForm):
 class UpdServiceClient(forms.ModelForm):
     id_service = forms.IntegerField()
 
-    class Meta:
-        model = ServiceClient
-        fields =  ("__all__")
+    # class Meta:
+    #     model = ServiceClient
+    #     fields =  ("__all__")

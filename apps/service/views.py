@@ -1,6 +1,7 @@
 from rest_framework.decorators import action
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from apps import service
 
 
 from apps.client.models import AdditionalContract, Client
@@ -8,80 +9,73 @@ from apps.client.serializers import ClientSerializer
 from apps.operation.models import OperationEntry
 from apps.service.forms import OperationEntryForm
 
-from apps.service.models import ServiceClient, ServicesMonthlyBill
+from apps.service.models import Service, ServicesMonthlyBill
 from rest_framework import routers, viewsets
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.views import APIView
 
-from apps.service.serializers import ClientAllSerializer, ContractSerializer
+# from apps.service.serializers import ClientAllSerializer, ContractSerializer
 from rest_framework import status
+
+from apps.service.serializers import ServiceSerializer
 
 
 def index(request):
-    month_bill_all = ServicesMonthlyBill.objects.all()
-    
-    # if request.method == "POST" :
-    #     form = ClientNew(data=request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #         return HttpResponseRedirect(reverse('clients:index'))
-    # else:
-    #     form = ClientNew()
-
-    # client_list = Client.objects.all()
+    # month_bill_all = ServicesMonthlyBill.objects.all()
     title = "Услуги"
     context = {
         "title": title,
-        'month_bill_all': month_bill_all,
-        # 'form': form,
+        # "month_bill_all": month_bill_all,
     }
     return render(request, "service/service.html", context)
 
+class ServiceView(viewsets.ModelViewSet):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    
+# class BillViewSet(viewsets.ModelViewSet):
+#     queryset = Client.objects.all()
+#     serializer_class = ClientAllSerializer
+
+#     @action(detail=False, methods=["get"], url_path=r"client_list")
+#     def clientsCategory(
+#         self,
+#         request,
+#     ):
+#         clients = Client.objects.all()
+
+#         serializer = self.get_serializer(clients, many=True)
+
+#         return Response(serializer.data)
 
 
-class BillViewSet(viewsets.ModelViewSet):
-    queryset = Client.objects.all()
-    serializer_class = ClientAllSerializer
+# class CreateContract(viewsets.ModelViewSet):
+    # serializer_class = ContractSerializer
+    # queryset = AdditionalContract.objects.all()
 
-    @action(detail=False, methods=["get"], url_path=r"client_list")
-    def clientsCategory(
-        self,
-        request,
-    ):
-        clients = Client.objects.all()
-
-        serializer = self.get_serializer(clients, many=True)
-
-        return Response(serializer.data)
-
-
-class CreateContract(viewsets.ModelViewSet):
-    serializer_class = ContractSerializer
-    queryset = AdditionalContract.objects.all()
-
-    def create(self, request, *args, **kwargs):
-        print(request)
-        data = {
-            "contract_number": request.POST.get("contract_number", None),
-            "client": request.POST.get("client", None),
-            "service": request.POST.get("service", None),
-            "contract_sum": request.POST.get("contract_sum", None),
-            "adv_all_sum": request.POST.get("adv_all_sum", None),
-        }
-        serializer = self.serializer_class(
-            data=data,
-        )
-        if serializer.is_valid():
-            obj = serializer.save()
-            bill_new = ServicesMonthlyBill.objects.create(
-                client_id=obj.client_id,
-                service_id=obj.service_id,
-                additional_contract=obj,
-            )
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def create(self, request, *args, **kwargs):
+        
+    #     data = {
+    #         "contract_number": request.POST.get("contract_number", None),
+    #         "client": request.POST.get("client", None),
+    #         "service": request.POST.get("service", None),
+    #         "contract_sum": request.POST.get("contract_sum", None),
+    #         "adv_all_sum": request.POST.get("adv_all_sum", None),
+    #     }
+    #     serializer = self.serializer_class(
+    #         data=data,
+    #     )
+    #     if serializer.is_valid():
+    #         obj = serializer.save()
+    #         bill_new = ServicesMonthlyBill.objects.create(
+    #             client_id=obj.client_id,
+    #             service_id=obj.service_id,
+    #             additional_contract=obj,
+    #         )
+    #         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+    #     else:
+    #         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # class UserViewSet(viewsets.ModelViewSet):

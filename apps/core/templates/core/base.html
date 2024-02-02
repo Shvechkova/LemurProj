@@ -61,6 +61,13 @@
                             <li class="submenu-link"><a href="">Валюта</a></li>
                         </ul> -->
                     </li>
+                    <li class="header_nav-link"><a href="{% url 'clients:client' %}">Клиенты</a>
+                        <!-- <ul class="submenu">
+                            <li class="submenu-link"><a href="">Оперсчет</a></li>
+                            <li class="submenu-link"><a href="">Налоги</a></li>
+                            <li class="submenu-link"><a href="">Банковские расходы</a></li>
+                        </ul> -->
+                    </li>
 
                 </ul>
                 <ul class="submenu">
@@ -107,7 +114,8 @@
 
         <footer class="footer"></footer>
     </div>
-    <script src="{% static 'core/js/main.js' %}"></script>
+    {% comment %} <script src="{% static 'core/js/main.js' %}"></script> {% endcomment %}
+    {% include "core/includes/scripts.html" %}
 </body>
 
 </html>

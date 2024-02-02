@@ -5,30 +5,27 @@ from apps.employee.models import Employee
 
 from apps.operation.models import OperationEntry, OperationOut
 
+
 # Create your models here.
 # created_timestamp = models.DateTimeField(default=timezone.now)
 class Service(models.Model):
- name = models.CharField("Категории услуг",
-        max_length=150, blank=True, null=True
-    )
- 
+    name = models.CharField("Категории услуг", max_length=150, blank=True, null=True)
+
+
 # конкретная услуга клиента
 class ServiceClient(models.Model):
-    SERVICES_NAME = (
-        ("ADV", "ADV"),
-        ("SEO", "SEO"),
-        ("SUP", "SUP"),
-        ("DEV", "DEV"),
-        ("SMM", "SMM"),
-        ("NONE", "---"),
-    )
-    services_name = models.CharField(
-        max_length=4, choices=SERVICES_NAME, default="NONE"
-    )
     client = models.ForeignKey(
-        Client,
+        Service,
         on_delete=models.PROTECT,
         verbose_name="Клиент",
+         blank=True,
+        null=True,
+    )
+    service = models.ForeignKey(
+        Client,
+        on_delete=models.PROTECT,
+        verbose_name="Клиент", blank=True,
+        null=True,
     )
 
     created_timestamp = models.DateTimeField(
@@ -44,7 +41,7 @@ class ServiceClient(models.Model):
 class ServicesMonthlyBill(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
     service = models.ForeignKey(
-        ServiceClient, on_delete=models.PROTECT, blank=True, null=True
+        Service, on_delete=models.PROTECT, blank=True, null=True
     )
     contract = models.ForeignKey(
         Contract, on_delete=models.PROTECT, blank=True, null=True
@@ -56,18 +53,19 @@ class ServicesMonthlyBill(models.Model):
     subcontract = models.ForeignKey(
         "SubcontractMonth", on_delete=models.SET_NULL, blank=True, null=True
     )
-    # adv_all_sum = models.PositiveIntegerField("", default="0")
+
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
-    # check_entry = models.ForeignKey(
-    #     OperationEntry,
-    #     verbose_name="Проверка оплаты",
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    # )
-    # comment = models.TextField("Комментарий", blank=True, null=True)
+    check_entry = models.ForeignKey(
+        OperationEntry,
+        verbose_name="Проверка оплаты",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+  
+
 
 # субподряд для ежемесячного счета
 class SubcontractMonth(models.Model):
@@ -86,13 +84,6 @@ class SubcontractMonth(models.Model):
         blank=True,
         null=True,
     )
-    # other = models.ForeignKey(
-    #     "SubcontractOther",
-    #     verbose_name="Рекламная площадка",
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    # )
 
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
@@ -123,5 +114,3 @@ class SubcontractOther(models.Model):
     name = models.CharField(
         "название субподряда", max_length=200, blank=True, null=True
     )
-
-

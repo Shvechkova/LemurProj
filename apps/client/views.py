@@ -1,112 +1,195 @@
 # from django.shortcuts import render
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from apps.service.models import ServiceClient
+from apps.employee.models import Employee
+from apps.service.models import Service, ServiceClient
+from apps.service.serializers import ServiceSerializer
+
 from .models import Client, Contract
 from .forms import ClientNew, NewServiceClient, AddContract, UpdServiceClient
 
+
 # from rest_framework import generic
-from rest_framework import routers, serializers, viewsets
-from .serializers import ClientSerializer
-
-
-# class ClientIpiView(viewsets.ModelViewSet):
-#     queryset = Client.objects.all()
-#     serializer_class = ClientSerializer
-
-
-
+from rest_framework import routers, serializers, viewsets, mixins
+from .serializers import ClientSerializer, ContractSerializer, ManagerSerializer
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 def clients(request):
-    if request.method == "POST":
-        form = ClientNew(data=request.POST) 
-        
-        if form.is_valid():
-            
-            form.save()
-            return HttpResponseRedirect(reverse("clients:index"))
-    else:
-        form = ClientNew()
+    clients = Client.objects.all()
 
-    client_list = Client.objects.all()
     title = "Клиенты"
     context = {
+        "clients": clients,
         "title": title,
-        "client_list": client_list,
-        "form": form,
     }
     return render(request, "client/index.html", context)
 
 
+class AddClient(viewsets.ModelViewSet):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.serializer_class(data=request.data)
+    #     if serializer.is_valid():
+    #         obj = serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["get"], url_path=r"manager_list")
+    # TODO НИЖНЕЕ ПОДЧЕРКИВАНИЕ и с маленьких букв
+    def ManagerList(
+        self,
+        request,
+    ):
+        manager = Employee.objects.filter(category_id=1)
+        serializer = ManagerSerializer(manager, many=True)
+        return Response(serializer.data)
 
 
-def client(request, client_id):
-    if request.method == "POST" and "window" in request.POST:
-        if request.POST["window"] == "service":
-            form = NewServiceClient(request.POST)
-            if form.is_valid():
-                client = form.cleaned_data["client"]
-                services_name = form.cleaned_data["services_name"]
-                service_new = ServiceClient.objects.create(
-                    services_name=services_name,
-                    client=client,
-                )
-        return HttpResponseRedirect(request.path)
-    else:
-        form = NewServiceClient()
+class ContractView(viewsets.ModelViewSet):
+    queryset = Contract.objects.all()
+    serializer_class = ContractSerializer
+    http_method_names = ["get", "post","put"]
 
-    client = Client.objects.get(id=client_id)
-    client_service = ServiceClient.objects.filter(client=client_id)
+    # def list(self, request):
+    #     data=request.data
+    #     print(data)
+    #     queryset = Contract.objects.filter(client_id=data)
+    #     serializer = ContractSerializer(queryset, many=True)
+    #     return Response(serializer.data)
 
-    context = {
-        "client": client,
-        "client_service": client_service,
-        # "services_name": NewServiceClient,
-        "form": form,
-    }
-    return render(request, "client/client.html", context)
+    @action(detail=False, methods=["get"], url_path=r"(?P<pk>\d+)/contract_li")
+    def client_contract_list(self, request, pk):
+        pk = self.kwargs["pk"]
+        queryset = Contract.objects.filter(client=pk)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["post","put"], url_path=r"create_contracts")
+    def create_contracts(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, many=True)
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(detail=False, methods=["get"], url_path=r"service_list")
+    # def ServiceList(
+    #     self,
+    #     request,
+    # ):
+    #     service = Service.objects.all()
+    #     serializer = ServiceSerializer(service, many=True)
+
+    #     return Response(serializer.data)
+
+    # @action(detail=False, methods=["post"], url_path=r"add_contract")
+    # def addContract(self, request, *args, **kwargs):
+
+    #     serializer_class = ClientAddSerializer
+    #     serializer = serializer_class(data=data, many=True)
+    #     # for datai_tems in serializer.data:
+    #     #     data_detali =datai_tems
+    #     #     return data_detali
+
+    #     # print(serializer)
+    #     # data_client = {
+    #     #     "contract_number": serializer.client
+
+    #     # }
+
+    #     if serializer.is_valid():
+    #         obj = serializer.save()
+    #         print(1)
+    #         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+    #     else:
+
+    #         print(2)
+
+    #         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST,)
 
 
-def addContract(request, client_id, slug):
-    client = Client.objects.get(id=client_id)
-    service = ServiceClient.objects.get(client=client_id, services_name=slug)
-    # service_form = ServiceClient.objects.get(client=client_id)
-    
-    if request.method == "POST":
-        form = AddContract(request.POST)
-        if form.is_valid():
-            contract_number = form.cleaned_data["contract_number"]
-            contract_sum = form.cleaned_data["contract_sum"]
-            date_start = form.cleaned_data["date_start"]
-            date_end = form.cleaned_data["date_end"]
-            
-            service = service
-            client = client
-            contract_new = Contract.objects.create(
-                contract_number=contract_number,
-                contract_sum=contract_sum,
-                date_start=date_start,
-                date_end=date_end,
-             
-                service=service,
-                client=client,
-            )
-            return HttpResponseRedirect(request.path)
-        else:
-            form = AddContract()
+# class AddClientContract(viewsets.ModelViewSet):
+#     queryset = Client.objects.all()
+#     serializer_class = ClientAddSerializer
 
-    contract = Contract.objects.filter(client=client_id)
-    form = AddContract()
-    context = {
-        "client": client,
-        "service": service,
-        "contract": contract,
-        "form": form,
-    }
-    return render(request, "client/add_contract.html", context)
+#     def addContract(self, request, *args, **kwargs):
+#         print(request)
+
+
+# def client(request, client_id):
+#     if request.method == "POST" and "window" in request.POST:
+#         if request.POST["window"] == "service":
+#             form = NewServiceClient(request.POST)
+#             if form.is_valid():
+#                 client = form.cleaned_data["client"]
+#                 services_name = form.cleaned_data["services_name"]
+#                 service_new = ServiceClient.objects.create(
+#                     services_name=services_name,
+#                     client=client,
+#                 )
+#         return HttpResponseRedirect(request.path)
+#     else:
+#         form = NewServiceClient()
+
+#     client = Client.objects.get(id=client_id)
+#     client_service = ServiceClient.objects.filter(client=client_id)
+
+#     context = {
+#         "client": client,
+#         "client_service": client_service,
+#         # "services_name": NewServiceClient,
+#         "form": form,
+#     }
+#     return render(request, "client/client.html", context)
+
+
+# def addContract(request, client_id, slug):
+#     client = Client.objects.get(id=client_id)
+#     service = ServiceClient.objects.get(client=client_id, services_name=slug)
+#     # service_form = ServiceClient.objects.get(client=client_id)
+
+#     if request.method == "POST":
+#         form = AddContract(request.POST)
+#         if form.is_valid():
+#             contract_number = form.cleaned_data["contract_number"]
+#             contract_sum = form.cleaned_data["contract_sum"]
+#             date_start = form.cleaned_data["date_start"]
+#             date_end = form.cleaned_data["date_end"]
+
+#             service = service
+#             client = client
+#             contract_new = Contract.objects.create(
+#                 contract_number=contract_number,
+#                 contract_sum=contract_sum,
+#                 date_start=date_start,
+#                 date_end=date_end,
+
+#                 service=service,
+#                 client=client,
+#             )
+#             return HttpResponseRedirect(request.path)
+#         else:
+#             form = AddContract()
+
+#     contract = Contract.objects.filter(client=client_id)
+#     form = AddContract()
+#     context = {
+#         "client": client,
+#         "service": service,
+#         "contract": contract,
+#         "form": form,
+#     }
+#     return render(request, "client/add_contract.html", context)
 
 
 # def AddSubcontractors(request, client_id, slug):

@@ -1,7 +1,7 @@
 
 from django.urls import include, path
 
-from apps.service.views import BillViewSet
+
 
 from . import views
 

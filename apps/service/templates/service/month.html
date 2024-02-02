@@ -7,24 +7,27 @@
       <div class="client-name table">
         <span class="client-name_number">{{ forloop.counter }}</span>
         <h3 class="service_title client-name_title">Клиент</h3>
-        
         <p class="client-name_text">{{ month_bill_all.client.client_name }}</p>
       </div>
       <div class="client-contract table">
         <h3 class="service_title client-contract_title">Договор</h3>
-        <p class="client-contract_text">{{ month_bill_all.additional_contract.contract_number }}</p>
+        <p class="client-contract_text">
+          {{ month_bill_all.additional_contract.contract_number }}
+        </p>
       </div>
       <div class="client-bill-sum table">
         <h3 class="service_title client-sum_title">Счёт</h3>
-        <p class="client-sum_text">{{ month_bill_all.additional_contract.contract_sum }}</p>
+        <p class="client-sum_text">
+          {{ month_bill_all.additional_contract.contract_sum }}
+        </p>
       </div>
       <div class="client-adv-sum table">
         <h3 class="service_title client-adv-sum_title">Ведение</h3>
-        <p class="client-adv-sum_text">{{ month_bill_all.additional_contract.adv_all_sum }}</p>
+        <p class="client-adv-sum_text">
+          {{ month_bill_all.additional_contract.adv_all_sum }}
+        </p>
       </div>
     </div>
     {% endfor %}
   </div>
 </div>
-
-
