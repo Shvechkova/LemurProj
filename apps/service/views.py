@@ -1,11 +1,11 @@
 from rest_framework.decorators import action
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from apps import service
+# from apps import service
 
 
 from apps.client.models import AdditionalContract, Client
-from apps.client.serializers import ClientSerializer
+
 from apps.operation.models import OperationEntry
 from apps.service.forms import OperationEntryForm
 

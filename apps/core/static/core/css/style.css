@@ -16,6 +16,7 @@ a {
   font-weight: 400;
   line-height: normal;
 }
+
 p {
   color: #000;
 
@@ -25,6 +26,7 @@ p {
   font-weight: 400;
   line-height: normal;
 }
+
 h3 {
   color: #000;
 
@@ -34,24 +36,28 @@ h3 {
   font-weight: 700;
   line-height: normal;
 }
+
 .header {
   display: flex;
   justify-content: space-between;
+
 }
 
 .header_nav {
   display: flex;
-  gap: 48 px;
+  gap: 70px;
   margin-bottom: 20px;
 }
 
-.header_nav-link {
-  padding: 10px 19px;
-}
+.header_nav-link {}
 
 .menu-active {
   border-radius: 25px;
   border: 3px solid #000;
+  padding: 13px 25px;
+  margin-left: -25px;
+  margin-right: -25px;
+  margin-top: -13px;
 }
 
 .submenu {
@@ -60,7 +66,7 @@ h3 {
 }
 
 .submenu-link {
-  padding: 10px 19px;
+
   border-radius: 25px;
   border: 3px solid #000;
 }
@@ -70,29 +76,179 @@ h3 {
 
   background: #000;
 }
+
 .submenu-active a {
   color: #fff;
 }
 
-.tech_nav {
-}
+.tech_nav {}
 
-.tech_nav-list {
-}
+.tech_nav-list {}
 
-.tech_nav-link {
-}
+.tech_nav-link {}
 
 .modal {
   display: none;
+  position: absolute;
+  background-color: rgba(8, 6, 6, 0.50);
+
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 100vh;
+  overflow: hidden;
+  opacity: 1;
+  z-index: 1000;
+  transition: 0.3s;
 }
+
 .modal-active {
   display: block;
+}
+
+.modal-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-items {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 43px 50px;
+  margin: 0 auto;
+  display: flex;
+  position: relative;
+}
+
+.modal-title {
+  margin-bottom: 23px;
+}
+
+.modal_contract {
+  display: flex;
+}
+
+.modal input {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  border: none;
+
+  font-weight: 400;
+  /* color: #c8c8c8; */
+  font-size: 20px;
+  padding: 10px;
+}
+
+.modal input::placeholder {
+
+
+  font-weight: 400;
+  color: #c8c8c8;
+  font-size: 20px;
+}
+
+.modal select {
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  border: none;
+
+  font-weight: 400;
+
+  font-size: 20px;
+  padding: 10px;
+}
+
+
+.modal-select .empty {
+  color: #c8c8c8;
+}
+
+.modal-select {
+  color: black;
+}
+
+#choice option {
+  color: black;
+}
+
+.empty {
+  color: #c8c8c8;
+}
+
+input[type=date] {
+  /* width: 126px; */
+  color: #c8c8c8;
+
+}
+
+.modal_close {
+  font-size: 40px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+
+/* 
+input[type="date"]:before {
+  color: lightgrey;
+  content: attr(placeholder) !important;
+  margin-right: 0.5em;
+} */
+
+::-webkit-calendar-picker-indicator {}
+
+.modal-items-wrap {
+  width: 610px;
+
+
+
+}
+
+.modal-client_name {
+  width: 366px;
+
+
+}
+
+.input-130 {
+  width: 130px;
+}
+
+.input-200 {
+  width: 200px;
+}
+
+
+
+.modal_add_contract {
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+.modal-manager_client {
+  width: 262px;
+  margin-left: 10px;
+
+}
+
+.modal-client_top {
+  display: flex;
+  margin-bottom: 14px;
 }
 
 .client_item {
   display: flex;
 }
+
 .table {
   display: flex;
 
@@ -103,12 +259,15 @@ h3 {
 .table h3 {
   width: 121px;
 }
+
 .table p {
   width: 121px;
 }
-.client_titles{
-    display: flex;
+
+.client_titles {
+  display: flex;
 }
-.service_title{
-     width: 121px;
+
+.service_title {
+  width: 121px;
 }

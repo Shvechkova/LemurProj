@@ -10,6 +10,11 @@ function modal(elem) {
      
   //   });
   // });
+  let modalClose = document.querySelector(".modal_close");
+  modalClose.addEventListener("click", (event) => {
+    modal_windows.classList.remove("modal-active");
+   console.log(123)
+  });
 }
 // modal();
 
@@ -100,55 +105,6 @@ function addMonthBill() {
   addFormMonth();
 }
 
-// let select = document.querySelector(".modal-bill_client");
-// select.addEventListener("change", () => {
-//   console.log(select.value);
-// });
-// fetch("/service/bill/client_list_contract/", {
-//     method: "get",
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       let selectHTML = "";
-//       data.forEach(function (value, key) {
-//         selectHTML += `<option value="${value.client_name}">${value.client_name}</option>`;
-//       });
-
-//     });
-
-// function postClientName() {
-//   let select = document.querySelector(".modal-bill_client");
-//   select.addEventListener("change", () => {
-//     const form = new FormData();
-//     form.append("select", select);
-//   });
-//   console.log(form);
-//   fetch("/service/bill/", {
-//     method: "POST",
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {});
-// }
-
-// function addBill() {
-// //   if (step == "stepOne") {
-// //     // form.append("phone", telValueNum);
-// //   }
-// fetch("/service/bill/", {
-//     method: "get",
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       let selectHTML = "";
-//       data.forEach(function (value, key) {
-//         console.log(value.client_name);
-//         selectHTML += `<option value="${value.client_name}">${value.client_name}</option>`;
-//       });
-//       document.querySelector(".modal-bill_client").innerHTML = selectHTML;
-//     });
-
-// }
-
 function addContentSelect(instance,select,select_inner){
   fetch(instance, {
           method: "get",
@@ -162,4 +118,48 @@ function addContentSelect(instance,select,select_inner){
             });
             select.innerHTML = selectHTML;
           });
+}
+
+
+function getCookie(name) {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" +
+      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+      "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+
+function openLoginModal() {
+  // открытие модалки
+  const modalLogin = document.getElementById("modal-login");
+  const modalBack = document.querySelector(".modal-section");
+  modalBack.classList.add("modal-section--active");
+  document.body.style.overflow = "hidden";
+  const timerId = setTimeout(() => {
+    modalLogin.classList.add("modal--active");
+  }, 200);
+  // закрытие модалки
+  let modalCloseLogin = document.querySelector(".modal-content__close__login");
+  modalCloseLogin.addEventListener("click", (event) => {
+    modalLogin.classList.remove("modal--active");
+    modalBack.classList.remove("modal-section--active");
+    document.body.style.overflow = "";
+  });
+  //закрытие по общему контейнеру
+  let modalWrapperLogin = document.querySelector(".modal-wrapper-login");
+  let modalContentWrapperLogin = document.querySelector(
+    ".modal-content-wrap-login"
+  );
+  let modalContentLogin = document.querySelector(".modal-content-login");
+  modalWrapperLogin.addEventListener("click", (event) => {
+    if (event.target == modalContentLogin || !modalContentWrapperLogin) {
+      modalLogin.classList.remove("modal--active");
+      modalBack.classList.remove("modal-section--active");
+      document.body.style.overflow = "";
+    }
+  });
 }

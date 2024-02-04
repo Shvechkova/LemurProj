@@ -2,6 +2,7 @@ from django.urls import include, path
 from django.views.generic.base import TemplateView
 
 from . import views
+from .api import view_sets
 from rest_framework import routers
 
 
@@ -9,8 +10,8 @@ from rest_framework import routers
 app_name = "client"
 
 router = routers.DefaultRouter()
-router.register(r"api/client", views.AddClient)
-router.register(r"api/contract", views.ContractView)
+router.register(r"api/client", view_sets.AddClient)
+router.register(r"api/contract", view_sets.ContractView)
 
 
 

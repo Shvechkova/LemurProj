@@ -1,93 +1,142 @@
 const modal_button = document.querySelectorAll(".open-modal");
 const modal_windows = document.querySelector(".modal");
-const selectOne = document.querySelector(".modal-service_type");
 
+// модалка первичного добавления клиента и контракта
 modal_button.forEach((element) => {
   element.addEventListener("click", () => {
     let elem = element.getAttribute("data-name");
     modal(elem);
+
     addManager();
-    addService(selectOne);
     createInputContract();
-    
+    choiceColor()
     const endpointClient = "/clients/api/client/";
     const endpointContact = "/clients/api/contract/";
     const endpointContractAll = "/clients/api/contract/create_contracts/";
-    const optionsMethod = "POST"
-   
-    addNewClient(endpointClient,endpointContact,endpointContractAll,optionsMethod);
+    const optionsMethod = "POST";
+
+    addNewClient(
+      endpointClient,
+      endpointContact,
+      endpointContractAll,
+      optionsMethod
+    );
   });
 });
+// менеджеры из базы
+function addManager(selected) {
 
-
-function addManager(selectedOption) {
   const endpoint = "/clients/api/client/manager_list/";
   const select = document.querySelector(".modal-manager_client");
+  new selectOption(
+    "modal-select empty",
+    "0",
+    '',
+    "Менеджер",
+    true,
+
+
+  ).appendTo(select);
 
   fetch(endpoint, {
     method: "get",
   })
     .then((response) => response.json())
     .then((data) => {
-      let selectHTML = "";
-
       data.forEach(function (value, key) {
-        if (value.id == selectedOption) {
-          selectHTML += `<option selected  class="modal-select" data-id="${value.id}"  value="${value.last_name}">${value.last_name}</option>`;
-        } else {
-          selectHTML += `<option class="modal-select" data-id="${value.id}"  value="${value.last_name}">${value.last_name}</option>`;
-        }
+        new selectOption(
+          "modal-select",
+          value.last_name,
+          value.id,
+          value.last_name,
+          selected
+        ).appendTo(select);
+
+
       });
-      select.innerHTML = selectHTML;
     });
 }
-//  const selectOne = document.querySelector(".modal-service_type");
-function addService(selectInput, selectedOption) {
+// сервисы из базы
+function addService(selectInput, selected) {
+  const select = selectInput;
+  new selectOption(
+    "modal-select",
+    "0",
+    '',
+    "Услуга"
+  ).appendTo(select);
   const instance = "/service/service_category/";
 
-  const select = selectInput;
   fetch(instance, {
     method: "get",
   })
     .then((response) => response.json())
     .then((data) => {
-      let selectHTML = "";
-      let selectedTag = "";
-
       data.forEach(function (value, key) {
-        let name = value.name;
-        if (value.id == selectedOption) {
-          selectHTML += `<option selected  class="modal-select" data-id="${value.id}"  value="${value.id}">${name}</option>`;
-        } else {
-          selectHTML += `<option class="modal-select" data-id="${value.id}"  value="${value.id}">${name}</option>`;
-        }
+        new selectOption(
+          "modal-select input-130",
+          value.id,
+          value.id,
+          value.name,
+          selected
+        ).appendTo(select);
       });
-      select.innerHTML = selectHTML;
     });
 }
 
+// создание пустых строчек договоров
 function createInputContract() {
-  document
-    .querySelector(".contract_add")
-    .addEventListener("click", function () {
-      const contract_add = document.querySelectorAll(".contract_add");
+  const contractWrapper = document.getElementById("modal_contract_wrapper");
+  let divWrapper = document.createElement("div");
+  divWrapper.className = "modal_add_contract";
+  contractWrapper.append(divWrapper);
 
-      var contractInput = document
-        .querySelector(".modal_add_contract")
-        .cloneNode();
-      contractInput.innerHTML = document.querySelector(
-        ".modal_add_contract"
-      ).innerHTML;
+  let select = document.createElement("select");
+  select.className = "modal-service_type choice";
+  divWrapper.append(select);
+  addService(select);
+  new Input(
+    "text",
+    "modal-client_contract-input input-200",
+    "",
+    "Номер договора"
 
-      document.querySelector(".modal-client").appendChild(contractInput);
-      contractInput = document.querySelector(".modal_add_contract").cloneNode();
-      contractInput.innerHTML = document.querySelector(
-        ".modal_add_contract"
-      ).innerHTML;
-    });
+  ).appendTo(divWrapper);
+  new Input(
+    "date",
+    "modal-client_contract-input input-130",
+    "",
+    "Подписан"
+
+  ).appendTo(divWrapper);
+  new Input(
+    "number",
+    "modal-client_contract-input input-130",
+    "",
+    "Сумма"
+
+  ).appendTo(divWrapper);
+  new Input("hidden", " 1").appendTo(divWrapper);
+
+  let button = document.createElement("button");
+  button.className = "modal_add_contract_btn";
+  button.innerHTML = "OK";
+  divWrapper.append(button);
+  choiceColor()
+
+  button.addEventListener("click", () => {
+    button.remove()
+    createInputContract()
+  })
 }
 
-function addNewClient(endpointClient,endpointContact,endpointContractAll,optionsMethod,clientId) {
+function addNewClient(
+  endpointClient,
+  endpointContact,
+  endpointContractAll,
+  optionsMethod,
+  clientId
+) {
   const add_contract = document.querySelector(".client_contract_add");
 
   add_contract.addEventListener("click", () => {
@@ -97,27 +146,26 @@ function addNewClient(endpointClient,endpointContact,endpointContractAll,options
       manegeSelect.options[manegeSelect.selectedIndex].getAttribute("data-id");
     let clientObj = {
       client_name: clientName,
-      
     };
-    if(clientId != undefined){
-      clientObj['id'] = clientId
+    if (clientId != undefined) {
+      clientObj["id"] = clientId;
     }
-    console.log()
+
     let data = JSON.stringify(clientObj);
 
-    function getCookie(name) {
-      let matches = document.cookie.match(
-        new RegExp(
-          "(?:^|; )" +
-            name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-            "=([^;]*)"
-        )
-      );
-      return matches ? decodeURIComponent(matches[1]) : undefined;
-    }
+    // function getCookie(name) {
+    //   let matches = document.cookie.match(
+    //     new RegExp(
+    //       "(?:^|; )" +
+    //         name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+    //         "=([^;]*)"
+    //     )
+    //   );
+    //   return matches ? decodeURIComponent(matches[1]) : undefined;
+    // }
 
     let csrfToken = getCookie("csrftoken");
-    console.log(optionsMethod)
+
     fetch(endpointClient, {
       method: optionsMethod,
       body: data,
@@ -131,37 +179,33 @@ function addNewClient(endpointClient,endpointContact,endpointContractAll,options
       .then((response) => {
         clientId = response.id;
         const contractArr = document.querySelectorAll(".modal_add_contract");
+
         let arrContractAll = [];
-        let contractId
+        let contractId;
         contractArr.forEach((element) => {
-          let contract_child = element.childNodes;
-       
-          const contract_name = contract_child[3].value;
-          
-          const type_servise = contract_child[1];
+          let contractChild = element.childNodes;
+          let contractName = contractChild[1].value
+          const type_servise = contractChild[0];
           var servise =
             type_servise.options[type_servise.selectedIndex].getAttribute(
               "data-id"
             );
-          const data = contract_child[5].value;
-          const contractSum = contract_child[7].value;
+          const data = contractChild[2].value;
+          const contractSum = contractChild[3].value;
 
           const contractObj = {
             client: clientId,
-            contract_number: contract_name,
+            contract_number: contractName,
             date_start: data,
             service: servise,
             manager: managerProject,
             contract_sum: contractSum,
           };
 
-          
-          
-          if (contract_child[9]){
-            contractId = contract_child[9].value;
-             contractObj['contract_id'] = contractId
+          if (contractChild[4]) {
+            contractId = contractChild[4].value;
+            contractObj["contract_id"] = contractId;
           }
-          
           arrContractAll.push(contractObj);
         });
         let endpointTwo;
@@ -170,11 +214,10 @@ function addNewClient(endpointClient,endpointContact,endpointContractAll,options
           endpointTwo = endpointContractAll;
           data = JSON.stringify(arrContractAll);
         } else {
-          endpointTwo = endpointContact + contractId +"/";
+          endpointTwo = endpointContact;
           objContractAll = arrContractAll[0];
           data = JSON.stringify(objContractAll);
         }
-        
         fetch(endpointTwo, {
           method: optionsMethod,
           body: data,
@@ -186,28 +229,35 @@ function addNewClient(endpointClient,endpointContact,endpointContractAll,options
       });
   });
 }
-
+// модалка обновления клиента контракта
 const updInfo = document.querySelectorAll(".upd_info");
 updInfo.forEach((element) => {
   element.addEventListener("click", () => {
     // const modalWindows = document.querySelector(".modal");
     let elem = element.getAttribute("data-name");
     let clientName = element.getAttribute("data-client-name");
-    
+
     modal(elem);
     updClientContract(element, clientName);
-    createInputContract();
-   
+
+
     const idClient = element.getAttribute("data-client-id");
-    const endpointClient = "/clients/api/client/" +idClient+"/";
-    const endpointContact = "/clients/api/contract/"
+    const endpointClient = "/clients/api/client/" + idClient + "/";
+    const endpointContact = "/clients/api/contract/";
+    //  + contractId + "/"
     const endpointContractAll = "/clients/api/contract/create_contracts/";
-    const optionsMethod = "PUT"
-   
-    addNewClient(endpointClient,endpointContact,endpointContractAll,optionsMethod,idClient)
+    const optionsMethod = "PUT";
+
+    addNewClient(
+      endpointClient,
+      endpointContact,
+      endpointContractAll,
+      optionsMethod,
+      idClient
+    );
   });
 });
-
+//забрать имя клиента 
 function updClientContract(element, clientName) {
   const titleModal = document.querySelector(".modal-client_title");
   titleModal.innerHTML = "изменить клиента";
@@ -215,9 +265,9 @@ function updClientContract(element, clientName) {
   getContracts(idClient);
   const clientNameInput = document.querySelector(".modal-client_name");
   clientNameInput.value = clientName;
-
 }
 
+//получить контракты по имени клиента
 function getContracts(idClient) {
   const endpoint = "/clients/api/contract/" + idClient + "/contract_li/";
   fetch(endpoint, {
@@ -225,51 +275,106 @@ function getContracts(idClient) {
   })
     .then((response) => response.json())
     .then((data) => {
-      let contaractHTML = "";
-      const contractWrapper = document.querySelector(
-        ".modal_add_contract_wrapper"
-      );
 
-      let manager;
+      const contractWrapper = document.getElementById("modal_contract_wrapper");
+
+
       data.forEach((el) => {
+        // запись менеджера
         manager = el.manager;
+        addManager(manager);
 
-        contaractHTML += `
-        <div class="modal_add_contract">
-        <select data-selected="${el.service}" class="modal-service_type"></select>
-        <input
-          class="modal-client_contract-name"
-          type="text"
-          placeholder="Номер договора"
-          value="${el.contract_number}"
-        />
-        <input
-          class="modal-client_contract-date"
-          type="date"
-          placeholder="Подписан"
-          value="${el.date_start}"
-        />
-        <input
-          class="modal-client_contract-sum"
-          type="number"
-          placeholder="Сумма"
-          value="${el.contract_sum}"
-        />
-        <input
-          type="hidden"
-          value="${el.id}"
-        />
-      </div>`;
+
+        let divWrapper = document.createElement("div");
+        divWrapper.className = "modal_add_contract";
+        contractWrapper.append(divWrapper);
+
+        //запись услуг
+        let select = document.createElement("select");
+        select.className = "modal-service_type";
+        divWrapper.append(select);
+        addService(select, el.service);
+
+
+        new Input(
+          "text",
+          "modal-client_contract-input",
+          el.contract_number,
+          "Номер договора"
+        ).appendTo(divWrapper);
+        new Input(
+          "date",
+          "modal-client_contract-input",
+          el.date_start,
+          "Подписан"
+        ).appendTo(divWrapper);
+        new Input(
+          "number",
+          "modal-client_contract-input",
+          el.contract_sum,
+          "Сумма"
+        ).appendTo(divWrapper);
+        new Input("hidden", " ", el.id, "").appendTo(divWrapper);
+
+
+
       });
-      contractWrapper.innerHTML = contaractHTML;
-      const serviceName = document.querySelectorAll(".modal_add_contract");
 
-      serviceName.forEach((elem) => {
-        let elemSelect = elem.querySelector(".modal-service_type");
-        const selected = elemSelect.getAttribute("data-selected");
-        addService(elemSelect, selected);
-      });
+      createInputContract();
 
-      addManager(manager);
     });
 }
+
+// класс конструктор инпутов
+class Input {
+  constructor(type, className, value, placeholder) {
+    this.elem = document.createElement("input");
+    if (type) this.elem.type = type;
+    if (className) this.elem.className = className;
+    if (value) this.elem.value = value;
+    if (placeholder) this.elem.placeholder = placeholder
+  }
+
+  appendTo(parent) {
+    parent.append(this.elem);
+  }
+}
+// класс конструктор оптион в селектах
+class selectOption {
+  constructor(className, value, id, text, selected, disabled) {
+    this.elem = document.createElement("option");
+    if (className) this.elem.className = className;
+    if (value) this.elem.value = value;
+    if (id) this.elem.setAttribute("data-id", id);
+    if (text) this.elem.innerHTML = text;
+    if (selected == id) this.elem.selected = true;
+    if (disabled == true) this.elem.disabled = true;
+
+  }
+
+  appendTo(parent) {
+    parent.append(this.elem);
+  }
+}
+
+function choiceColor() {
+  let choice = document.querySelectorAll(".choice")
+  choice.forEach((element) => {
+    const selectedValue = element.value;
+    if (element.value == 0) {
+      console.log(1)
+      element.classList.add("empty")
+    }
+    else
+      (element.classList.remove("empty"))
+    element.addEventListener("change", (event) => {
+      if (element.value == 0) {
+        console.log(1)
+        element.classList.add("empty")
+      }
+      else
+        (element.classList.remove("empty"))
+    })
+  })
+}
+

@@ -1,0 +1,60 @@
+<header class="header">
+  <nav>
+    <ul class="header_nav">
+      <li class="header_nav-link">
+        {% url 'core:home' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Услуги</span> 
+        {% else %}
+        <a class="" href="{% url 'core:home' %}" >Услуги</a
+        >
+        {% endif %} 
+      </li>
+      <li class="header_nav-link">
+        {% url 'core:home' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Внешние счета</span> 
+        {% else %}
+        <a class="" href="{% url 'core:home' %}" >Внешние счета</a
+        >
+        {% endif %} 
+      </li>
+      <li class="header_nav-link">
+        {% url 'core:home' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Внутренние счета</span> 
+        {% else %}
+        <a class="" href="{% url 'core:home' %}" >Внутренние счета</a
+        >
+        {% endif %} 
+      </li>
+      <li class="header_nav-link">
+        {% url 'core:home' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Хранилище</span> 
+        {% else %}
+        <a class="" href="{% url 'core:home' %}" >Хранилище</a
+        >
+        {% endif %} 
+      </li>
+      <li class="header_nav-link">
+        {% url 'clients:client' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Клиенты</span> 
+        {% else %}
+        <a class="" href="{% url 'clients:client' %}" >Клиенты</a
+        >
+        {% endif %} 
+      </li>
+     <li class="header_nav-link">
+        {% url 'core:home' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Сотрудники</span> 
+        {% else %}
+        <a class="" href="{% url 'core:home' %}" >Сотрудники</a
+        >
+        {% endif %} 
+      </li>
+    </ul>
+  </nav>
+</header>

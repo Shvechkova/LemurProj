@@ -50,7 +50,6 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "dyugaev.beget.tech"]
 INSTALLED_APPS = [
     "apps.employee.apps.EmployeeConfig",
     "apps.operation.apps.OperationConfig",
-    "apps.bank.apps.BankConfig",
     "apps.core.apps.CoreConfig",
     "apps.service.apps.ServiceConfig",
     "apps.client.apps.ClientConfig",
