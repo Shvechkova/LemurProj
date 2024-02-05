@@ -9,7 +9,7 @@ modal_button.forEach((element) => {
 
     addManager();
     createInputContract();
-    choiceColor()
+    choiceColor();
     const endpointClient = "/clients/api/client/";
     const endpointContact = "/clients/api/contract/";
     const endpointContractAll = "/clients/api/contract/create_contracts/";
@@ -25,18 +25,11 @@ modal_button.forEach((element) => {
 });
 // менеджеры из базы
 function addManager(selected) {
-
   const endpoint = "/clients/api/client/manager_list/";
   const select = document.querySelector(".modal-manager_client");
-  new selectOption(
-    "modal-select empty",
-    "0",
-    '',
-    "Менеджер",
-    true,
-
-
-  ).appendTo(select);
+  new selectOption("modal-select empty", "0", "", "Менеджер", true).appendTo(
+    select
+  );
 
   fetch(endpoint, {
     method: "get",
@@ -51,20 +44,13 @@ function addManager(selected) {
           value.last_name,
           selected
         ).appendTo(select);
-
-
       });
     });
 }
 // сервисы из базы
 function addService(selectInput, selected) {
   const select = selectInput;
-  new selectOption(
-    "modal-select",
-    "0",
-    '',
-    "Услуга"
-  ).appendTo(select);
+  new selectOption("modal-select", "0", "", "Услуга").appendTo(select);
   const instance = "/service/service_category/";
 
   fetch(instance, {
@@ -100,21 +86,18 @@ function createInputContract() {
     "modal-client_contract-input input-200",
     "",
     "Номер договора"
-
   ).appendTo(divWrapper);
   new Input(
     "date",
     "modal-client_contract-input input-130",
     "",
     "Подписан"
-
   ).appendTo(divWrapper);
   new Input(
     "number",
     "modal-client_contract-input input-130",
     "",
     "Сумма"
-
   ).appendTo(divWrapper);
   new Input("hidden", " 1").appendTo(divWrapper);
 
@@ -122,12 +105,12 @@ function createInputContract() {
   button.className = "modal_add_contract_btn";
   button.innerHTML = "OK";
   divWrapper.append(button);
-  choiceColor()
+  choiceColor();
 
   button.addEventListener("click", () => {
-    button.remove()
-    createInputContract()
-  })
+    button.remove();
+    createInputContract();
+  });
 }
 
 function addNewClient(
@@ -152,18 +135,16 @@ function addNewClient(
     }
 
     let data = JSON.stringify(clientObj);
-
-    // function getCookie(name) {
-    //   let matches = document.cookie.match(
-    //     new RegExp(
-    //       "(?:^|; )" +
-    //         name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-    //         "=([^;]*)"
-    //     )
-    //   );
-    //   return matches ? decodeURIComponent(matches[1]) : undefined;
-    // }
-
+    function getCookie(name) {
+      let matches = document.cookie.match(
+        new RegExp(
+          "(?:^|; )" +
+            name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+            "=([^;]*)"
+        )
+      );
+      return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
     let csrfToken = getCookie("csrftoken");
 
     fetch(endpointClient, {
@@ -184,37 +165,51 @@ function addNewClient(
         let contractId;
         contractArr.forEach((element) => {
           let contractChild = element.childNodes;
-          let contractName = contractChild[1].value
-          const type_servise = contractChild[0];
-          var servise =
-            type_servise.options[type_servise.selectedIndex].getAttribute(
-              "data-id"
-            );
-          const data = contractChild[2].value;
-          const contractSum = contractChild[3].value;
+          console.log(contractChild[1].value);
+          if (contractChild[1].value == "") {
+            return;
+          } else {
+            let contractName = contractChild[1].value;
+            const type_servise = contractChild[0];
+            var servise =
+              type_servise.options[type_servise.selectedIndex].getAttribute(
+                "data-id"
+              );
+            const data = contractChild[2].value;
+            const contractSum = contractChild[3].value;
 
-          const contractObj = {
-            client: clientId,
-            contract_number: contractName,
-            date_start: data,
-            service: servise,
-            manager: managerProject,
-            contract_sum: contractSum,
-          };
+            const contractObj = {
+              client: clientId,
+              contract_number: contractName,
+              date_start: data,
+              service: servise,
+              manager: managerProject,
+              contract_sum: contractSum,
+            };
 
-          if (contractChild[4]) {
-            contractId = contractChild[4].value;
-            contractObj["contract_id"] = contractId;
+            if (contractChild[4]) {
+              contractId = contractChild[4].value;
+              contractObj["id"] = contractId;
+            }
+
+            arrContractAll.push(contractObj);
           }
-          arrContractAll.push(contractObj);
+         
         });
         let endpointTwo;
+
         let data;
         if (arrContractAll.length > 1) {
           endpointTwo = endpointContractAll;
           data = JSON.stringify(arrContractAll);
         } else {
-          endpointTwo = endpointContact;
+          if (contractId != "") {
+            endpointTwo = endpointContact  + contractId + "/";
+          } else {
+            endpointTwo = endpointContact;
+            optionsMethod = "POST";
+          }
+
           objContractAll = arrContractAll[0];
           data = JSON.stringify(objContractAll);
         }
@@ -240,12 +235,11 @@ updInfo.forEach((element) => {
     modal(elem);
     updClientContract(element, clientName);
 
-
     const idClient = element.getAttribute("data-client-id");
     const endpointClient = "/clients/api/client/" + idClient + "/";
     const endpointContact = "/clients/api/contract/";
     //  + contractId + "/"
-    const endpointContractAll = "/clients/api/contract/create_contracts/";
+    const endpointContractAll = "/clients/api/contract/upd_contracts/";
     const optionsMethod = "PUT";
 
     addNewClient(
@@ -257,7 +251,7 @@ updInfo.forEach((element) => {
     );
   });
 });
-//забрать имя клиента 
+//забрать имя клиента
 function updClientContract(element, clientName) {
   const titleModal = document.querySelector(".modal-client_title");
   titleModal.innerHTML = "изменить клиента";
@@ -275,15 +269,12 @@ function getContracts(idClient) {
   })
     .then((response) => response.json())
     .then((data) => {
-
       const contractWrapper = document.getElementById("modal_contract_wrapper");
-
 
       data.forEach((el) => {
         // запись менеджера
         manager = el.manager;
         addManager(manager);
-
 
         let divWrapper = document.createElement("div");
         divWrapper.className = "modal_add_contract";
@@ -294,7 +285,6 @@ function getContracts(idClient) {
         select.className = "modal-service_type";
         divWrapper.append(select);
         addService(select, el.service);
-
 
         new Input(
           "text",
@@ -315,13 +305,9 @@ function getContracts(idClient) {
           "Сумма"
         ).appendTo(divWrapper);
         new Input("hidden", " ", el.id, "").appendTo(divWrapper);
-
-
-
       });
 
       createInputContract();
-
     });
 }
 
@@ -332,7 +318,7 @@ class Input {
     if (type) this.elem.type = type;
     if (className) this.elem.className = className;
     if (value) this.elem.value = value;
-    if (placeholder) this.elem.placeholder = placeholder
+    if (placeholder) this.elem.placeholder = placeholder;
   }
 
   appendTo(parent) {
@@ -349,32 +335,24 @@ class selectOption {
     if (text) this.elem.innerHTML = text;
     if (selected == id) this.elem.selected = true;
     if (disabled == true) this.elem.disabled = true;
-
   }
 
   appendTo(parent) {
     parent.append(this.elem);
   }
 }
-
+// смена цвета оптион на серый
 function choiceColor() {
-  let choice = document.querySelectorAll(".choice")
+  let choice = document.querySelectorAll(".choice");
   choice.forEach((element) => {
     const selectedValue = element.value;
     if (element.value == 0) {
-      console.log(1)
-      element.classList.add("empty")
-    }
-    else
-      (element.classList.remove("empty"))
+      element.classList.add("empty");
+    } else element.classList.remove("empty");
     element.addEventListener("change", (event) => {
       if (element.value == 0) {
-        console.log(1)
-        element.classList.add("empty")
-      }
-      else
-        (element.classList.remove("empty"))
-    })
-  })
+        element.classList.add("empty");
+      } else element.classList.remove("empty");
+    });
+  });
 }
-

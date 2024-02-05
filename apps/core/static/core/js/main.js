@@ -10,11 +10,11 @@ function modal(elem) {
      
   //   });
   // });
-  let modalClose = document.querySelector(".modal_close");
-  modalClose.addEventListener("click", (event) => {
-    modal_windows.classList.remove("modal-active");
-   console.log(123)
-  });
+  // let modalClose = document.querySelector(".modal_close");
+  // modalClose.addEventListener("click", (event) => {
+  //   modal_windows.classList.remove("modal-active");
+   
+  // });
 }
 // modal();
 
@@ -133,33 +133,33 @@ function getCookie(name) {
 }
 
 
-function openLoginModal() {
-  // открытие модалки
-  const modalLogin = document.getElementById("modal-login");
-  const modalBack = document.querySelector(".modal-section");
-  modalBack.classList.add("modal-section--active");
-  document.body.style.overflow = "hidden";
-  const timerId = setTimeout(() => {
-    modalLogin.classList.add("modal--active");
-  }, 200);
-  // закрытие модалки
-  let modalCloseLogin = document.querySelector(".modal-content__close__login");
-  modalCloseLogin.addEventListener("click", (event) => {
-    modalLogin.classList.remove("modal--active");
-    modalBack.classList.remove("modal-section--active");
-    document.body.style.overflow = "";
-  });
-  //закрытие по общему контейнеру
-  let modalWrapperLogin = document.querySelector(".modal-wrapper-login");
-  let modalContentWrapperLogin = document.querySelector(
-    ".modal-content-wrap-login"
-  );
-  let modalContentLogin = document.querySelector(".modal-content-login");
-  modalWrapperLogin.addEventListener("click", (event) => {
-    if (event.target == modalContentLogin || !modalContentWrapperLogin) {
-      modalLogin.classList.remove("modal--active");
-      modalBack.classList.remove("modal-section--active");
-      document.body.style.overflow = "";
-    }
-  });
-}
+// function openLoginModal() {
+//   // открытие модалки
+//   const modalLogin = document.getElementById("modal-login");
+//   const modalBack = document.querySelector(".modal-section");
+//   modalBack.classList.add("modal-section--active");
+//   document.body.style.overflow = "hidden";
+//   const timerId = setTimeout(() => {
+//     modalLogin.classList.add("modal--active");
+//   }, 200);
+//   // закрытие модалки
+//   let modalCloseLogin = document.querySelector(".modal-content__close__login");
+//   modalCloseLogin.addEventListener("click", (event) => {
+//     modalLogin.classList.remove("modal--active");
+//     modalBack.classList.remove("modal-section--active");
+//     document.body.style.overflow = "";
+//   });
+//   //закрытие по общему контейнеру
+//   let modalWrapperLogin = document.querySelector(".modal-wrapper-login");
+//   let modalContentWrapperLogin = document.querySelector(
+//     ".modal-content-wrap-login"
+//   );
+//   let modalContentLogin = document.querySelector(".modal-content-login");
+//   modalWrapperLogin.addEventListener("click", (event) => {
+//     if (event.target == modalContentLogin || !modalContentWrapperLogin) {
+//       modalLogin.classList.remove("modal--active");
+//       modalBack.classList.remove("modal-section--active");
+//       document.body.style.overflow = "";
+//     }
+//   });
+// }
