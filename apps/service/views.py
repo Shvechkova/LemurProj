@@ -30,57 +30,31 @@ def index(request):
     }
     return render(request, "service/service.html", context)
 
-class ServiceView(viewsets.ModelViewSet):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
-    
-# class BillViewSet(viewsets.ModelViewSet):
-#     queryset = Client.objects.all()
-#     serializer_class = ClientAllSerializer
-
-#     @action(detail=False, methods=["get"], url_path=r"client_list")
-#     def clientsCategory(
-#         self,
-#         request,
-#     ):
-#         clients = Client.objects.all()
-
-#         serializer = self.get_serializer(clients, many=True)
-
-#         return Response(serializer.data)
-
-
-# class CreateContract(viewsets.ModelViewSet):
-    # serializer_class = ContractSerializer
-    # queryset = AdditionalContract.objects.all()
-
-    # def create(self, request, *args, **kwargs):
+def adv_index(request):
+    month_bill_all = ServicesMonthlyBill.objects.all()
+    client = Client.objects.all()
+    title = "1"
+    context = {
+        "title": title,
+        "month_bill_all": month_bill_all,
         
-    #     data = {
-    #         "contract_number": request.POST.get("contract_number", None),
-    #         "client": request.POST.get("client", None),
-    #         "service": request.POST.get("service", None),
-    #         "contract_sum": request.POST.get("contract_sum", None),
-    #         "adv_all_sum": request.POST.get("adv_all_sum", None),
-    #     }
-    #     serializer = self.serializer_class(
-    #         data=data,
-    #     )
-    #     if serializer.is_valid():
-    #         obj = serializer.save()
-    #         bill_new = ServicesMonthlyBill.objects.create(
-    #             client_id=obj.client_id,
-    #             service_id=obj.service_id,
-    #             additional_contract=obj,
-    #         )
-    #         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-    #     else:
-    #         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+       
+    }
+    return render(request, "service/one_service.html", context)
 
+def service_one(request,tag):
+    month_bill_all = ServicesMonthlyBill.objects.all()
+    client = Client.objects.all()
+    title = "1"
+    context = {
+        "title": title,
+        "month_bill_all": month_bill_all,
+        
+       
+    }
+    return render(request, "service/one_service.html", context)
 
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+    
 
 
 # def serviced(request, slug):

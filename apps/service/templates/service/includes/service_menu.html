@@ -1,0 +1,50 @@
+
+
+<ul class="header_nav">
+    <li class="header_nav-link">
+      {% url 'service:index' as the_url %} 
+      {% if request.get_full_path == the_url %}
+      <span class="menu-active">SEO</span> 
+      {% else %}
+      <a class="" href="{% url 'service:index' %}" >SEO</a
+      >
+      {% endif %} 
+    </li>
+    <li class="header_nav-link">
+      {% url 'service:adv' as the_url %} 
+      {% if request.get_full_path == the_url %}
+      <span class="menu-active">ADV</span> 
+      {% else %}
+      <a class="" href="{% url 'service:adv' %}" >ADV</a
+      >
+      {% endif %} 
+    </li>
+    <li class="header_nav-link">
+      {% url 'core:home' as the_url %} 
+      {% if request.get_full_path == the_url %}
+      <span class="menu-active">SMM</span> 
+      {% else %}
+      <a class="" href="{% url 'core:home' %}" >SMM</a
+      >
+      {% endif %} 
+    </li>
+    <li class="header_nav-link">
+      {% url 'core:home' as the_url %} 
+      {% if request.get_full_path == the_url %}
+      <span class="menu-active">DEV</span> 
+      {% else %}
+      <a class="" href="{% url 'core:home' %}" >DEV</a
+      >
+      {% endif %} 
+    </li>
+    <li class="header_nav-link">
+      {% url 'clients:client' as the_url %} 
+      {% if request.get_full_path == the_url %}
+      <span class="menu-active">SUP</span> 
+      {% else %}
+      <a class="" href="{% url 'clients:client' %}" >SUP</a
+      >
+      {% endif %} 
+    </li>
+  
+  </ul>

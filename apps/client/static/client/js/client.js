@@ -1,10 +1,14 @@
-const modal_button = document.querySelectorAll(".open-modal");
-const modal_windows = document.querySelector(".modal");
+// const modal_button = document.querySelectorAll(".open-modal");
+const modal_add_client = document.querySelector(
+  '[data-name="modal-add-client"]'
+);
+
+// const modal_windows = document.querySelector(".modal");
 
 // модалка первичного добавления клиента и контракта
-modal_button.forEach((element) => {
-  element.addEventListener("click", () => {
-    let elem = element.getAttribute("data-name");
+if (modal_add_client) {
+  modal_add_client.addEventListener("click", () => {
+    let elem = modal_add_client.getAttribute("data-name");
     modal(elem);
 
     addManager();
@@ -22,7 +26,7 @@ modal_button.forEach((element) => {
       optionsMethod
     );
   });
-});
+}
 // менеджеры из базы
 function addManager(selected) {
   const endpoint = "/clients/api/client/manager_list/";
@@ -51,7 +55,7 @@ function addManager(selected) {
 function addService(selectInput, selected) {
   const select = selectInput;
   new selectOption("modal-select", "0", "", "Услуга").appendTo(select);
-  const instance = "/service/service_category/";
+  const instance = "/service/api/service_category/";
 
   fetch(instance, {
     method: "get",
@@ -194,7 +198,6 @@ function addNewClient(
 
             arrContractAll.push(contractObj);
           }
-         
         });
         let endpointTwo;
 
@@ -204,7 +207,7 @@ function addNewClient(
           data = JSON.stringify(arrContractAll);
         } else {
           if (contractId != "") {
-            endpointTwo = endpointContact  + contractId + "/";
+            endpointTwo = endpointContact + contractId + "/";
           } else {
             endpointTwo = endpointContact;
             optionsMethod = "POST";
@@ -311,48 +314,48 @@ function getContracts(idClient) {
     });
 }
 
-// класс конструктор инпутов
-class Input {
-  constructor(type, className, value, placeholder) {
-    this.elem = document.createElement("input");
-    if (type) this.elem.type = type;
-    if (className) this.elem.className = className;
-    if (value) this.elem.value = value;
-    if (placeholder) this.elem.placeholder = placeholder;
-  }
+// // класс конструктор инпутов
+// class Input {
+//   constructor(type, className, value, placeholder) {
+//     this.elem = document.createElement("input");
+//     if (type) this.elem.type = type;
+//     if (className) this.elem.className = className;
+//     if (value) this.elem.value = value;
+//     if (placeholder) this.elem.placeholder = placeholder;
+//   }
 
-  appendTo(parent) {
-    parent.append(this.elem);
-  }
-}
-// класс конструктор оптион в селектах
-class selectOption {
-  constructor(className, value, id, text, selected, disabled) {
-    this.elem = document.createElement("option");
-    if (className) this.elem.className = className;
-    if (value) this.elem.value = value;
-    if (id) this.elem.setAttribute("data-id", id);
-    if (text) this.elem.innerHTML = text;
-    if (selected == id) this.elem.selected = true;
-    if (disabled == true) this.elem.disabled = true;
-  }
+//   appendTo(parent) {
+//     parent.append(this.elem);
+//   }
+// }
+// // класс конструктор оптион в селектах
+// class selectOption {
+//   constructor(className, value, id, text, selected, disabled) {
+//     this.elem = document.createElement("option");
+//     if (className) this.elem.className = className;
+//     if (value) this.elem.value = value;
+//     if (id) this.elem.setAttribute("data-id", id);
+//     if (text) this.elem.innerHTML = text;
+//     if (selected == id) this.elem.selected = true;
+//     if (disabled == true) this.elem.disabled = true;
+//   }
 
-  appendTo(parent) {
-    parent.append(this.elem);
-  }
-}
-// смена цвета оптион на серый
-function choiceColor() {
-  let choice = document.querySelectorAll(".choice");
-  choice.forEach((element) => {
-    const selectedValue = element.value;
-    if (element.value == 0) {
-      element.classList.add("empty");
-    } else element.classList.remove("empty");
-    element.addEventListener("change", (event) => {
-      if (element.value == 0) {
-        element.classList.add("empty");
-      } else element.classList.remove("empty");
-    });
-  });
-}
+//   appendTo(parent) {
+//     parent.append(this.elem);
+//   }
+// }
+// // смена цвета оптион на серый
+// function choiceColor() {
+//   let choice = document.querySelectorAll(".choice");
+//   choice.forEach((element) => {
+//     const selectedValue = element.value;
+//     if (element.value == 0) {
+//       element.classList.add("empty");
+//     } else element.classList.remove("empty");
+//     element.addEventListener("change", (event) => {
+//       if (element.value == 0) {
+//         element.classList.add("empty");
+//       } else element.classList.remove("empty");
+//     });
+//   });
+// }

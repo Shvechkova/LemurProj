@@ -1,6 +1,7 @@
 
 function modal(elem) {
   const modal_windows = document.getElementById(elem);
+  console.log(modal_windows)
   modal_windows.classList.add("modal-active");
   // const modal_button = document.querySelectorAll(".open-modal");
   // const modal_windows = document.querySelector(".modal");
@@ -10,11 +11,11 @@ function modal(elem) {
      
   //   });
   // });
-  // let modalClose = document.querySelector(".modal_close");
-  // modalClose.addEventListener("click", (event) => {
-  //   modal_windows.classList.remove("modal-active");
+  let modalClose = document.querySelector(".modal_close");
+  modalClose.addEventListener("click", (event) => {
+    modal_windows.classList.remove("modal-active");
    
-  // });
+  });
 }
 // modal();
 
@@ -163,3 +164,49 @@ function getCookie(name) {
 //     }
 //   });
 // }
+
+// класс конструктор инпутов
+class Input {
+  constructor(type, className, value, placeholder) {
+    this.elem = document.createElement("input");
+    if (type) this.elem.type = type;
+    if (className) this.elem.className = className;
+    if (value) this.elem.value = value;
+    if (placeholder) this.elem.placeholder = placeholder;
+  }
+
+  appendTo(parent) {
+    parent.append(this.elem);
+  }
+}
+// класс конструктор оптион в селектах
+class selectOption {
+  constructor(className, value, id, text, selected, disabled) {
+    this.elem = document.createElement("option");
+    if (className) this.elem.className = className;
+    if (value) this.elem.value = value;
+    if (id) this.elem.setAttribute("data-id", id);
+    if (text) this.elem.innerHTML = text;
+    if (selected == id) this.elem.selected = true;
+    if (disabled == true) this.elem.disabled = true;
+  }
+
+  appendTo(parent) {
+    parent.append(this.elem);
+  }
+}
+// смена цвета оптион на серый
+function choiceColor() {
+  let choice = document.querySelectorAll(".choice");
+  choice.forEach((element) => {
+    const selectedValue = element.value;
+    if (element.value == 0) {
+      element.classList.add("empty");
+    } else element.classList.remove("empty");
+    element.addEventListener("change", (event) => {
+      if (element.value == 0) {
+        element.classList.add("empty");
+      } else element.classList.remove("empty");
+    });
+  });
+}

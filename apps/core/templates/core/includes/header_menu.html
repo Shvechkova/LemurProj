@@ -2,11 +2,11 @@
   <nav>
     <ul class="header_nav">
       <li class="header_nav-link">
-        {% url 'core:home' as the_url %} 
+        {% url 'service:index' as the_url %} 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Услуги</span> 
         {% else %}
-        <a class="" href="{% url 'core:home' %}" >Услуги</a
+        <a class="" href="{% url 'service:index' %}" >Услуги</a
         >
         {% endif %} 
       </li>

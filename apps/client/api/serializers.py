@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.client.models import Client, Contract
+from apps.client.models import AdditionalContract, Client, Contract
 from apps.employee.models import Employee
 
 
@@ -20,4 +20,11 @@ class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = "__all__"
+        
+        
+class AdditionalContractSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdditionalContract
+        fields = "__all__"
+           
    
