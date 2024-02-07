@@ -37,6 +37,22 @@ h3 {
   line-height: normal;
 }
 
+button {
+  cursor: pointer;
+}
+
+.df {
+  display: flex;
+}
+
+.di {
+  display: inline;
+}
+
+.border {
+  border: 1px solid #000;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -270,4 +286,91 @@ input[type="date"]:before {
 
 .service_title {
   width: 121px;
+}
+
+.button_black {
+  border: 1px solid #000;
+  border-radius: 5px;
+  color: #fff;
+  padding: 10px 19px;
+  background-color: #000;
+}
+
+.client_client_meneger {
+  display: flex;
+  width: 350px;
+  align-items: center;
+}
+
+.client_contract {
+  display: flex;
+}
+
+.client_table {
+  display: flex;
+
+  margin-top: 33px;
+}
+
+.client_client_meneger_client-name {
+  width: 170px;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-right: 42px;
+}
+
+.client_client_meneger_manager {
+  width: 170px;
+  overflow: hidden;
+  margin-right: 42px;
+}
+
+.client_contract_service {
+  width: 80px;
+  margin-right: 72px;
+}
+
+.client_contract_contract_name {
+  width: 180px;
+  overflow: hidden;
+  margin-right: 42px;
+  white-space: nowrap;
+}
+
+.client_contract_data {
+  width: 150px;
+  overflow: hidden;
+  margin-right: 42px;
+}
+
+.client_contract_sum {
+  width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-right: 42px;
+}
+
+.change_btn {
+  border: 1px solid #000;
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  background-color: #000;
+
+
+}
+
+.modal-add-client {}
+
+.clients {
+  margin-top: 125px;
+}
+
+.clients_wrapper {
+ 
+}
+
+.clients_item_wrapp{
+display: flex;flex-direction: column;
+width: auto;
 }

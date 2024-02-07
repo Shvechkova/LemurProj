@@ -156,3 +156,10 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+USE_L10N = True
+DECIMAL_SEPARATOR = '.'
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = ' '
+NUMBER_GROUPING = 3

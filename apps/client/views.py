@@ -19,10 +19,12 @@ from rest_framework.response import Response
 
 def clients(request):
     clients = Client.objects.all()
+    contracts = Contract.objects.all()
 
     title = "Клиенты"
     context = {
         "clients": clients,
+        "contracts": contracts,
         "title": title,
     }
     return render(request, "client/index.html", context)
