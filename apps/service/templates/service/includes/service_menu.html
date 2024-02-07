@@ -1,50 +1,53 @@
+{% comment %} {% for c in service %}
 
+<li><a href="{% url 'service:service_one' c.name %}">{{c.name}}</a></li>
+
+{% endfor %} {% endcomment %} {% comment %} {% url 'service:service_one' as
+the_url %} {% endcomment %}
 
 <ul class="header_nav">
-    <li class="header_nav-link">
-      {% url 'service:index' as the_url %} 
-      {% if request.get_full_path == the_url %}
-      <span class="menu-active">SEO</span> 
-      {% else %}
-      <a class="" href="{% url 'service:index' %}" >SEO</a
-      >
-      {% endif %} 
-    </li>
-    <li class="header_nav-link">
-      {% url 'service:adv' as the_url %} 
-      {% if request.get_full_path == the_url %}
-      <span class="menu-active">ADV</span> 
-      {% else %}
-      <a class="" href="{% url 'service:adv' %}" >ADV</a
-      >
-      {% endif %} 
-    </li>
-    <li class="header_nav-link">
-      {% url 'core:home' as the_url %} 
-      {% if request.get_full_path == the_url %}
-      <span class="menu-active">SMM</span> 
-      {% else %}
-      <a class="" href="{% url 'core:home' %}" >SMM</a
-      >
-      {% endif %} 
-    </li>
-    <li class="header_nav-link">
-      {% url 'core:home' as the_url %} 
-      {% if request.get_full_path == the_url %}
-      <span class="menu-active">DEV</span> 
-      {% else %}
-      <a class="" href="{% url 'core:home' %}" >DEV</a
-      >
-      {% endif %} 
-    </li>
-    <li class="header_nav-link">
-      {% url 'clients:client' as the_url %} 
-      {% if request.get_full_path == the_url %}
-      <span class="menu-active">SUP</span> 
-      {% else %}
-      <a class="" href="{% url 'clients:client' %}" >SUP</a
-      >
-      {% endif %} 
-    </li>
+  {% for c in service %}
+  <li class="header_nav-link">
+    {% url 'service:service_one' c.name as the_url %} 
+    <p>{{the_url}}</p>
   
-  </ul>
+    {% if request.path == the_url  %}
+    <span class="menu-active">{{ c.name }}</span>
+
+    {% else %}
+
+    <a class="" href="{% url 'service:service_one' c.name %}">{{ c.name }}</a>
+    {% endif %}
+  </li>
+  {% comment %}
+  <li class="header_nav-link">
+    {% url 'service:adv' as the_url %} {% if request.get_full_path == the_url %}
+    <span class="menu-active">ADV</span>
+    {% else %}
+    <a class="" href="{% url 'service:adv' %}">ADV</a>
+    {% endif %}
+  </li>
+  <li class="header_nav-link">
+    {% url 'core:home' as the_url %} {% if request.get_full_path == the_url %}
+    <span class="menu-active">SMM</span>
+    {% else %}
+    <a class="" href="{% url 'core:home' %}">SMM</a>
+    {% endif %}
+  </li>
+  <li class="header_nav-link">
+    {% url 'core:home' as the_url %} {% if request.get_full_path == the_url %}
+    <span class="menu-active">DEV</span>
+    {% else %}
+    <a class="" href="{% url 'core:home' %}">DEV</a>
+    {% endif %}
+  </li>
+  <li class="header_nav-link">
+    {% url 'clients:client' as the_url %} {% if request.get_full_path == the_url
+    %}
+    <span class="menu-active">SUP</span>
+    {% else %}
+    <a class="" href="{% url 'clients:client' %}">SUP</a>
+    {% endif %}
+  </li>
+  {% endcomment %} {% endfor %}
+</ul>

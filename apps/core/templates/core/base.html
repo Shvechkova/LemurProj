@@ -1,4 +1,5 @@
-{% load category_service %}
+{% load category_service %} 
+{% load adv_diff %} 
 {% load static %} 
 
 <!DOCTYPE html>
@@ -19,14 +20,20 @@
       rel="stylesheet"
     />
 
-    <title>1</title>
+    <title>111111</title>
   </head>
 
   <body>
     <div class="wrapper">
+
       {% include "core/includes/header_menu.html" %}
 
-      <main class="main">{% block content %}{% endblock content %}</main>
+      <main class="main">
+        {% block content %}
+      
+        
+        
+        {% endblock content %}</main>
 
       <footer class="footer"></footer>
     </div>

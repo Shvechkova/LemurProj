@@ -1,6 +1,13 @@
+from ctypes import cast
+import datetime
+from itertools import groupby
+from math import sumprod
+from django.forms import DateField
 from rest_framework.decorators import action
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth
 # from apps import service
 
 
@@ -30,25 +37,34 @@ def index(request):
     }
     return render(request, "service/service.html", context)
 
-def adv_index(request):
+def service_one(request,slug):
     month_bill_all = ServicesMonthlyBill.objects.all()
-    client = Client.objects.all()
-    title = "1"
-    context = {
-        "title": title,
-        "month_bill_all": month_bill_all,
+    category_service = Service.objects.get(name=slug)
+    client = Client.objects.filter(contract__service=category_service.id)
+    
+    ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service)
+    
+    total_income = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__contract_sum'))
+    
+    
+    total_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+    
+    suncontr_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
         
-       
-    }
-    return render(request, "service/one_service.html", context)
-
-def service_one(request,tag):
-    month_bill_all = ServicesMonthlyBill.objects.all()
-    client = Client.objects.all()
-    title = "1"
+        
+        
+        
+        
+    title = category_service.id
     context = {
         "title": title,
+        "client": client,
         "month_bill_all": month_bill_all,
+        "category_service": category_service,
+        "ordered_bill": ordered_bill,
+        'total_income': total_income,
+        'total_adv': total_adv,
+        
         
        
     }
@@ -97,10 +113,12 @@ def service_one(request,tag):
 #     return render(request, "service/one_servis.html", context)
 
 
-def serviced(request, slug):
-    title = "Одна услуга"
-    context = {
-        "title": slug,
-    }
+# def serviced(request, slug):
+    
+#     title = "Одна услуга"
+#     context = {
+#         "title": slug,
+#         'request':request,
+#     }
 
-    return render(request, "service/one_servis.html", context)
+#     return render(request, "service/one_servis.html", context)

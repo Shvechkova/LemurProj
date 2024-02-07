@@ -84,6 +84,14 @@ class SubcontractMonth(models.Model):
         blank=True,
         null=True,
     )
+    
+    other = models.ForeignKey(
+        "SubcontractOther",
+        verbose_name="Тип субподряда",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"

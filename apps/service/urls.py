@@ -16,9 +16,12 @@ router.register(r"api/month_bill", view_sets.ServicesMonthlyBillView)
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("ADV", views.adv_index, name="adv"),
-    path("<int:client_id>", views.service_one, name="service_one"),
+    # path("ADV", views.adv_index, name="adv"),
+    # path("<int:client_id>", views.service_one, name="service_one"),
     path("", include(router.urls)),
+    path("<slug:slug>", views.service_one, name="service_one"),
     # path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 # <int:client_id>/<slug:slug>
+
+# path("<int:client_id>/<slug:slug>", views.addContract, name="contract"),

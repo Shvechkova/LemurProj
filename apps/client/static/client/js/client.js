@@ -52,7 +52,7 @@ function addManager(selected) {
     });
 }
 // сервисы из базы
-function addService(selectInput, selected) {
+function addService(selectInput, selected,instans) {
   const select = selectInput;
   new selectOption("modal-select", "0", "", "Услуга").appendTo(select);
   const instance = "/service/api/service_category/";

@@ -1,0 +1,82 @@
+<div id="modal-add-subcontract" class="modal">
+  <div class="modal-wrapper">
+    <div class="modal-items">
+      <div class="modal_close">+</div>
+      <div class="modal-items-wrap">
+        <h3>Распределение бюджета:</h3>
+        <p></p>
+        <div class="">
+          <p class="add-subcontract_client-name"></p>
+          <p class="add-subcontract_contract-name"></p>
+          <p class="add-subcontract_data"></p>
+        </div>
+
+        <div class="modal_contract">
+          <div id="modal_contract_wrapper" class="modal_add_contract_wrapper">
+            <div class="modal_add_contract">
+              <select name="modal-subcontract-type choice ">
+                <option disabled selected class="modal-select empty" value="0">
+                  Тип
+                </option>
+                <option class="modal-select" value="1">площадка</option>
+                <option class="modal-select" value="2">премия</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="client_contract_add">Сохранить</button>
+
+        {% comment %}
+        <form id="month_bill" class="month_bill">
+          <label for="client">Клиент</label>
+          <select
+            name="client"
+            required
+            id="client"
+            class="modal-client choice"
+          >
+            <option selected disabled class="modal-select empty" value="0">
+              Клиент
+            </option>
+          </select>
+          <label for="contract_main">Контракт</label>
+          <select
+            name="main_contract"
+            required
+            id="contract_main"
+            class="modal-client_main-contract choice empty"
+          >
+            <option selected disabled class="modal-select" value="0">
+              Контракт
+            </option>
+          </select>
+          <label for="contract_sum">Счёт</label>
+          <input
+            required
+            id="contract_sum"
+            class="modal-contract_sum"
+            type="number"
+            placeholder="Сумма"
+            value=""
+            name="contract_sum"
+          />
+          <label for="adv_all_sum">Ведение</label>
+          <input
+            name="adv_all_sum"
+            required
+            id="adv_all_sum"
+            class="modal-adv_all_sum"
+            type="number"
+            placeholder="Сумма"
+            value=""
+          />
+
+          <button type="button" class="client_additional-contract_add">
+            OK
+          </button>
+        </form>
+        {% endcomment %}
+      </div>
+    </div>
+  </div>
+</div>
