@@ -374,3 +374,42 @@ input[type="date"]:before {
 display: flex;flex-direction: column;
 width: auto;
 }
+.bill-month_category-title{
+  display: flex;
+  padding-top: 21px;
+}
+
+.bill_w-120{
+  width: 120px;
+  margin-top: 33px;
+   overflow: hidden;
+}
+.bill-month_item-wrapper{
+  display: flex;
+  align-items: flex-end;
+ 
+  white-space: nowrap;
+}
+.bill_month-title{
+  margin-top: 66px;
+  
+}
+.bill-month_result_sum{
+  display: flex;
+}
+
+.bill-month-client-counter {
+  width: 50px;
+}
+.suborder-bg{
+  background-color: #F4F4F4;
+  display: flex;
+  /* border-radius: 25px; */
+}
+.suborder_title-bg{
+  background-color: #F4F4F4;
+  /* border-top-left-radius:25px ;
+  border-top-right-radius:25px; */
+
+  /* border-radius: 25px; */
+}

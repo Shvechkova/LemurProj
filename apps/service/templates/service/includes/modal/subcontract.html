@@ -3,8 +3,12 @@
     <div class="modal-items">
       <div class="modal_close">+</div>
       <div class="modal-items-wrap">
-        <h3>Распределение бюджета:</h3>
-        <p></p>
+        <div class="modal_adv_buget">
+           <h3>Распределение бюджета:</h3>
+           <p class="modal_adv_budget_all"></p>
+           <p class="modal_adv_budget_not_use"></p>
+        </div>
+    
         <div class="">
           <p class="add-subcontract_client-name"></p>
           <p class="add-subcontract_contract-name"></p>
@@ -12,19 +16,19 @@
         </div>
 
         <div class="modal_contract">
-          <div id="modal_contract_wrapper" class="modal_add_contract_wrapper">
-            <div class="modal_add_contract">
-              <select name="modal-subcontract-type choice ">
+          <div id="modal_contract_wrapper" class="modal_add_subcontract_wrapper">
+            <div class="modal_add_contract modal_add-subcontract">
+              <select class="modal-subcontract-type choice">
                 <option disabled selected class="modal-select empty" value="0">
                   Тип
                 </option>
-                <option class="modal-select" value="1">площадка</option>
-                <option class="modal-select" value="2">премия</option>
+                <option class="modal-select" value="adv">площадка</option>
+                <option class="modal-select" value="other">премия</option>
               </select>
             </div>
           </div>
         </div>
-        <button class="client_contract_add">Сохранить</button>
+        <button class="subcontarct_add button_black">Сохранить</button>
 
         {% comment %}
         <form id="month_bill" class="month_bill">

@@ -178,6 +178,10 @@ class Input {
   appendTo(parent) {
     parent.append(this.elem);
   }
+  
+  afterTo(parent) {
+    parent.after(this.elem);
+  }
 }
 // класс конструктор оптион в селектах
 class selectOption {
@@ -194,6 +198,7 @@ class selectOption {
   appendTo(parent) {
     parent.append(this.elem);
   }
+  
 }
 // смена цвета оптион на серый
 function choiceColor() {

@@ -55,7 +55,7 @@
 
 <ul>
 {% for created_timestamp in ordered_bill_list %}
-    <li>{{ created_timestamp.grouper }}
+    <li>{{ created_timestamp.grouper }}111
     <ul>
       {% for bill in created_timestamp.list %}
 
@@ -68,14 +68,13 @@
       data-name="modal-add-subcontract"
       data-bill-month-id="{{ bill.id }}"
       data-bill-month-adv="{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %}"
-      data-bill-month-client-name="{{ bill.client.client_name}}"
+      data-bill-month-client-name="{{ bill.client.client_name }}"
       data-bill-month-name="{{ bill.additional_contract.contract_number }}"
-      data-bill-month-data="{{ created_timestamp.grouper}}"
-      
-      
-      
+      data-bill-month-data="{{ created_timestamp.grouper }}"
       >кнопка распредел бюдж</button>
-      
+      <div class="">
+        
+      </div>
       {% endfor %}
 
     </ul>
@@ -97,4 +96,106 @@
     </li>
 {% endfor %}
 </ul>
+
+<section class="bill-month">
+  {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
+  <div class="bill_month_one-wrap">
+    {% for created_timestamp in ordered_bill_list %}
+    <h3 class="bill_month-title">{{ created_timestamp.grouper }}</h3>
+    
+   <div class="bill-month_category-title">
+    <div class="bill-month-client-counter "></div>
+    <div class="bill_w-120"><h3>Клиент</h3></div>
+    <div class="bill_w-120"><h3>Договор</h3></div>
+    <div class="bill_w-120"><h3>Счёт</h3></div>
+    <div class="bill_w-120"><h3>Ведение</h3></div>
+    <div class="bill_w-120 suborder_title-bg"><h3>Субподряд</h3></div>
+    {% if title == 1 %}
+    <div class="bill_w-120 suborder_title-bg"><h4>Я.Директ</h4></div>
+    <div class="bill_w-120 suborder_title-bg"><h4>Таргет</h4></div>
+    <div class="bill_w-120 suborder_title-bg"><h4>Премии</h4></div> 
+    {% endif %}
+    
+   </div>
+  
+   {% for bill in created_timestamp.list %}
+   <div class="bill-month_item-wrapper ">
+    <div class="bill-month-client-counter ">
+    
+      {{ forloop.counter }}
+      
+     </div>
+    <div class="bill-month-client-name bill_w-120">{{ bill.client.client_name }}</div>
+    <div class="bill-month-client-contract bill_w-120">{{ bill.additional_contract.contract_number }} </div>
+    <div class="bill-month-client-sum bill_w-120"> ₽{{ bill.additional_contract.contract_sum }} ₽</div>
+    <div class="bill-month-client-adv_sum bill_w-120">{{ bill.additional_contract.adv_all_sum }} ₽</div>
+    <div class="suborder-bg">
+      <div class="bill-month-client-suborder_diff bill_w-120">{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %} ₽</div>
+      {% if title == 1 %}
+      <div class="bill_w-120">
+
+        {% for subcontr in bill.subcontractmonth_set.all  %}
+        {% if subcontr.adv.id == 1 %} 
+        {{ subcontr.amount}}
+        {% endif %}
+           
+           {% endfor %} 
+
+      </div>
+      <div class="bill_w-120">
+
+        {% for subcontr in bill.subcontractmonth_set.all  %}
+        {% if subcontr.adv.id == 2 %} 
+        {{ subcontr.amount}}
+        {% endif %}
+           
+           {% endfor %} 
+      </div>
+      <div class="bill_w-120">
+        {% sum_other id_contract=bill.id %} ₽</div> 
+     
+      {% endif %}
+      
+   </div>
+   </div>
+   
+   {% endfor %}
+   <div class="bill-month_result_sum">
+    <div class="bill-month-client-counter "></div>
+    <div class="bill_w-120"><h3>Итого</h3></div>
+    <div class="bill_w-120"><h3></h3></div>
+    <div class="bill_w-120"><h3>{% for income in total_income %}
+      {% if income.month|date:"M Y" == created_timestamp.grouper %}
+        {{ income.total_amount }}
+        {% endif %}
+        
+
+  {% endfor %}</h3></div>
+    <div class="bill_w-120"><h3> {% for income_adv in total_adv %}
+      {% if income_adv.month|date:"M Y" == created_timestamp.grouper %}
+        {{ income_adv.total_amount }}
+        {% endif %}
+        
+    
+    {% endfor %}</h3></div>
+    <div class="bill_w-120"><h3>Субподряд</h3></div>
+    {% comment %} <div class=""><h3>Я.Директ</h3></div>
+    <div class=""><h3>Таргет</h3></div>
+    <div class=""><h3>Премии</h3></div> {% endcomment %}
+   </div>
+   {% endfor %}
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock content %}
