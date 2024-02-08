@@ -138,6 +138,7 @@
         {% if subcontr.adv.id == 1 %} 
         {{ subcontr.amount}}
         {% endif %}
+        
            
            {% endfor %} 
 
@@ -152,7 +153,13 @@
            {% endfor %} 
       </div>
       <div class="bill_w-120">
-        {% sum_other id_contract=bill.id %} ₽</div> 
+        {% for sum in sum_other %}
+          {{sum.amount__sum}}
+        {% endfor %}
+        
+        {%  sum_other id_contract=bill.id %}
+       
+       </div> 
      
       {% endif %}
       
@@ -186,12 +193,6 @@
    {% endfor %}
   </div>
 </section>
-
-
-
-
-
-
 
 
 

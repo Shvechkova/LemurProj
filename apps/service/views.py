@@ -37,25 +37,28 @@ def index(request):
     }
     return render(request, "service/service.html", context)
 
-def service_one(request,slug):
+
+def service_one(request, slug):
     month_bill_all = ServicesMonthlyBill.objects.all()
     category_service = Service.objects.get(name=slug)
     client = Client.objects.filter(contract__service=category_service.id)
-    
+
     ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service)
+
+    total_income = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
+        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__contract_sum'))
+
+    total_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
+        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+
+    suncontr_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
+        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+
+    subcontractors = SubcontractMonth.objects.all()
+
+    sub_sum2 = SubcontractMonth.objects.filter(month_bill=11,
+        other__isnull=False).aggregate(Sum("amount"))
     
-    total_income = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__contract_sum'))
-    
-    
-    total_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
-    
-    suncontr_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
-     
-    subcontractors = SubcontractMonth.objects.all()   
-        
-        
-        
-        
     title = category_service.id
     context = {
         "title": title,
@@ -66,13 +69,12 @@ def service_one(request,slug):
         'total_income': total_income,
         'total_adv': total_adv,
         'subcontractors': subcontractors,
-        
-        
-       
+        'sub_sum2': sub_sum2,
+
+
+
     }
     return render(request, "service/one_service.html", context)
-
-    
 
 
 # def serviced(request, slug):
@@ -116,7 +118,7 @@ def service_one(request,slug):
 
 
 # def serviced(request, slug):
-    
+
 #     title = "Одна услуга"
 #     context = {
 #         "title": slug,
