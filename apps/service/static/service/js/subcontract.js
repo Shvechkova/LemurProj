@@ -181,7 +181,7 @@ function addSubcontractFetch(idBill) {
       arrSubcontarctAll.push(contractObj);
     });
 
-    console.log(arrSubcontarctAll);
+
 
     const endpoint = "/service/api/subcontract/add/";
     let csrfToken = getCookie("csrftoken");

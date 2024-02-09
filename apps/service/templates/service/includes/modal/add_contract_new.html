@@ -1,17 +1,25 @@
 <div id="modal-add-bill" class="modal">
   <div class="modal-wrapper">
     <div class="modal-items">
-      <div class="modal_close">+</div>
+      <div class="modal_close modal_close_modal-add-bill">+</div>
       <div class="modal-items-wrap">
         <form id="month_bill" class="month_bill">
           <label for="client">Клиент</label>
-          <select name="client" required id="client" class="modal-client choice">
+          <select
+            name="client"
+            required
+            id="client"
+            class="modal-client choice"
+          >
+            {% comment %}
             <option selected disabled class="modal-select empty" value="0">
               Клиент
             </option>
+            {% endcomment %}
           </select>
           <label for="contract_main">Контракт</label>
-          <select name="main_contract"
+          <select
+            name="main_contract"
             required
             id="contract_main"
             class="modal-client_main-contract choice empty"
@@ -21,7 +29,7 @@
             </option>
           </select>
           <label for="contract_sum">Счёт</label>
-          <input 
+          <input
             required
             id="contract_sum"
             class="modal-contract_sum"
@@ -32,7 +40,7 @@
           />
           <label for="adv_all_sum">Ведение</label>
           <input
-          name="adv_all_sum"
+            name="adv_all_sum"
             required
             id="adv_all_sum"
             class="modal-adv_all_sum"
@@ -40,7 +48,6 @@
             placeholder="Сумма"
             value=""
           />
-          
 
           <button type="button" class="client_additional-contract_add">
             OK

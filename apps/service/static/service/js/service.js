@@ -1,17 +1,42 @@
 choiceColor();
 
-const addBill = document.querySelector('[data-name="modal-add-bill"]');
+const addBill = document.querySelectorAll('[data-name="modal-add-bill"]');
 
 if (addBill) {
-  addBill.addEventListener("click", () => {
-    let elem = addBill.getAttribute("data-name");
-    const pageName = document.getElementById("page_name").value;
-    modal(elem);
-    getClientFilterCategory(pageName);
+  addBill.forEach((el) => {
+    el.addEventListener("click", () => {
+      let elem = el.getAttribute("data-name");
+      let dataBill = el.getAttribute("data-month");
+      // 2024-02-08 11:01:04.011583
+      const date = new Date();
+      let currentYear = new Date().getFullYear();
+      const monthName = date.toLocaleString("default", { month: "long" });
+      let currentMonthYear = monthName.substr(0, 3) + " " + currentYear;
+      console.log(date)
+
+      const pageName = document.getElementById("page_name").value;
+      const selectContract = document.querySelector(
+        ".modal-client_main-contract"
+      );
+      selectContract.innerHTML = "";
+      new selectOption(
+        "modal-select empty",
+        0,
+        0,
+        "Контракт",
+        0,
+        true
+      ).appendTo(selectContract);
+
+      const contractSum = document.querySelector(".modal-contract_sum");
+      contractSum.value = "";
+      modal(elem);
+      getClientFilterCategory(pageName, dataBill, currentMonthYear);
+    });
   });
 }
 
-function getClientFilterCategory(pageName) {
+function getClientFilterCategory(pageName, dataBill, currentMonthYear) {
   const endpoint =
     "/clients/api/client/client_filter_list/?service=" + pageName;
   const select = document.querySelector(".modal-client");
@@ -21,6 +46,11 @@ function getClientFilterCategory(pageName) {
   })
     .then((response) => response.json())
     .then((data) => {
+      select.innerHTML = "";
+
+      new selectOption("modal-select empty", 0, 0, "Клиент", 0, true).appendTo(
+        select
+      );
       data.forEach(function (value, key) {
         new selectOption(
           "modal-select",
@@ -29,6 +59,7 @@ function getClientFilterCategory(pageName) {
           value.client_name
         ).appendTo(select);
       });
+
       select.addEventListener("change", (event) => {
         let clientId = select.value;
         const endpoint =
@@ -41,6 +72,17 @@ function getClientFilterCategory(pageName) {
             const selectContract = document.querySelector(
               ".modal-client_main-contract"
             );
+            selectContract.innerHTML = "";
+
+            new selectOption(
+              "modal-select empty",
+              0,
+              0,
+              "Контракт",
+              0,
+              true
+            ).appendTo(selectContract);
+
             data.forEach(function (value, key) {
               new selectOption(
                 "modal-select",
@@ -53,13 +95,13 @@ function getClientFilterCategory(pageName) {
               const contractSum = document.querySelector(".modal-contract_sum");
               contractSum.value = value.contract_sum;
             });
-            addMonthBill();
+            addMonthBill(dataBill, currentMonthYear);
           });
       });
     });
 }
 
-function addMonthBill() {
+function addMonthBill(dataBill, currentMonthYear) {
   const addMontContract = document.querySelector(
     ".client_additional-contract_add"
   );
@@ -68,7 +110,9 @@ function addMonthBill() {
     const form = document.getElementById("month_bill");
     const service_name = document.getElementById("page_name").value;
     const contractId = document.getElementById("contract_main").value;
+
     let date = new Date();
+
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
 
@@ -78,11 +122,17 @@ function addMonthBill() {
     data.append("service", service_name);
     data.append("contract_number", contractName);
 
+    if (dataBill.toLowerCase() === currentMonthYear) {
+      console.log(1);
+    } else {
+      console.log(0);
+    }
+
     let object = {};
     data.forEach((value, key) => (object[key] = value));
     const dataJson = JSON.stringify(object);
     let csrfToken = getCookie("csrftoken");
-    const endpoint = "/clients/api/additional_contract/";
+    // const endpoint = "/clients/api/additional_contract/";
     fetch(endpoint, {
       method: "POST",
       body: dataJson,
@@ -109,7 +159,7 @@ function addMonthBill() {
         const dataJson = JSON.stringify(object);
 
         let csrfToken = getCookie("csrftoken");
-        
+
         fetch("/service/api/month_bill/", {
           method: "POST",
           body: dataJson,

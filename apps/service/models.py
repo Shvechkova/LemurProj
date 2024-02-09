@@ -3,7 +3,7 @@ from apps.client.models import AdditionalContract, Client, Contract
 from django.utils import timezone
 from apps.employee.models import Employee
 
-from apps.operation.models import OperationEntry, OperationOut
+# from apps.operation.models import OperationEntry, OperationOut
 
 
 # Create your models here.
@@ -57,13 +57,13 @@ class ServicesMonthlyBill(models.Model):
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
-    check_entry = models.ForeignKey(
-        OperationEntry,
-        verbose_name="Проверка оплаты",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    # check_entry = models.ForeignKey(
+    #     OperationEntry,
+    #     verbose_name="Проверка оплаты",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    # )
   
 
 
@@ -104,13 +104,13 @@ class SubcontractMonth(models.Model):
     )
 
     # фактические оплаты
-    check_entry = models.ForeignKey(
-        OperationOut,
-        verbose_name="Проверка оплаты",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    # check_entry = models.ForeignKey(
+    #     OperationOut,
+    #     verbose_name="Проверка оплаты",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    # )
 
 
 #  Субподряд площадки
@@ -122,3 +122,4 @@ class SubcontractOther(models.Model):
     name = models.CharField(
         "название субподряда", max_length=200, blank=True, null=True
     )
+  

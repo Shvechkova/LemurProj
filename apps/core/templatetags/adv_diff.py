@@ -22,6 +22,6 @@ def sum_other(id_contract=None):
     c = str(sum_actual) + "₽" 
     if sum_actual != None :
         return c
-    else: return ''
+    else: return '0 ₽'
 
     

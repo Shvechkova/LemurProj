@@ -10,92 +10,9 @@
 {% get_category_service %}
 {% include "service/includes/modal/add_contract_new.html" %}
 {% include "service/includes/modal/subcontract.html" %}
+{% include "service/includes/modal/operation.html" %}
 
 <input type="hidden" id="page_name" value="{{ title }}">
-
-<button class="open-modal" data-name='modal-add-bill'>Добавить счет</button>
-<div>
-   {% comment %} <div class="clients_month">
-     <h3 class="clients-month_title service_title">февраль</h3>
-     <div class="client_titles"></div>
-     {% for month_bill_all in month_bill_all %}
-     <div class="client_item">
-       <div class="client-name table">
-         <span class="client-name_number">{{ forloop.counter }}</span>
-         <h3 class="service_title client-name_title">Клиент</h3>
-         <p class="client-name_text"></p>
-       </div>
-       <div class="client-contract table">
-         <h3 class="service_title client-contract_title">Договор</h3>
-         <p class="client-contract_text">
-         
-         </p>
-       </div>
-       <div class="client-bill-sum table">
-         <h3 class="service_title client-sum_title">Счёт</h3>
-         <p class="client-sum_text">
-           
-         </p>
-       </div>
-       <div class="client-adv-sum table">
-         <h3 class="service_title client-adv-sum_title">Ведение</h3>
-         <p class="client-adv-sum_text">
-         
-         </p>
-       </div>
-     </div>
-     {% endfor %}
-   </div>
- </div> {% endcomment %}
-
-
-
-
-{% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
-
-<ul>
-{% for created_timestamp in ordered_bill_list %}
-    <li>{{ created_timestamp.grouper }}111
-    <ul>
-      {% for bill in created_timestamp.list %}
-
-      <li>{{ forloop.counter }}/{{ bill.client.client_name }}/{{ bill.additional_contract.contract_number }}/{{ bill.additional_contract.contract_sum }}  /{{ bill.additional_contract.adv_all_sum }}   
-      </li> 
-      <p>субподряд не распределен
-        <span = ></span>
-        {% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %}</p>
-      <button class='add_sabcontactor'
-      data-name="modal-add-subcontract"
-      data-bill-month-id="{{ bill.id }}"
-      data-bill-month-adv="{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %}"
-      data-bill-month-client-name="{{ bill.client.client_name }}"
-      data-bill-month-name="{{ bill.additional_contract.contract_number }}"
-      data-bill-month-data="{{ created_timestamp.grouper }}"
-      >кнопка распредел бюдж</button>
-      <div class="">
-        
-      </div>
-      {% endfor %}
-
-    </ul>
-    TOTAL
-    {% for income in total_income %}
-      {% if income.month|date:"M Y" == created_timestamp.grouper %}
-        {{ income.total_amount }}
-        {% endif %}
-        
-
-  {% endfor %}
-  {% for income_adv in total_adv %}
-  {% if income_adv.month|date:"M Y" == created_timestamp.grouper %}
-    {{ income_adv.total_amount }}
-    {% endif %}
-    
-
-{% endfor %}
-    </li>
-{% endfor %}
-</ul>
 
 <section class="bill-month">
   {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
@@ -104,53 +21,88 @@
     <h3 class="bill_month-title">{{ created_timestamp.grouper }}</h3>
     
    <div class="bill-month_category-title">
-    <div class="bill-month-client-counter "></div>
+    <div class="bill-month-client-counter ">
+     
+     </div>
     <div class="bill_w-120"><h3>Клиент</h3></div>
     <div class="bill_w-120"><h3>Договор</h3></div>
-    <div class="bill_w-120"><h3>Счёт</h3></div>
+    <div class="bill_w-120"><h3>Счёт</h3>
+      <button class="open-modal change_btn btn_month_bill" 
+      data-name='modal-add-bill'
+      data-month="{{ created_timestamp.grouper }} ">+</button>
+    </div>
     <div class="bill_w-120"><h3>Ведение</h3></div>
     <div class="bill_w-120 suborder_title-bg"><h3>Субподряд</h3></div>
-    {% if title == 1 %}
-    <div class="bill_w-120 suborder_title-bg"><h4>Я.Директ</h4></div>
-    <div class="bill_w-120 suborder_title-bg"><h4>Таргет</h4></div>
-    <div class="bill_w-120 suborder_title-bg"><h4>Премии</h4></div> 
+    {% if title == 1 %} 
+    <div class=""></div>
+    <div class="bill_w-120 bill_oretation-add_title"><h4>Я.Директ</h4></div>
+    <div class="bill_w-120 bill_oretation-add_title"><h4>Таргет</h4></div>
+    <div class="bill_w-120 bill_oretation-add_title"><h4>Премии</h4></div> 
     {% endif %}
+
+    <div class="bill_w-120 bill_oretation-add_title"><h3>Приход</h3></div>
+   
+  
+    <div class="bill_w-120 bill_oretation-add_title"><h4>ООО</h4></div>
+    <div class="bill_w-120 bill_oretation-add_title"><h4>ИП</h4></div>
+    <div class="bill_w-120 bill_oretation-add_title"><h4>$</h4></div> 
+
+    {% comment %} <div class="bill_w-120 bill_oretation-exit_title"><h3>Расход</h3></div>
+    <div class="bill_w-120 "><h4>ООО</h4></div>
+    <div class="bill_w-120 "><h4>ИП</h4></div>
+    <div class="bill_w-120 "><h4>$</h4></div>
+    {% endcomment %}
+  
+
     
    </div>
   
    {% for bill in created_timestamp.list %}
    <div class="bill-month_item-wrapper ">
     <div class="bill-month-client-counter ">
-    
       {{ forloop.counter }}
-      
      </div>
     <div class="bill-month-client-name bill_w-120">{{ bill.client.client_name }}</div>
     <div class="bill-month-client-contract bill_w-120">{{ bill.additional_contract.contract_number }} </div>
-    <div class="bill-month-client-sum bill_w-120"> ₽{{ bill.additional_contract.contract_sum }} ₽</div>
+    <div class="bill-month-client-sum bill_w-120"> {{ bill.additional_contract.contract_sum }} ₽</div>
     <div class="bill-month-client-adv_sum bill_w-120">{{ bill.additional_contract.adv_all_sum }} ₽</div>
     <div class="suborder-bg">
-      <div class="bill-month-client-suborder_diff bill_w-120">{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %} ₽</div>
+      
+      <div class="bill-month-client-suborder_diff bill_w-120 add_sabcontactor "
+      data-name="modal-add-subcontract"
+      data-bill-month-id="{{ bill.id }}"
+      data-bill-month-adv="{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %}"
+      data-bill-month-client-name="{{ bill.client.client_name }}"
+      data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+      data-bill-month-data="{{ created_timestamp.grouper }}">
+        {% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %} ₽</div>
+      
+      
       {% if title == 1 %}
       <div class="bill_w-120">
-
-        {% for subcontr in bill.subcontractmonth_set.all  %}
-        {% if subcontr.adv.id == 1 %} 
-        {{ subcontr.amount}}
+        {% for subcontr in bill.subcontractmonth_set.all  %} 
+    
+        {% if subcontr.adv.id == 1 %}
+         {{ subcontr.amount }}
+        {% elif subcontr.adv.id != 1 %}
+          {% ifchanged %}0  ₽{% endifchanged %}
         {% endif %}
-        
-           
-           {% endfor %} 
-
+        {% empty %}
+        0  ₽
+      {% endfor %} 
       </div>
       <div class="bill_w-120">
 
-        {% for subcontr in bill.subcontractmonth_set.all  %}
-        {% if subcontr.adv.id == 2 %} 
-        {{ subcontr.amount}}
-        {% endif %}
-           
-           {% endfor %} 
+        {% for subcontr in bill.subcontractmonth_set.all  %} 
+    
+          {% if subcontr.adv.id == 2 %}
+           {{ subcontr.amount }}
+          {% elif subcontr.adv.id != 2 %}
+            {% ifchanged %}0  ₽{% endifchanged %}
+          {% endif %}
+          {% empty %}
+          0  ₽
+        {% endfor %} 
       </div>
       <div class="bill_w-120">
         {% for sum in sum_other %}
@@ -161,12 +113,59 @@
        
        </div> 
      
+   
       {% endif %}
-      
    </div>
+   <div class="oretation-add-bg">
+    <div class="bill_w-120 add-operation-entry"
+    data-name="modal-add-operation-entry"
+    data-bill-month-id="{{ bill.id }}"
+    data-bill-month-sum="{{ bill.additional_contract.contract_sum }} ₽"
+    data-bill-month-client-name="{{ bill.client.client_name }}"
+    data-bill-month-sum-dont-operation="{{ bill.additional_contract.contract_sum }} ₽"
+    data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+    data-bill-month-data="{{ created_timestamp.grouper }}">
+    
+    0 ₽</div>
+    
+    
+    {% if title == 1 %}
+   
+    <div class="bill_w-120">
+     0p
+    </div>
+    <div class="bill_w-120">
+
+      {% for subcontr in bill.subcontractmonth_set.all  %} 
+  
+        {% if subcontr.adv.id == 2 %}
+         {{ subcontr.amount }}
+        {% elif subcontr.adv.id != 2 %}
+          {% ifchanged %}0  ₽{% endifchanged %}
+        {% endif %}
+        {% empty %}
+        0  ₽
+      {% endfor %} 
+    </div>
+
+
+    <div class="bill_w-120">
+      {% for sum in sum_other %}
+        {{sum.amount__sum}}
+      {% endfor %}
+      
+      {%  sum_other id_contract=bill.id %}
+     
+     </div> 
+   
+ 
+    {% endif %}
+    
+ </div>
    </div>
    
    {% endfor %}
+
    <div class="bill-month_result_sum">
     <div class="bill-month-client-counter "></div>
     <div class="bill_w-120"><h3>Итого</h3></div>
@@ -196,7 +195,9 @@
 
 
 
-
+{% for d in ordered_bill %}
+  {{d.created_timestamp}}
+{% endfor %}
 
 
 {% endblock content %}

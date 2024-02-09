@@ -1,7 +1,7 @@
 
 function modal(elem) {
   const modal_windows = document.getElementById(elem);
-  console.log(modal_windows)
+
   modal_windows.classList.add("modal-active");
   // const modal_button = document.querySelectorAll(".open-modal");
   // const modal_windows = document.querySelector(".modal");
@@ -11,13 +11,27 @@ function modal(elem) {
      
   //   });
   // });
+ 
+const nameclose = "." + "modal_close" +"_"+ elem + ""
+console.log(nameclose)
   let modalClose = document.querySelector(".modal_close");
   modalClose.addEventListener("click", (event) => {
-    modal_windows.classList.remove("modal-active");
    
+    modal_windows.classList.remove("modal-active");
   });
+
+  let modalCloseAll = document.querySelector(nameclose);
+  console.log(modalCloseAll)
+  modalCloseAll.addEventListener("click", (event) => {
+
+    modal_windows.classList.remove("modal-active");
+  });
+  
+  
 }
 // modal();
+
+
 
 function addMonthBill() {
   function getClientName() {

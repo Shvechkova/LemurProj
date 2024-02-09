@@ -1,0 +1,49 @@
+<div id="modal-add-operation-entry" class="modal">
+  <div class="modal-wrapper">
+    <div class="modal-items">
+      <div class="modal_close modal_close_modal-add-operation-entry">+</div>
+      <div class="modal-items-wrap">
+        <div class="modal_adv_buget">
+          <h3>Ожидаемые поступления:</h3>
+          <p class="operation_entry_sum_all"></p>
+        </div>
+        <div class="">
+          <p class="operation_entry_client-name"></p>
+          <p class="operation_entry_contract-name"></p>
+          <p class="operation_entry_data"></p>
+        </div>
+        <div class="">удаление прошлой оплаты</div>
+        <div class="" id="bank_cheked">
+          <p>Куда оплатили?</p>
+          <input type="radio" id="OOO" name="bank" value="1" />
+          <label for="OOO">ООО</label>
+
+          <input type="radio" id="IP" name="bank" value="2" />
+          <label for="IP">ИП</label>
+
+          <input type="radio" id="$" name="bank" value="3" />
+          <label for="$">$</label>
+        </div>
+
+        <div id="sum_cheked">
+          <p>Сколько оплатили?</p>
+          <input type="radio" id="100" name="sum" value="100" />
+          <label for="100">100%</label>
+
+          <input type="radio" id="50" name="sum" value="50" />
+          <label for="50">50%</label>
+
+          <input type="radio" id="other_sum" name="sum" value="1" />
+          <label for="other_sum">Другая сумма</label>
+          <input type="number" id="other_sum_namber" name="" value="" />
+        </div>
+
+        <div class="operation_entry_comment">
+          <input type="text" id="operation_comment_entry" name="operation_comment_entry" value="" />
+        </div>
+
+        <button class="operation_entry_add button_black">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>

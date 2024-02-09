@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.service.models import ServicesMonthlyBill
+
 
 class CategoryOperation(models.Model):
     name = models.CharField(max_length=200)
@@ -10,29 +12,35 @@ class MetaCategoryOperation(models.Model):
 
 class NameOperation(models.Model):
     name = models.CharField(max_length=200)
+    
+class BankOperation(models.Model):
+    name = models.CharField(max_length=200)
 
 
 class OperationEntry(models.Model):
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
-    sum = models.PositiveIntegerField(default="0")
+    amount = models.PositiveIntegerField(default="0")
 
     comment = models.TextField("Комментарий", blank=True, null=True)
-    BANK = (
-        ("OOO", "ООО"),
-        ("IP", "ИП"),
-        ("$", "$"),
-    )
 
-    bank = models.CharField(max_length=4, choices=BANK, default="OOO")
-    name = models.ForeignKey(
+    bank = models.ForeignKey(
         NameOperation, on_delete=models.PROTECT, blank=True, null=True
+    )
+    name = models.ForeignKey(
+        BankOperation, on_delete=models.PROTECT, blank=True, null=True
     )
     category = models.ForeignKey(
         CategoryOperation, on_delete=models.PROTECT, blank=True, null=True
     )
     comment = models.TextField("Комментарий", blank=True, null=True)
+    
+    monthly_bill = models.ForeignKey(
+        ServicesMonthlyBill, on_delete=models.PROTECT, blank=True, null=True
+    )
+
+
 
 
 

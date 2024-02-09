@@ -6,6 +6,7 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  overflow-x: scroll;
 }
 
 a {
@@ -113,7 +114,7 @@ button {
   right: 0;
   left: 0;
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
   opacity: 1;
   z-index: 1000;
   transition: 0.3s;
@@ -269,7 +270,7 @@ input[type="date"]:before {
   display: flex;
 
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .table h3 {
@@ -314,14 +315,14 @@ input[type="date"]:before {
 
 .client_client_meneger_client-name {
   width: 170px;
-  overflow: hidden;
+  /* overflow: hidden; */
   white-space: nowrap;
   margin-right: 42px;
 }
 
 .client_client_meneger_manager {
   width: 170px;
-  overflow: hidden;
+  /* overflow: hidden; */
   margin-right: 42px;
 }
 
@@ -332,20 +333,20 @@ input[type="date"]:before {
 
 .client_contract_contract_name {
   width: 180px;
-  overflow: hidden;
+  /* overflow: hidden; */
   margin-right: 42px;
   white-space: nowrap;
 }
 
 .client_contract_data {
   width: 150px;
-  overflow: hidden;
+  /* overflow: hidden; */
   margin-right: 42px;
 }
 
 .client_contract_sum {
   width: 150px;
-  overflow: hidden;
+  /* overflow: hidden; */
   white-space: nowrap;
   margin-right: 42px;
 }
@@ -356,7 +357,10 @@ input[type="date"]:before {
   width: 16px;
   height: 16px;
   background-color: #000;
-
+  color:#fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
 }
 
@@ -377,12 +381,16 @@ width: auto;
 .bill-month_category-title{
   display: flex;
   padding-top: 21px;
+  /* overflow-x: scroll; */
+  width: auto;
 }
 
 .bill_w-120{
-  width: 120px;
+  width: 120px!important;
   margin-top: 33px;
-   overflow: hidden;
+   /* overflow: hidden; */
+   display: flex;
+   align-items: center;
 }
 .bill-month_item-wrapper{
   display: flex;
@@ -412,4 +420,20 @@ width: auto;
   border-top-right-radius:25px; */
 
   /* border-radius: 25px; */
+}
+.btn_month_bill{
+  margin-left: 5px;
+}
+
+.bill_oretation-add_title{
+  background-color: #F3FCF2;
+}
+
+.bill_oretation-exit_title{
+  background-color: #FFEDED;
+}
+.oretation-add-bg{
+  margin-left: 20px;
+  background-color: #F3FCF2;
+  display: flex;
 }

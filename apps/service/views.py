@@ -16,7 +16,7 @@ from apps.client.models import AdditionalContract, Client
 from apps.operation.models import OperationEntry
 from apps.service.forms import OperationEntryForm
 
-from apps.service.models import Service, ServicesMonthlyBill, SubcontractMonth
+from apps.service.models import Adv, Service, ServicesMonthlyBill, SubcontractMonth
 from rest_framework import routers, viewsets
 from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -55,10 +55,9 @@ def service_one(request, slug):
         'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
 
     subcontractors = SubcontractMonth.objects.all()
+    advCategory = Adv.objects.all()
 
-    sub_sum2 = SubcontractMonth.objects.filter(month_bill=11,
-        other__isnull=False).aggregate(Sum("amount"))
-    
+   
     title = category_service.id
     context = {
         "title": title,
@@ -69,7 +68,7 @@ def service_one(request, slug):
         'total_income': total_income,
         'total_adv': total_adv,
         'subcontractors': subcontractors,
-        'sub_sum2': sub_sum2,
+        'adv_category': advCategory,
 
 
 
