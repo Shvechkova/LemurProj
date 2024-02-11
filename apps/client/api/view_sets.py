@@ -19,7 +19,6 @@ class AddClient(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
 
     @action(detail=False, methods=["get"], url_path=r"manager_list")
-    # TODO НИЖНЕЕ ПОДЧЕРКИВАНИЕ и с маленьких букв
     def manager_list(
         self,
         request,
@@ -69,6 +68,7 @@ class ContractView(viewsets.ModelViewSet):
         **kwargs,
     ):
         data = request.data
+        print(data)
         for contracts in data:
             contract_id = contracts["id"]
             if contract_id == "":

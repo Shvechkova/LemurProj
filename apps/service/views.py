@@ -40,6 +40,8 @@ def index(request):
 
 def service_one(request, slug):
     month_bill_all = ServicesMonthlyBill.objects.all()
+    month_bill_last = ServicesMonthlyBill.objects.latest('created_timestamp')
+    
     category_service = Service.objects.get(name=slug)
     client = Client.objects.filter(contract__service=category_service.id)
 
@@ -69,6 +71,7 @@ def service_one(request, slug):
         'total_adv': total_adv,
         'subcontractors': subcontractors,
         'adv_category': advCategory,
+        'month_bill_last': month_bill_last,
 
 
 

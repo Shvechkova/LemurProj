@@ -15,6 +15,16 @@
 <input type="hidden" id="page_name" value="{{ title }}">
 
 <section class="bill-month">
+  if
+<button class="open-modal modal-new_month button_black" 
+      data-name='modal-new_month'
+    >Начать новый месяц?не работает</button>
+
+    {% now "M Y" %}
+{{month_bill_last.created_timestamp|date:"M Y"}}
+
+
+
   {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
   <div class="bill_month_one-wrap">
     {% for created_timestamp in ordered_bill_list %}
@@ -27,7 +37,7 @@
     <div class="bill_w-120"><h3>Клиент</h3></div>
     <div class="bill_w-120"><h3>Договор</h3></div>
     <div class="bill_w-120"><h3>Счёт</h3>
-      <button class="open-modal change_btn btn_month_bill" 
+      <button class="open-modal  btn_month_bill" 
       data-name='modal-add-bill'
       data-month="{{ created_timestamp.grouper }} ">+</button>
     </div>
@@ -35,9 +45,9 @@
     <div class="bill_w-120 suborder_title-bg"><h3>Субподряд</h3></div>
     {% if title == 1 %} 
     <div class=""></div>
-    <div class="bill_w-120 bill_oretation-add_title"><h4>Я.Директ</h4></div>
-    <div class="bill_w-120 bill_oretation-add_title"><h4>Таргет</h4></div>
-    <div class="bill_w-120 bill_oretation-add_title"><h4>Премии</h4></div> 
+    <div class="bill_w-120 suborder_title-bg"><h4>Я.Директ</h4></div>
+    <div class="bill_w-120 suborder_title-bg"><h4>Таргет</h4></div>
+    <div class="bill_w-120 suborder_title-bg"><h4>Премии</h4></div> 
     {% endif %}
 
     <div class="bill_w-120 bill_oretation-add_title"><h3>Приход</h3></div>
@@ -47,11 +57,11 @@
     <div class="bill_w-120 bill_oretation-add_title"><h4>ИП</h4></div>
     <div class="bill_w-120 bill_oretation-add_title"><h4>$</h4></div> 
 
-    {% comment %} <div class="bill_w-120 bill_oretation-exit_title"><h3>Расход</h3></div>
-    <div class="bill_w-120 "><h4>ООО</h4></div>
-    <div class="bill_w-120 "><h4>ИП</h4></div>
-    <div class="bill_w-120 "><h4>$</h4></div>
-    {% endcomment %}
+    <div class="bill_w-120 bill_oretation-exit_title"><h3>Расход</h3></div>
+    <div class="bill_w-120 bill_oretation-exit_title"><h4>ООО</h4></div>
+    <div class="bill_w-120 bill_oretation-exit_title"><h4>ИП</h4></div>
+    <div class="bill_w-120 bill_oretation-exit_title"><h4>$</h4></div>
+    
   
 
     
@@ -185,9 +195,9 @@
     
     {% endfor %}</h3></div>
     <div class="bill_w-120"><h3>Субподряд</h3></div>
-    {% comment %} <div class=""><h3>Я.Директ</h3></div>
-    <div class=""><h3>Таргет</h3></div>
-    <div class=""><h3>Премии</h3></div> {% endcomment %}
+  {% comment %} <div class="bill_w-120"><h3>Я.Директ</h3></div>
+    <div class="bill_w-120"><h3>Таргет</h3></div>
+    <div class="bill_w-120"><h3>Премии</h3></div>  {% endcomment %}
    </div>
    {% endfor %}
   </div>

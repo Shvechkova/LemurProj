@@ -19,7 +19,7 @@ from rest_framework.response import Response
 
 def clients(request):
     clients = Client.objects.all()
-    contracts = Contract.objects.all()
+    contracts = Contract.objects.all().order_by("client")
 
     title = "Клиенты"
     context = {

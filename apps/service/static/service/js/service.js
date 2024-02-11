@@ -132,7 +132,7 @@ function addMonthBill(dataBill, currentMonthYear) {
     data.forEach((value, key) => (object[key] = value));
     const dataJson = JSON.stringify(object);
     let csrfToken = getCookie("csrftoken");
-    // const endpoint = "/clients/api/additional_contract/";
+    const endpoint = "/clients/api/additional_contract/";
     fetch(endpoint, {
       method: "POST",
       body: dataJson,

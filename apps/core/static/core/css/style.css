@@ -6,7 +6,7 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
 }
 
 a {
@@ -105,19 +105,27 @@ button {
 .tech_nav-link {}
 
 .modal {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   display: none;
-  position: absolute;
-  background-color: rgba(8, 6, 6, 0.50);
 
+  background-color: rgba(8, 6, 6, 0.50);
+  /* 
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
-  height: 100vh;
+  height: 100vh; */
   /* overflow: hidden; */
-  opacity: 1;
+  /* opacity: 1;*/
   z-index: 1000;
   transition: 0.3s;
+
 }
 
 .modal-active {
@@ -125,11 +133,19 @@ button {
 }
 
 .modal-wrapper {
-  height: 100vh;
+  position: absolute;
+  border-radius: 20px;
+  left: 50%;
+  top: 50%;
+  display: block;
+
+  background: #ddd;
+  transform: translate(-50%, -50%)
+    /* height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
 }
 
 .modal-items {
@@ -297,10 +313,15 @@ input[type="date"]:before {
   background-color: #000;
 }
 
+.button_black:disabled {
+  background-color: #C9C9C9;
+}
+
 .client_client_meneger {
   display: flex;
   width: 350px;
   align-items: center;
+  position: relative;
 }
 
 .client_contract {
@@ -315,14 +336,20 @@ input[type="date"]:before {
 
 .client_client_meneger_client-name {
   width: 170px;
-  /* overflow: hidden; */
+  overflow: hidden;
   white-space: nowrap;
   margin-right: 42px;
 }
 
+.change_btn {
+  cursor: pointer;
+  position: absolute;
+  left: -30px;
+}
+
 .client_client_meneger_manager {
   width: 170px;
-  /* overflow: hidden; */
+  overflow: hidden;
   margin-right: 42px;
 }
 
@@ -333,107 +360,126 @@ input[type="date"]:before {
 
 .client_contract_contract_name {
   width: 180px;
-  /* overflow: hidden; */
+  overflow: hidden;
   margin-right: 42px;
   white-space: nowrap;
 }
 
 .client_contract_data {
   width: 150px;
-  /* overflow: hidden; */
+  overflow: hidden;
   margin-right: 42px;
 }
 
 .client_contract_sum {
   width: 150px;
-  /* overflow: hidden; */
+  overflow: hidden;
   white-space: nowrap;
   margin-right: 42px;
 }
 
-.change_btn {
-  border: 1px solid #000;
-  border-radius: 8px;
-  width: 16px;
-  height: 16px;
-  background-color: #000;
-  color:#fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+
+
+.modal-add-client {
+  position: relative;
+  top: 0;
+  right: -69%;
+  margin-bottom: 20px;
+
 
 }
-
-.modal-add-client {}
 
 .clients {
   margin-top: 125px;
 }
 
 .clients_wrapper {
- 
+  width: fit-content;
+  position: relative;
 }
 
-.clients_item_wrapp{
-display: flex;flex-direction: column;
-width: auto;
-}
-.bill-month_category-title{
+.clients_item_wrapp {
   display: flex;
-  padding-top: 21px;
-  /* overflow-x: scroll; */
+  flex-direction: column;
   width: auto;
 }
 
-.bill_w-120{
-  width: 120px!important;
-  margin-top: 33px;
-   /* overflow: hidden; */
-   display: flex;
-   align-items: center;
+.bill-month {
+  width: fit-content;
 }
-.bill-month_item-wrapper{
+
+.bill-month_category-title {
+  width: fit-content;
+  display: flex;
+  padding-top: 21px;
+
+  width: auto;
+}
+
+.bill_w-120 {
+  width: 120px !important;
+  margin-top: 33px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+}
+
+.bill-month_item-wrapper {
   display: flex;
   align-items: flex-end;
- 
+
   white-space: nowrap;
 }
-.bill_month-title{
+
+.bill_month-title {
   margin-top: 66px;
-  
+
 }
-.bill-month_result_sum{
+
+.bill-month_result_sum {
   display: flex;
 }
 
 .bill-month-client-counter {
   width: 50px;
 }
-.suborder-bg{
+
+.suborder-bg {
   background-color: #F4F4F4;
   display: flex;
+
   /* border-radius: 25px; */
 }
-.suborder_title-bg{
+
+.suborder_title-bg {
   background-color: #F4F4F4;
   /* border-top-left-radius:25px ;
   border-top-right-radius:25px; */
 
   /* border-radius: 25px; */
 }
-.btn_month_bill{
+
+.btn_month_bill {
   margin-left: 5px;
 }
 
-.bill_oretation-add_title{
+.bill_oretation-add_title {
   background-color: #F3FCF2;
 }
 
-.bill_oretation-exit_title{
+.bill_oretation-exit_title {
   background-color: #FFEDED;
 }
-.oretation-add-bg{
+
+.oretation-add-bg {
   margin-left: 20px;
   background-color: #F3FCF2;
   display: flex;
+}
+
+.no-validate {
+  border: 1px solid red !important;
 }

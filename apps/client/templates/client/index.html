@@ -33,13 +33,22 @@
         {% endif %}
         <div class="client_table">
           <div class="client_client_meneger">
+       
             {% ifchanged %}
-            <button
+            <div
               data-name="modal-add-client"
               data-client-id="{{ contract.client.id }}"
               data-client-name="{{ contract.client.client_name }}"
               class="upd_info change_btn"
-            ></button>
+            >
+         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="15" height="15" rx="7.5" fill="black" stroke="black"/>
+<path d="M6.98755 10.222H5.79512V8.88838M5.39236 9.2873L10.4677 4.2604C10.8182 3.9132 11.3865 3.9132 11.7371 4.2604C12.0876 4.6076 12.0876 5.17052 11.7371 5.51772L6.58694 10.6188C6.34635 10.8571 6.22606 10.9762 6.09289 11.0786C5.9746 11.1696 5.84886 11.2507 5.71696 11.321C5.56848 11.4001 5.40978 11.4608 5.09238 11.5822L4 12L4.35147 10.9555C4.47142 10.5991 4.5314 10.4208 4.61482 10.2544C4.68891 10.1066 4.77668 9.96592 4.87701 9.83416C4.98999 9.68583 5.12411 9.553 5.39236 9.2873Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+          </div>
+         
             <div class="client_client_meneger_client-name">
               <p>{{contract.client.client_name}}</p>
             </div>
