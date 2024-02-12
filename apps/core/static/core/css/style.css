@@ -483,3 +483,20 @@ input[type="date"]:before {
 .no-validate {
   border: 1px solid red !important;
 }
+.add-operation-entry{
+  cursor: pointer;
+}
+
+.result_ok{
+  color:green;
+}
+.result_not-wrap{
+  display: flex;
+  flex-direction: column;
+}
+.result_not{
+ 
+}
+.result_not_after{
+  color:red;
+}

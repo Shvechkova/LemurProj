@@ -40,7 +40,7 @@ def index(request):
 
 def service_one(request, slug):
     month_bill_all = ServicesMonthlyBill.objects.all()
-    month_bill_last = ServicesMonthlyBill.objects.latest('created_timestamp')
+    # month_bill_last = ServicesMonthlyBill.objects.latest('created_timestamp')
     
     category_service = Service.objects.get(name=slug)
     client = Client.objects.filter(contract__service=category_service.id)
@@ -57,6 +57,7 @@ def service_one(request, slug):
         'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
 
     subcontractors = SubcontractMonth.objects.all()
+    operation_entry = OperationEntry.objects.all()
     advCategory = Adv.objects.all()
 
    
@@ -71,10 +72,7 @@ def service_one(request, slug):
         'total_adv': total_adv,
         'subcontractors': subcontractors,
         'adv_category': advCategory,
-        'month_bill_last': month_bill_last,
-
-
-
+        'operation_entry': operation_entry,
     }
     return render(request, "service/one_service.html", context)
 

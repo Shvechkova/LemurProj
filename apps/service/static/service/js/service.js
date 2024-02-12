@@ -95,13 +95,14 @@ function getClientFilterCategory(pageName, dataBill, currentMonthYear) {
               const contractSum = document.querySelector(".modal-contract_sum");
               contractSum.value = value.contract_sum;
             });
-            addMonthBill(dataBill, currentMonthYear);
+            addMonthBill(dataBill,);
           });
       });
     });
 }
 
-function addMonthBill(dataBill, currentMonthYear) {
+
+function addMonthBill(dataBill,) {
   const addMontContract = document.querySelector(
     ".client_additional-contract_add"
   );
@@ -122,11 +123,11 @@ function addMonthBill(dataBill, currentMonthYear) {
     data.append("service", service_name);
     data.append("contract_number", contractName);
 
-    if (dataBill.toLowerCase() === currentMonthYear) {
-      console.log(1);
-    } else {
-      console.log(0);
-    }
+    // if (dataBill.toLowerCase() === currentMonthYear) {
+    //   console.log(1);
+    // } else {
+    //   console.log(0);
+    // }
 
     let object = {};
     data.forEach((value, key) => (object[key] = value));

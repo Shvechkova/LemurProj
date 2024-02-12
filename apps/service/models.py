@@ -2,6 +2,8 @@ from django.db import models
 from apps.client.models import AdditionalContract, Client, Contract
 from django.utils import timezone
 from apps.employee.models import Employee
+from django.db.models import Count, Sum
+
 
 # from apps.operation.models import OperationEntry, OperationOut
 
@@ -18,13 +20,14 @@ class ServiceClient(models.Model):
         Service,
         on_delete=models.PROTECT,
         verbose_name="Клиент",
-         blank=True,
+        blank=True,
         null=True,
     )
     service = models.ForeignKey(
         Client,
         on_delete=models.PROTECT,
-        verbose_name="Клиент", blank=True,
+        verbose_name="Клиент",
+        blank=True,
         null=True,
     )
 
@@ -53,18 +56,50 @@ class ServicesMonthlyBill(models.Model):
     subcontract = models.ForeignKey(
         "SubcontractMonth", on_delete=models.SET_NULL, blank=True, null=True
     )
-    
+
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
-    # check_entry = models.ForeignKey(
-    #     OperationEntry,
-    #     verbose_name="Проверка оплаты",
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    # )
-  
+
+    def get_all_sum_entry_operation(self):
+        from apps.operation.models import OperationEntry
+
+        contract_sum = self.additional_contract.contract_sum
+
+        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id).aggregate(
+            Sum("amount")
+        )
+
+        if operation_entry["amount__sum"] != None:
+            result = contract_sum - operation_entry["amount__sum"]
+            if result != 0:
+                obj = {
+                    "result": result,
+                    "operation_amount": operation_entry["amount__sum"],
+                }
+                return obj
+            return contract_sum
+        else:
+            return "0"
+        
+    def get_sum_bank_operaton_entry(self):
+        from apps.operation.models import OperationEntry
+
+        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id).values('bank').annotate(total_amount=Sum('amount'))
+        print(operation_entry)
+        # obj = {}
+        for operation in operation_entry:
+            obj = {
+                    "bank": operation["bank"],
+                    "operation_amount": operation["total_amount"],
+                }
+            return
+           
+            
+            
+        
+     
+        return "0"    
 
 
 # субподряд для ежемесячного счета
@@ -84,7 +119,7 @@ class SubcontractMonth(models.Model):
         blank=True,
         null=True,
     )
-    
+
     other = models.ForeignKey(
         "SubcontractOther",
         verbose_name="Тип субподряда",
@@ -122,4 +157,3 @@ class SubcontractOther(models.Model):
     name = models.CharField(
         "название субподряда", max_length=200, blank=True, null=True
     )
-  

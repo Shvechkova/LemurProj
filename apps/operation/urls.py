@@ -9,7 +9,7 @@ from rest_framework import routers
 app_name = "operation"
 
 router = routers.DefaultRouter()
-router.register(r"api/entry", view_sets.OperationEntryView)
+router.register(r"api/entry", view_sets.OperationEntryViews)
 
 
 

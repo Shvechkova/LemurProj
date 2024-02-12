@@ -25,16 +25,16 @@ class OperationEntry(models.Model):
 
     comment = models.TextField("Комментарий", blank=True, null=True)
 
-    bank = models.ForeignKey(
+    name = models.ForeignKey(
         NameOperation, on_delete=models.PROTECT, blank=True, null=True
     )
-    name = models.ForeignKey(
+    bank = models.ForeignKey(
         BankOperation, on_delete=models.PROTECT, blank=True, null=True
     )
     category = models.ForeignKey(
         CategoryOperation, on_delete=models.PROTECT, blank=True, null=True
     )
-    comment = models.TextField("Комментарий", blank=True, null=True)
+    # comment = models.TextField("Комментарий", blank=True, null=True)
     
     monthly_bill = models.ForeignKey(
         ServicesMonthlyBill, on_delete=models.PROTECT, blank=True, null=True
