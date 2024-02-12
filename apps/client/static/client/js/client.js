@@ -24,7 +24,7 @@ if (modal_add_client) {
 
     const modalWindows = document.getElementById(elem);
     modalWindows.addEventListener("input", () => {
-      validate(elem);
+      validate(elem, ".client_contract_add");
     });
 
     const endpointClient = "/clients/api/client/";
@@ -288,7 +288,7 @@ updInfo.forEach((element) => {
     updClientContract(element, clientName);
 const modalWindows = document.getElementById(elem);
 modalWindows.addEventListener("input", () => {
-  validate(elem);
+  validate(elem, ".client_contract_add");
 });
     const idClient = element.getAttribute("data-client-id");
     console.log(idClient);

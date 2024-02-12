@@ -7,15 +7,19 @@
           <h3>Ожидаемые поступления:</h3>
           <p class="operation_entry_sum_all"></p>
         </div>
-        <div class="">
+        <div class="operation">
           <p class="operation_entry_client-name"></p>
           <p class="operation_entry_contract-name"></p>
           <p class="operation_entry_data"></p>
         </div>
-        <div class="">удаление прошлой оплаты</div>
+        <div class="previous_operation">
+          {% comment %} <div class="previous_operation_title"></div>
+          <div class="previous_operation_comment"></div> {% endcomment %}
+
+        </div>
         <div class="" id="bank_cheked">
           <p>Куда оплатили?</p>
-          <input type="radio" id="OOO" name="bank" value="1" />
+          <input  type="radio" id="OOO" name="bank" value="1" />
           <label for="OOO">ООО</label>
 
           <input type="radio" id="IP" name="bank" value="2" />
@@ -25,9 +29,9 @@
           <label for="$">$</label>
         </div>
 
-        <div id="sum_cheked">
+        <div id="sum_cheked" data-step="1">
           <p>Сколько оплатили?</p>
-          <input type="radio" id="100" name="sum" value="100" />
+          <input  type="radio" id="100" name="sum" value="100" />
           <label for="100">100%</label>
 
           <input type="radio" id="50" name="sum" value="50" />
@@ -35,14 +39,19 @@
 
           <input type="radio" id="other_sum" name="sum" value="1" />
           <label for="other_sum">Другая сумма</label>
-          <input type="number" id="other_sum_namber" name="" value="" />
+          <input data-validate="0"  type="number" id="other_sum_namber" name="" value="" />
         </div>
 
         <div class="operation_entry_comment">
-          <input type="text" id="operation_comment" name="operation_comment_entry" value="" />
+          <input data-validate="0"
+            type="text"
+            id="operation_comment"
+            name="operation_comment_entry"
+            value=""
+          />
         </div>
 
-        <button class="operation_add button_black">Сохранить</button>
+        <button disabled class="operation_add button_black">Сохранить</button>
       </div>
     </div>
   </div>
