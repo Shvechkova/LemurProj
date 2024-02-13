@@ -47,9 +47,10 @@ def service_one(request, slug):
 
     ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service)
 
-    total_income = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
-        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__contract_sum'))
-
+    # total_income = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
+    #     'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__contract_sum'))
+    total_income = ServicesMonthlyBill.get_total_income(category_service)
+    
     total_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
         'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
 
@@ -59,6 +60,7 @@ def service_one(request, slug):
     subcontractors = SubcontractMonth.objects.all()
     operation_entry = OperationEntry.objects.all()
     advCategory = Adv.objects.all()
+
 
    
     title = category_service.id

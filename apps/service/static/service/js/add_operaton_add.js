@@ -5,6 +5,9 @@ const addOperationEntry = document.querySelectorAll(".add-operation-entry");
 if (addOperationEntry) {
   addOperationEntry.forEach((element) => {
     element.addEventListener("click", () => {
+      const lastOperationWrap = document.querySelector(".previous_operation");
+        lastOperationWrap.innerHTML = "";
+        
       let elem = element.getAttribute("data-name");
       let operationIdvalue = element.getAttribute(
         "data-bill-month-operation-entry"
@@ -12,6 +15,10 @@ if (addOperationEntry) {
 
       const add_operation = document.querySelector(".operation_add");
       modal(elem, add_operation);
+
+      
+
+
       const chekinOtherSum = document.getElementById("other_sum_namber");
       chekinOtherSum.addEventListener("input", () => {
         const chekinOtherSum = document.getElementById("other_sum");
@@ -31,6 +38,7 @@ if (addOperationEntry) {
 }
 
 function getInfoBillOperation(element) {
+
   const clientName = element.getAttribute("data-bill-month-client-name");
   const contractName = element.getAttribute("data-bill-month-name");
   const contractData = element.getAttribute("data-bill-month-data");
@@ -52,6 +60,7 @@ function getInfoBillOperation(element) {
 }
 
 function addFetchOperationEntry(element, endpoint) {
+
   const btnAddOperationEntry = document.querySelector(".operation_add");
   const allMonthSum = element.getAttribute(
     "data-bill-month-sum-dont-operation"
@@ -149,11 +158,15 @@ function newOperationEntry(element, elem) {
   let operationAllSum = element.getAttribute(
     "data-bill-month-sum-dont-operation"
   );
+  console.log(operationAllSum)
   const idOperationrepl = operationIdvalue.replace(
     /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
     ""
   );
+  console.log(idOperationrepl)
   const idOperation = idOperationrepl.split("-");
+  console.log(idOperation)
+
   if (idOperationrepl !== "") {
     const sumcheked = document.querySelector(".sum_cheked");
 
@@ -165,6 +178,7 @@ function newOperationEntry(element, elem) {
       };
       object.push(Obj);
     });
+    
     console.log(object);
     let st = parseInt(operationAllSum.replace(/\s+/g, ""), 10);
     let sumOperationEnded = "";

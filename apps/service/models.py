@@ -3,6 +3,7 @@ from apps.client.models import AdditionalContract, Client, Contract
 from django.utils import timezone
 from apps.employee.models import Employee
 from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth
 
 
 # from apps.operation.models import OperationEntry, OperationOut
@@ -67,7 +68,7 @@ class ServicesMonthlyBill(models.Model):
         contract_sum = self.additional_contract.contract_sum
 
         operation_entry = OperationEntry.objects.filter(monthly_bill=self.id).aggregate(
-            Sum("amount")
+            Sum("amount",default=0)
         )
 
         if operation_entry["amount__sum"] != None:
@@ -81,25 +82,63 @@ class ServicesMonthlyBill(models.Model):
             return contract_sum
         else:
             return "0"
-        
+
     def get_sum_bank_operaton_entry(self):
+       
         from apps.operation.models import OperationEntry
 
-        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id).values('bank').annotate(total_amount=Sum('amount'))
-        print(operation_entry)
-        # obj = {}
-        for operation in operation_entry:
-            obj = {
-                    "bank": operation["bank"],
-                    "operation_amount": operation["total_amount"],
-                }
-            return
-           
-            
-            
+        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id).values("monthly_bill","bank").annotate(total_amount=Sum("amount", default=0))
+        return operation_entry
+    
+    def diff_sum_adv(self):
+        this_contract = AdditionalContract.objects.get(servicesmonthlybill=self.id)
+        diff = this_contract.contract_sum -this_contract.adv_all_sum
         
-     
-        return "0"    
+        return diff
+    
+    def sum_other_subcontr(self):
+        sub_sum = SubcontractMonth.objects.filter(
+        month_bill=self.id, other__isnull=False).aggregate(Sum("amount", default=0))
+        # sum_actual = sub_sum.get("amount__sum")
+        return sub_sum  
+    
+    def sum_real_subcontract(self):
+        suncontr_month = SubcontractMonth.objects.filter(
+        month_bill=self.id,).aggregate(Sum("amount", default=0))
+        return suncontr_month  
+    
+    def sum_operation_out_subcontract(self):
+        from apps.operation.models import OperationOut
+        suncontr_out = OperationOut.objects.filter(
+        suborder__month_bill=self.id,).aggregate(Sum("sum", default=0))
+       
+        return suncontr_out 
+    
+    def diff_subcontr_out(self):
+        suncontr_month = SubcontractMonth.objects.filter(
+        month_bill=self.id,).aggregate(Sum("amount", default=0))
+        
+        from apps.operation.models import OperationOut
+        suncontr_out = OperationOut.objects.filter(
+        suborder__month_bill=self.id,).aggregate(Sum("sum", default=0))
+        
+        # for c in suncontr_month:
+        #     print(c) suncontr_out['sum__sum']
+        diff_subs = suncontr_month['amount__sum'] - suncontr_out['sum__sum']
+        
+        return diff_subs 
+       
+
+    @classmethod
+    def get_total_income(cls, category_service):
+        total_income = (
+            cls.objects.filter(service=category_service)
+            .annotate(month=TruncMonth("created_timestamp"))
+            .values("month")
+            .annotate(total_amount=Sum("additional_contract__contract_sum"))
+        )
+
+        return total_income
 
 
 # субподряд для ежемесячного счета
@@ -137,17 +176,8 @@ class SubcontractMonth(models.Model):
     month_bill = models.ForeignKey(
         ServicesMonthlyBill, on_delete=models.SET_NULL, blank=True, null=True
     )
-
-    # фактические оплаты
-    # check_entry = models.ForeignKey(
-    #     OperationOut,
-    #     verbose_name="Проверка оплаты",
-    #     on_delete=models.SET_NULL,
-    #     blank=True,
-    #     null=True,
-    # )
-
-
+    
+    
 #  Субподряд площадки
 class Adv(models.Model):
     name = models.CharField("название площадки", max_length=200, blank=True, null=True)

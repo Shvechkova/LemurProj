@@ -32,17 +32,17 @@ class SubcontractCategoryOtherView(viewsets.ModelViewSet):
     serializer_class = SubcontractOtherSerializer     
     
     
-# class ServicesMonthlyBillView(viewsets.ModelViewSet):
-#     queryset = SubcontractMonth.objects.all()
-#     serializer_class = SubcontractMonthSerializer
-#     http_method_names = ["get", "post", "put"]  
+class SubcontractMonthView(viewsets.ModelViewSet):
+    queryset = SubcontractMonth.objects.all()
+    serializer_class = SubcontractMonthSerializer
+    http_method_names = ["get", "post", "put"]  
     
-#     @action(detail=False, methods=["post", "put"], url_path=r"add")
-#     def create_subcontracts(self, request, *args, **kwargs):
-#         serializer = self.serializer_class(data=request.data, many=True)
-#         if serializer.is_valid():
-#             obj = serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+    @action(detail=False, methods=["post", "put"], url_path=r"add")
+    def create_subcontracts(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, many=True)
+        if serializer.is_valid():
+            obj = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         

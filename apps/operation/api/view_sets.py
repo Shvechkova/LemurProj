@@ -1,5 +1,5 @@
-from apps.operation.api.serializers import OperationEntrySerializer
-from apps.operation.models import OperationEntry
+from apps.operation.api.serializers import OperationEntrySerializer, OperationOutSerializer
+from apps.operation.models import OperationEntry, OperationOut
 
 from rest_framework import routers, serializers, viewsets, mixins, status
 from rest_framework.decorators import action
@@ -26,15 +26,10 @@ class OperationEntryViews(viewsets.ModelViewSet):
             obj.append(serializer.data)
         
         print(obj)   
-            # return Response(serializer.data)
-        
-        # client = request.query_params.get("client")
-      
-        # category = request.query_params.get("service")
-        # queryset = OperationEntry.objects.filter(client=client,service=category)
-        # serializer = self.serializer_class(queryset, many=True)
-        
-        
-        # return Response(serializer.data)
         return Response(obj)
+    
+class OperationOutViews(viewsets.ModelViewSet):
+    queryset = OperationOut.objects.all()
+    serializer_class = OperationOutSerializer
+    http_method_names = ["get", "post",]    
    

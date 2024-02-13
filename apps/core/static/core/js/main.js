@@ -1,3 +1,14 @@
+
+// const opetaionEntryEmpty = document.querySelectorAll(".operation_entry_bank")
+
+// if(opetaionEntryEmpty){
+//   opetaionEntryEmpty.forEach((item)=>{
+//     console.log(item.firstChild)
+//     console.log(item.childNodes(".operation_entry_bank_true"))
+   
+//   })
+// }
+
 function modal(elem, buttonAdd) {
   const modal_windows = document.getElementById(elem);
   modal_windows.classList.add("modal-active");
@@ -165,3 +176,4 @@ function choiceColor() {
     });
   });
 }
+

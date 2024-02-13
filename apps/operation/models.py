@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.service.models import ServicesMonthlyBill
+from apps.service.models import ServicesMonthlyBill, SubcontractMonth
 
 
 class CategoryOperation(models.Model):
@@ -34,8 +34,6 @@ class OperationEntry(models.Model):
     category = models.ForeignKey(
         CategoryOperation, on_delete=models.PROTECT, blank=True, null=True
     )
-    # comment = models.TextField("Комментарий", blank=True, null=True)
-    
     monthly_bill = models.ForeignKey(
         ServicesMonthlyBill, on_delete=models.PROTECT, blank=True, null=True
     )
@@ -50,13 +48,20 @@ class OperationOut(models.Model):
     )
     sum = models.PositiveIntegerField(default="0")
     comment = models.TextField("Комментарий", blank=True, null=True)
-    BANK = (
-        ("OOO", "ООО"),
-        ("IP", "ИП"),
-        ("$", "$"),
+    bank = models.ForeignKey(
+        BankOperation, on_delete=models.PROTECT, blank=True, null=True
     )
+    # BANK = (
+    #     ("OOO", "ООО"),
+    #     ("IP", "ИП"),
+    #     ("$", "$"),
+    # )
 
-    bank = models.CharField(max_length=4, choices=BANK, verbose_name="Счет поступления",  default="OOO")
+    # bank = models.CharField(max_length=4, choices=BANK, verbose_name="Счет поступления",  default="OOO")
+    suborder = models.ForeignKey(
+        SubcontractMonth, on_delete=models.PROTECT, verbose_name="Субподряд", blank=True, null=True
+    )
+    
     name = models.ForeignKey(
         NameOperation, on_delete=models.PROTECT, verbose_name="Название операции", blank=True, null=True
     )

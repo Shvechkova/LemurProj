@@ -11,7 +11,7 @@ router.register(r"api/service_category", view_sets.ServiceView)
 router.register(r"api/month_bill", view_sets.ServicesMonthlyBillView)
 router.register(r"api/subcontract-category-adv", view_sets.SubcontractCategoryAdvView)
 router.register(r"api/subcontract-category-other", view_sets.SubcontractCategoryOtherView)
-# router.register(r"api/subcontract", view_sets.ServicesMonthlyBillView)
+router.register(r"api/subcontract", view_sets.SubcontractMonthView)
 # router.register(r"create-contract", views.CreateContract)
 # basename="service"
 # router.register(r'bill/client_list/', views.BillViewSet)

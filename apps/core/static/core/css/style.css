@@ -468,10 +468,12 @@ input[type="date"]:before {
 
 .bill_oretation-add_title {
   background-color: #F3FCF2;
+  
 }
 
 .bill_oretation-exit_title {
   background-color: #FFEDED;
+ 
 }
 
 .oretation-add-bg {
@@ -485,6 +487,7 @@ input[type="date"]:before {
 }
 .add-operation-entry{
   cursor: pointer;
+  width: 120px;
 }
 
 .result_ok{
@@ -493,10 +496,37 @@ input[type="date"]:before {
 .result_not-wrap{
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 .result_not{
  
 }
 .result_not_after{
+  position: absolute;
+  overflow: visible!important;
   color:red;
+  top: 50%;
+  z-index: 200;
+}
+
+.add-operation-out{
+  width: 120px;
+  height: 100%;
+
+  margin-top: 33px;
+ 
+   
+}
+
+.oretation-out-bg {
+  margin-left: 20px;
+  background-color: #FFEDED;
+  display: flex;
+}
+.margin_left{
+  margin-left: 20px;
+}
+
+.p_left{
+  padding-left: 20px;
 }

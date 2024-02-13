@@ -12,6 +12,11 @@ if (btnSubcontarct) {
       budgetInnerAll.innerHTML = +sumAdv;
 
       modal(elem);
+
+      getOldSumcintract(element)
+
+
+
       getInfoBill(element);
       createInputSubcontract(element);
       observerChangeCreateInput(element);
@@ -181,8 +186,6 @@ function addSubcontractFetch(idBill) {
       arrSubcontarctAll.push(contractObj);
     });
 
-
-
     const endpoint = "/service/api/subcontract/add/";
     let csrfToken = getCookie("csrftoken");
     let data = JSON.stringify(arrSubcontarctAll);
@@ -203,4 +206,27 @@ function addSubcontractFetch(idBill) {
         }
       });
   });
+}
+
+function getOldSumcintract(element){
+const idSubsAdv = element.getAttribute(
+  "data-id-subcontr-adv"
+);
+const idSubsOther = element.getAttribute(
+  "data-id-subcontr-other"
+);
+const idSubsAdvrepl = idSubsAdv.replace(
+  /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
+  ""
+);
+const idSubsOtherrepl = idSubsOther.replace(
+  /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
+  ""
+);
+const idOperationAdv = idSubsAdvrepl.split("-");
+const idOperationOther = idSubsOtherrepl.split("-");
+console.log(idOperationAdv,idOperationOther)
+
+
+
 }
