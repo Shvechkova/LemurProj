@@ -488,6 +488,17 @@ input[type="date"]:before {
 .add-operation-entry{
   cursor: pointer;
   width: 120px;
+
+  height: 100%;
+
+  margin-top: 33px;
+
+}
+.bill-month-client-suborder_diff{
+  cursor:pointer;
+}
+.suborder_out_operation{
+  cursor: pointer;
 }
 
 .result_ok{
@@ -499,14 +510,16 @@ input[type="date"]:before {
   position: relative;
 }
 .result_not{
- 
+
 }
 .result_not_after{
   position: absolute;
   overflow: visible!important;
   color:red;
-  top: 50%;
+  top: 70%;
   z-index: 200;
+  font-size: 15px;
+  left: 10px;
 }
 
 .add-operation-out{
@@ -529,4 +542,10 @@ input[type="date"]:before {
 
 .p_left{
   padding-left: 20px;
+}
+.bill-month_result{
+  width: fit-content;
+  display: flex;
+ 
+  width: auto;
 }

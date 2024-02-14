@@ -10,6 +10,9 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
 # from apps import service
 
+from operator import itemgetter
+from itertools import groupby
+
 
 from apps.client.models import AdditionalContract, Client
 
@@ -40,33 +43,30 @@ def index(request):
 
 def service_one(request, slug):
     month_bill_all = ServicesMonthlyBill.objects.all()
-    # month_bill_last = ServicesMonthlyBill.objects.latest('created_timestamp')
-    
     category_service = Service.objects.get(name=slug)
-    client = Client.objects.filter(contract__service=category_service.id)
+  
+    ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service).order_by("-created_timestamp")
 
-    ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service)
-
-    # total_income = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
-    #     'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__contract_sum'))
     total_income = ServicesMonthlyBill.get_total_income(category_service)
+    total_adv = ServicesMonthlyBill.get_total_income_adv(category_service)
     
-    total_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
-        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
 
-    suncontr_adv = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
-        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
-
+   
     subcontractors = SubcontractMonth.objects.all()
     operation_entry = OperationEntry.objects.all()
     advCategory = Adv.objects.all()
 
-
-   
+    bill = (
+        ordered_bill.annotate(month=TruncMonth(
+        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+        )
+    
+    print(bill)
+    
+    
     title = category_service.id
     context = {
         "title": title,
-        "client": client,
         "month_bill_all": month_bill_all,
         "category_service": category_service,
         "ordered_bill": ordered_bill,

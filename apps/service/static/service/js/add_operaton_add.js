@@ -100,6 +100,7 @@ function addFetchOperationEntry(element, endpoint) {
             sumChecked = +intMonthSum / 2;
             return;
           } else {
+            
             const otherSumCheck = document.querySelector("#other_sum_namber");
             sumChecked = +otherSumCheck.value;
             return;

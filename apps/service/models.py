@@ -83,12 +83,26 @@ class ServicesMonthlyBill(models.Model):
         else:
             return "0"
 
-    def get_sum_bank_operaton_entry(self):
-       
+# суммы по операциям прихода денег банки   
+    def get_sum_bank_operaton_entry_bank_one(self):
         from apps.operation.models import OperationEntry
 
-        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id).values("monthly_bill","bank").annotate(total_amount=Sum("amount", default=0))
+        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id, bank=1).values("bank").annotate(total_amount=Sum("amount", default=0))
         return operation_entry
+    
+    def get_sum_bank_operaton_entry_bank_two(self):
+        from apps.operation.models import OperationEntry
+
+        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id, bank=2).values("bank").annotate(total_amount=Sum("amount", default=0))
+        return operation_entry
+    
+    def get_sum_bank_operaton_entry_bank_three(self):
+        from apps.operation.models import OperationEntry
+
+        operation_entry = OperationEntry.objects.filter(monthly_bill=self.id, bank=3).values("bank").annotate(total_amount=Sum("amount", default=0))
+        return operation_entry
+    
+    
     
     def diff_sum_adv(self):
         this_contract = AdditionalContract.objects.get(servicesmonthlybill=self.id)
@@ -107,6 +121,8 @@ class ServicesMonthlyBill(models.Model):
         month_bill=self.id,).aggregate(Sum("amount", default=0))
         return suncontr_month  
     
+    
+    
     def sum_operation_out_subcontract(self):
         from apps.operation.models import OperationOut
         suncontr_out = OperationOut.objects.filter(
@@ -122,13 +138,75 @@ class ServicesMonthlyBill(models.Model):
         suncontr_out = OperationOut.objects.filter(
         suborder__month_bill=self.id,).aggregate(Sum("sum", default=0))
         
-        # for c in suncontr_month:
-        #     print(c) suncontr_out['sum__sum']
         diff_subs = suncontr_month['amount__sum'] - suncontr_out['sum__sum']
         
         return diff_subs 
-       
+    
+    # суммы по операциям вывода банки   
+    def get_sum_bank_operaton_out_bank_one(self):
+        from apps.operation.models import OperationOut
+        
+        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=1).values("bank").annotate(total_amount=Sum("sum", default=0))
 
+        return operation_out_bank
+    
+    def get_sum_bank_operaton_out_bank_two(self):
+        from apps.operation.models import OperationOut
+        
+        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=2).values("bank").annotate(total_amount=Sum("sum", default=0))
+
+        return operation_out_bank
+    
+    def get_sum_bank_operaton_out_bank_three(self):
+        from apps.operation.models import OperationOut
+        
+        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=3).values("bank").annotate(total_amount=Sum("sum", default=0))
+        print(operation_out_bank)
+        return operation_out_bank
+    
+    def get_sum_bank_operaton_out_bank(self):
+        from apps.operation.models import OperationOut
+        
+        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id).values("bank").annotate(total_amount=Sum("sum", default=0))
+        operation = {}
+        obj = {}
+        for operation_out in operation_out_bank:
+            obj = {
+                    "bank": operation_out["bank"],
+                    "total_amount": operation_out["total_amount"],
+                }
+            print(operation_out)
+           
+            
+            
+        print(operation_out_bank)
+        return operation_out_bank
+    
+    
+    
+    
+    
+    def get_sum_planning_direct(self):
+        plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id, adv=1)
+
+        return plannig_sum
+    
+    def get_sum_planning_target(self):
+        plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id, adv=2)
+
+        return plannig_sum
+    
+    # def get_id_operation_out(self):
+    #     plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id, adv=2)
+
+    #     return plannig_sum
+        
+        
+            
+                
+       
+    
+    
     @classmethod
     def get_total_income(cls, category_service):
         total_income = (
@@ -139,6 +217,24 @@ class ServicesMonthlyBill(models.Model):
         )
 
         return total_income
+    
+    @classmethod
+    def get_total_income_adv(cls, category_service):
+        total_adv = (
+            cls.objects.filter(service=category_service).annotate(month=TruncMonth(
+        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+        )
+
+        return total_adv
+    
+    # @classmethod
+    # def get_total_operation_entry(cls, category_service):
+    #     total_adv = (
+    #         cls.objects.filter(service=category_service).annotate(month=TruncMonth(
+    #     'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+    #     )
+
+    #     return total_adv
 
 
 # субподряд для ежемесячного счета

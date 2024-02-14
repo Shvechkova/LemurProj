@@ -31,5 +31,17 @@ class OperationEntryViews(viewsets.ModelViewSet):
 class OperationOutViews(viewsets.ModelViewSet):
     queryset = OperationOut.objects.all()
     serializer_class = OperationOutSerializer
-    http_method_names = ["get", "post",]    
+    http_method_names = ["get", "post",] 
+    
+    @action(detail=False, methods=["post"], url_path=r"operation_out_filter")
+    def operation_out_filter(
+        self,
+        request,
+    ):
+     
+        data =  request.data
+        queryset = OperationOut.objects.filter(suborder=data['id'])
+        serializer = self.serializer_class(queryset, many=True)
+           
+        return Response(serializer.data)   
    
