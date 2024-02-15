@@ -9,7 +9,7 @@ from django.db.models.functions import TruncMonth
 # from apps.operation.models import OperationEntry, OperationOut
 
 
-# Create your models here.
+# Create your models here.f
 # created_timestamp = models.DateTimeField(default=timezone.now)
 class Service(models.Model):
     name = models.CharField("Категории услуг", max_length=150, blank=True, null=True)
@@ -130,6 +130,7 @@ class ServicesMonthlyBill(models.Model):
        
         return suncontr_out 
     
+    
     def diff_subcontr_out(self):
         suncontr_month = SubcontractMonth.objects.filter(
         month_bill=self.id,).aggregate(Sum("amount", default=0))
@@ -141,6 +142,47 @@ class ServicesMonthlyBill(models.Model):
         diff_subs = suncontr_month['amount__sum'] - suncontr_out['sum__sum']
         
         return diff_subs 
+    
+    
+    def diff_subcontr_out_operation(self):
+        this_contract = AdditionalContract.objects.get(servicesmonthlybill=self.id)
+        
+        # suncontr_month = SubcontractMonth.objects.filter(
+        # month_bill=self.id,).aggregate(Sum("amount", default=0))
+        
+        from apps.operation.models import OperationOut
+        suncontr_out = OperationOut.objects.filter(
+        suborder__month_bill=self.id,).aggregate(Sum("sum", default=0))
+        
+        diff_all_out_operation = this_contract.diff_sum - suncontr_out['sum__sum']
+
+        # obj = []
+        direct = {
+           
+            "all_sum_adv":this_contract.diff_sum,
+            "all_operation_sum_out": suncontr_out['sum__sum'],
+            "diff_sum": diff_all_out_operation,
+            
+        }
+     
+        return direct 
+        
+    
+    
+    # {% if bill.diff_subcontr_out_operation.diff_sum == 0%} 
+    #     <p class="result_ok">{{bill.diff_subcontr_out_operation.all_sum_adv}} ₽</p>
+    #     {% else %}
+    #     <div class="result_not-wrap"><p class="result_not">
+    #       {{bill.diff_subcontr_out_operation.all_operation_sum_out}}
+    #       <p class="result_not_after">/остаток {{bill.diff_subcontr_out_operation.diff_sum}} ₽</p>
+    #     </p>  </div> 
+    #     {% endif %}
+    
+    
+    
+    
+    
+    
     
     # суммы по операциям вывода банки   
     def get_sum_bank_operaton_out_bank_one(self):
@@ -161,26 +203,41 @@ class ServicesMonthlyBill(models.Model):
         from apps.operation.models import OperationOut
         
         operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=3).values("bank").annotate(total_amount=Sum("sum", default=0))
-        print(operation_out_bank)
+       
         return operation_out_bank
+    
     
     def get_sum_bank_operaton_out_bank(self):
         from apps.operation.models import OperationOut
         
         operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id).values("bank").annotate(total_amount=Sum("sum", default=0))
-        operation = {}
-        obj = {}
-        for operation_out in operation_out_bank:
-            obj = {
-                    "bank": operation_out["bank"],
-                    "total_amount": operation_out["total_amount"],
+        obj = [{
+                    "bank":0,
+                    "sum": 0}]*3
+     
+        for sum_bank in operation_out_bank:
+            if sum_bank['bank']  == 1:
+                bank1 = {
+                    "bank": sum_bank['bank'],
+                    "sum": sum_bank['total_amount'],
                 }
-            print(operation_out)
-           
-            
-            
-        print(operation_out_bank)
-        return operation_out_bank
+                obj[0] = bank1
+            if sum_bank['bank']  == 2:
+                bank2 = {
+                    "bank": sum_bank['bank'],
+                    "sum": sum_bank['total_amount'],
+                }
+                obj[1] = bank2
+            if sum_bank['bank']  == 3:
+                bank3 = {
+                    "bank": sum_bank['bank'],
+                    "sum": sum_bank['total_amount'],
+                }
+                obj[3] = bank3 
+
+        count = len(obj)
+     
+        return obj
     
     
     
@@ -196,17 +253,36 @@ class ServicesMonthlyBill(models.Model):
 
         return plannig_sum
     
-    # def get_id_operation_out(self):
-    #     plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id, adv=2)
-
-    #     return plannig_sum
-        
-        
+    def get_sum_planning_adv(self):
+        plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id,adv__isnull=False)
+        obj = []
+        for plan in plannig_sum:
+            if plan.adv_id == 1:
+                direct = {
+                    "id": plan.id,
+                    "adv": plan.adv_id,
+                    "sum": plan.amount,
+                }
+                obj.append(direct)
+            if plan.adv_id == 2:
+                target = {
+                    "id": plan.id,
+                    "adv": plan.adv_id,
+                    "sum": plan.amount,
+                }
+                obj.append(target)
             
-                
+        count = len(obj)
+        if count == 1:
+            null_list = {
+                    "adv": 0,
+                    "0": 0,
+                    "0": 0,
+                }
+            obj.append(null_list)
        
-    
-    
+        return obj
+  
     @classmethod
     def get_total_income(cls, category_service):
         total_income = (

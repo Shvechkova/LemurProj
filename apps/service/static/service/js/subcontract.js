@@ -13,7 +13,7 @@ if (btnSubcontarct) {
 
       modal(elem);
 
-      getOldSumcintract(element)
+      // getOldSumcintract(element)
 
 
 
@@ -208,25 +208,25 @@ function addSubcontractFetch(idBill) {
   });
 }
 
-function getOldSumcintract(element){
-const idSubsAdv = element.getAttribute(
-  "data-id-subcontr-adv"
-);
-const idSubsOther = element.getAttribute(
-  "data-id-subcontr-other"
-);
-const idSubsAdvrepl = idSubsAdv.replace(
-  /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
-  ""
-);
-const idSubsOtherrepl = idSubsOther.replace(
-  /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
-  ""
-);
-const idOperationAdv = idSubsAdvrepl.split("-");
-const idOperationOther = idSubsOtherrepl.split("-");
-console.log(idOperationAdv,idOperationOther)
+// function getOldSumcintract(element){
+// const idSubsAdv = element.getAttribute(
+//   "data-id-subcontr-adv"
+// );
+// const idSubsOther = element.getAttribute(
+//   "data-id-subcontr-other"
+// );
+// const idSubsAdvrepl = idSubsAdv.replace(
+//   /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
+//   ""
+// );
+// const idSubsOtherrepl = idSubsOther.replace(
+//   /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
+//   ""
+// );
+// const idOperationAdv = idSubsAdvrepl.split("-");
+// const idOperationOther = idSubsOtherrepl.split("-");
+// console.log(idOperationAdv,idOperationOther)
 
 
 
-}
+// }

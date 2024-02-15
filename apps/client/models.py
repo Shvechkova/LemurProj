@@ -85,6 +85,7 @@ class AdditionalContract(models.Model):
         null=True,
     )
     contract_sum = models.PositiveIntegerField("сумма контракта", default="0")
+    diff_sum = models.PositiveIntegerField("сумма контракта", default="0")
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )

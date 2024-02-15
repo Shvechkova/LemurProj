@@ -27,7 +27,7 @@ if (addOperationOut) {
       const modalWindows = document.getElementById(elem);
 
       const endpointOperation = "/operations/api/out/";
-      addFetchOperationOut(element, endpointOperation);
+      addFetchOperationOut(element, endpointOperation,elem);
     });
   });
 }
@@ -61,7 +61,7 @@ function getInfoBillOperationOperOut(element) {
   modalsunordrt_operation_all.innerHTML = 0
 }
 
-function addFetchOperationOut(element, endpoint) {
+function addFetchOperationOut(element, endpoint, elem) {
   const btnAddOperationEntry = document.querySelector(".operation_add_out");
   // const allMonthSum = element.getAttribute(
   //   "name_suborder_modal"
@@ -88,7 +88,7 @@ function addFetchOperationOut(element, endpoint) {
     );
 
     let intMonthSum = allMonthSum.replace(/[^0-9]/g, "");
-    console.log(intMonthSum);
+    
     if (stepCheked == "1") {
       sumElement.forEach((el) => {
         if (el.checked) {
@@ -104,7 +104,7 @@ function addFetchOperationOut(element, endpoint) {
               "#other_sum_namber_out"
             );
             sumChecked = +otherSumCheck.value;
-            console.log(otherSumCheck.value);
+          
             return;
           }
         }
@@ -114,10 +114,10 @@ function addFetchOperationOut(element, endpoint) {
         if (el.checked) {
           if (el.value > "1") {
             sumChecked = +el.value;
-            console.log(el)
+         
             return;
           } else {
-            const otherSumCheck = document.querySelector("#other_sum_namber");
+            const otherSumCheck = document.querySelector("#other_sum_namber_out");
             sumChecked = +otherSumCheck.value;
             return;
           }
@@ -138,7 +138,7 @@ function addFetchOperationOut(element, endpoint) {
     let object = {};
     form.forEach((value, key) => (object[key] = value));
     const dataJson = JSON.stringify(object);
-    console.log(dataJson);
+   
     let csrfToken = getCookie("csrftoken");
 
     fetch(endpoint, {
@@ -162,6 +162,7 @@ function addFetchOperationOut(element, endpoint) {
         }, 200);
       } else {
         const windowContent = document.getElementById(elem);
+     
         alertError(windowContent);
         const timerId = setTimeout(() => {
           location.reload();
@@ -172,28 +173,25 @@ function addFetchOperationOut(element, endpoint) {
 }
 
 function newOperationOut(element, elem) {
-  console.log(1);
+
   let operationIdvalue = element.getAttribute("data-id-sub");
   let operationAllSum = element.getAttribute("data-id-sub-amount");
-  console.log()
+  
   const idOperationrepl = operationIdvalue.replace(
     /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
     ""
   );
   let st = parseInt(operationAllSum.replace(/\s+/g, ""), 10);
   let sum_all = parseInt(operationAllSum.replace(/\s+/g, ""), 10);
-  console.log(idOperationrepl);
-  console.log(st)
+
   if (idOperationrepl !== "") {
     let data = new FormData();
     let object = {
       id: idOperationrepl,
     };
 
-    console.log(object);
-
     const dataJson = JSON.stringify(object);
-    console.log(dataJson);
+   
     let csrfToken = getCookie("csrftoken");
     fetch("/operations/api/out/operation_out_filter/", {
       method: "POST",
@@ -205,12 +203,12 @@ function newOperationOut(element, elem) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+       
         const lastOperationWrap = document.querySelector(".previous_operation_out");
         lastOperationWrap.innerHTML = "";
 
         data.forEach((item) => {
-          console.log(item.created_timestamp);
+      
           var options = {
             day: "numeric",
             month: "long",
@@ -244,7 +242,7 @@ function newOperationOut(element, elem) {
         });
           
         sumOperationEnded = st;
-        console.log(sumOperationEnded)
+   
         const sumExpected = document.querySelector(".sum_operation_suborders_all");
         sumExpected.innerHTML = sum_all - sumOperationEnded;
         const sumChekedWrap = document.getElementById("sum_cheked_out");

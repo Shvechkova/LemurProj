@@ -42,10 +42,11 @@ def index(request):
 
 
 def service_one(request, slug):
-    month_bill_all = ServicesMonthlyBill.objects.all()
+   
     category_service = Service.objects.get(name=slug)
   
-    ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service).order_by("-created_timestamp")
+    # ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service).order_by("-created_timestamp")
+    ordered_bill = ServicesMonthlyBill.objects.filter(service=category_service).prefetch_related('additional_contract',"client").order_by("-created_timestamp")
 
     total_income = ServicesMonthlyBill.get_total_income(category_service)
     total_adv = ServicesMonthlyBill.get_total_income_adv(category_service)
@@ -56,18 +57,18 @@ def service_one(request, slug):
     operation_entry = OperationEntry.objects.all()
     advCategory = Adv.objects.all()
 
-    bill = (
-        ordered_bill.annotate(month=TruncMonth(
-        'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
-        )
+    # bill = (
+    #     ordered_bill.annotate(month=TruncMonth(
+    #     'created_timestamp')).values('month').annotate(total_amount=Sum('additional_contract__adv_all_sum'))
+    #     )
     
-    print(bill)
-    
+    # print(bill)
+
     
     title = category_service.id
     context = {
         "title": title,
-        "month_bill_all": month_bill_all,
+        
         "category_service": category_service,
         "ordered_bill": ordered_bill,
         'total_income': total_income,

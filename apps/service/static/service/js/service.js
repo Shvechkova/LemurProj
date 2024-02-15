@@ -7,12 +7,11 @@ if (addBill) {
     el.addEventListener("click", () => {
       let elem = el.getAttribute("data-name");
       let dataBill = el.getAttribute("data-month");
-      // 2024-02-08 11:01:04.011583
-      const date = new Date();
-      let currentYear = new Date().getFullYear();
-      const monthName = date.toLocaleString("default", { month: "long" });
-      let currentMonthYear = monthName.substr(0, 3) + " " + currentYear;
-      console.log(date)
+      // const date = new Date();
+      // let currentYear = new Date().getFullYear();
+      // const monthName = date.toLocaleString("default", { month: "long" });
+      // let currentMonthYear = monthName.substr(0, 3) + " " + currentYear;
+      // console.log(date);
 
       const pageName = document.getElementById("page_name").value;
       const selectContract = document.querySelector(
@@ -31,12 +30,12 @@ if (addBill) {
       const contractSum = document.querySelector(".modal-contract_sum");
       contractSum.value = "";
       modal(elem);
-      getClientFilterCategory(pageName, dataBill, currentMonthYear);
+      getClientFilterCategory(pageName, dataBill,elem);
     });
   });
 }
 
-function getClientFilterCategory(pageName, dataBill, currentMonthYear) {
+function getClientFilterCategory(pageName, dataBill,elem) {
   const endpoint =
     "/clients/api/client/client_filter_list/?service=" + pageName;
   const select = document.querySelector(".modal-client");
@@ -95,14 +94,13 @@ function getClientFilterCategory(pageName, dataBill, currentMonthYear) {
               const contractSum = document.querySelector(".modal-contract_sum");
               contractSum.value = value.contract_sum;
             });
-            addMonthBill(dataBill,);
+            addMonthBill(dataBill,elem);
           });
       });
     });
 }
 
-
-function addMonthBill(dataBill,) {
+function addMonthBill(dataBill,elem) {
   const addMontContract = document.querySelector(
     ".client_additional-contract_add"
   );
@@ -111,6 +109,11 @@ function addMonthBill(dataBill,) {
     const form = document.getElementById("month_bill");
     const service_name = document.getElementById("page_name").value;
     const contractId = document.getElementById("contract_main").value;
+
+    const contract_sum = document.getElementById("contract_sum").value;
+    const adv_sum = document.getElementById("adv_all_sum").value;
+    const diff_sum = contract_sum - adv_sum
+    
 
     let date = new Date();
 
@@ -122,6 +125,7 @@ function addMonthBill(dataBill,) {
     const data = new FormData(form);
     data.append("service", service_name);
     data.append("contract_number", contractName);
+    data.append("diff_sum", diff_sum);
 
     // if (dataBill.toLowerCase() === currentMonthYear) {
     //   console.log(1);
@@ -168,6 +172,21 @@ function addMonthBill(dataBill,) {
             "Content-Type": "application/json; charset=UTF-8",
             "X-CSRFToken": csrfToken,
           },
+        }).then((response) => {
+          if (response.ok) {
+            const windowContent = document.getElementById(elem);
+            alertSuccess(windowContent);
+            const timerId = setTimeout(() => {
+              location.reload();
+            }, 200);
+          } else {
+            const windowContent = document.getElementById(elem);
+            console.log(windowContent)
+            alertError(windowContent);
+            const timerId = setTimeout(() => {
+              location.reload();
+            }, 200);
+          }
         });
       });
   });

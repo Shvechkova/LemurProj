@@ -26,13 +26,13 @@ if (addOperationEntry) {
         chekinOtherSum.checked = true;
       });
       newOperationEntry(element, elem);
-      const modalWindows = document.getElementById(elem);
-      modalWindows.addEventListener("input", () => {
-        validate(elem, ".operation_add");
-      });
+      // const modalWindows = document.getElementById(elem);
+      // modalWindows.addEventListener("input", () => {
+      //   validate(elem, ".operation_add");
+      // });
       getInfoBillOperation(element);
       const endpointOperation = "/operations/api/entry/";
-      addFetchOperationEntry(element, endpointOperation);
+      addFetchOperationEntry(element, endpointOperation, elem);
     });
   });
 }
@@ -59,7 +59,7 @@ function getInfoBillOperation(element) {
   modalSumcontract.innerHTML = allMonthSum;
 }
 
-function addFetchOperationEntry(element, endpoint) {
+function addFetchOperationEntry(element, endpoint, elem) {
 
   const btnAddOperationEntry = document.querySelector(".operation_add");
   const allMonthSum = element.getAttribute(
@@ -145,10 +145,22 @@ function addFetchOperationEntry(element, endpoint) {
         "X-CSRFToken": csrfToken,
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
+    .then((response) => {
+      if (response.ok) {
+        const windowContent = document.getElementById(elem);
+        alertSuccess(windowContent);
+        const timerId = setTimeout(() => {
+          location.reload();
+        }, 200);
+      } else {
+        const windowContent = document.getElementById(elem);
+        console.log(windowContent)
+        alertError(windowContent);
+        const timerId = setTimeout(() => {
+          location.reload();
+        }, 200);
+      }
+    });
   });
 }
 
