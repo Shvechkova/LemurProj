@@ -61,6 +61,24 @@ class ServicesMonthlyBill(models.Model):
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
+    
+    contract_number = models.CharField("название номер контракта", max_length=200,default=None)
+    
+    contract_sum = models.PositiveIntegerField("сумма контракта", default="0")
+    
+    adv_all_sum = models.PositiveIntegerField("сумма ведения для адв", default="0")
+    
+    diff_sum = models.PositiveIntegerField("сумма для распределения по скбподряду адв", default="0")
+   
+    chekin_sum_entrees =  models.BooleanField("чекин получения полной оплаты от клиента", default=False)
+    
+    chekin_sum_adv =  models.BooleanField("чекин оплаты всех субподрядов", default=False)
+    
+    chekin_add_subcontr =  models.BooleanField("чекин есть ли распределение денег по субподрядам", default=False)
+
+    
+    
+    
 
     def get_all_sum_entry_operation(self):
         from apps.operation.models import OperationEntry
@@ -102,8 +120,6 @@ class ServicesMonthlyBill(models.Model):
         operation_entry = OperationEntry.objects.filter(monthly_bill=self.id, bank=3).values("bank").annotate(total_amount=Sum("amount", default=0))
         return operation_entry
     
-    
-    
     def diff_sum_adv(self):
         this_contract = AdditionalContract.objects.get(servicesmonthlybill=self.id)
         diff = this_contract.contract_sum -this_contract.adv_all_sum
@@ -120,8 +136,6 @@ class ServicesMonthlyBill(models.Model):
         suncontr_month = SubcontractMonth.objects.filter(
         month_bill=self.id,).aggregate(Sum("amount", default=0))
         return suncontr_month  
-    
-    
     
     def sum_operation_out_subcontract(self):
         from apps.operation.models import OperationOut
@@ -166,47 +180,7 @@ class ServicesMonthlyBill(models.Model):
         }
      
         return direct 
-        
-    
-    
-    # {% if bill.diff_subcontr_out_operation.diff_sum == 0%} 
-    #     <p class="result_ok">{{bill.diff_subcontr_out_operation.all_sum_adv}} ₽</p>
-    #     {% else %}
-    #     <div class="result_not-wrap"><p class="result_not">
-    #       {{bill.diff_subcontr_out_operation.all_operation_sum_out}}
-    #       <p class="result_not_after">/остаток {{bill.diff_subcontr_out_operation.diff_sum}} ₽</p>
-    #     </p>  </div> 
-    #     {% endif %}
-    
-    
-    
-    
-    
-    
-    
-    # суммы по операциям вывода банки   
-    def get_sum_bank_operaton_out_bank_one(self):
-        from apps.operation.models import OperationOut
-        
-        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=1).values("bank").annotate(total_amount=Sum("sum", default=0))
-
-        return operation_out_bank
-    
-    def get_sum_bank_operaton_out_bank_two(self):
-        from apps.operation.models import OperationOut
-        
-        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=2).values("bank").annotate(total_amount=Sum("sum", default=0))
-
-        return operation_out_bank
-    
-    def get_sum_bank_operaton_out_bank_three(self):
-        from apps.operation.models import OperationOut
-        
-        operation_out_bank = OperationOut.objects.filter(suborder__month_bill=self.id, bank=3).values("bank").annotate(total_amount=Sum("sum", default=0))
-       
-        return operation_out_bank
-    
-    
+   
     def get_sum_bank_operaton_out_bank(self):
         from apps.operation.models import OperationOut
         
@@ -239,19 +213,6 @@ class ServicesMonthlyBill(models.Model):
      
         return obj
     
-    
-    
-    
-    
-    def get_sum_planning_direct(self):
-        plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id, adv=1)
-
-        return plannig_sum
-    
-    def get_sum_planning_target(self):
-        plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id, adv=2)
-
-        return plannig_sum
     
     def get_sum_planning_adv(self):
         plannig_sum = SubcontractMonth.objects.filter(month_bill=self.id,adv__isnull=False)
@@ -303,6 +264,15 @@ class ServicesMonthlyBill(models.Model):
 
         return total_adv
     
+    @classmethod
+    def get_total_income_suborder(cls, category_service):
+        total_sub_adv = (
+            cls.objects.filter(service=category_service).annotate(month=TruncMonth(
+        'created_timestamp')).values('month').annotate(total_amount=Sum('subcontractmonth__amount'))
+        )
+   
+        return total_sub_adv
+    
     # @classmethod
     # def get_total_operation_entry(cls, category_service):
     #     total_adv = (
@@ -348,7 +318,8 @@ class SubcontractMonth(models.Model):
     month_bill = models.ForeignKey(
         ServicesMonthlyBill, on_delete=models.SET_NULL, blank=True, null=True
     )
-    
+    # chekin_sum_out =  models.BooleanField(default=False)
+
     
 #  Субподряд площадки
 class Adv(models.Model):

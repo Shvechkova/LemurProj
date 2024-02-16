@@ -549,3 +549,19 @@ input[type="date"]:before {
  
   width: auto;
 }
+
+.operation{
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.modal_adv_buget{
+  display: flex;
+  gap: 10px;
+}
+
+.client_info_modal{
+  display: flex;
+  gap: 10px;
+}

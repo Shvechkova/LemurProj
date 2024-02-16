@@ -1,5 +1,6 @@
 choiceColor();
 
+
 const addOperationOut = document.querySelectorAll(".suborder_out_operation");
 
 if (addOperationOut) {
@@ -173,7 +174,7 @@ function addFetchOperationOut(element, endpoint, elem) {
 }
 
 function newOperationOut(element, elem) {
-
+  console.log(1)
   let operationIdvalue = element.getAttribute("data-id-sub");
   let operationAllSum = element.getAttribute("data-id-sub-amount");
   
@@ -203,7 +204,7 @@ function newOperationOut(element, elem) {
     })
       .then((response) => response.json())
       .then((data) => {
-       
+       console.log(1)
         const lastOperationWrap = document.querySelector(".previous_operation_out");
         lastOperationWrap.innerHTML = "";
 

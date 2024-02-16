@@ -22,7 +22,7 @@ if (addOperationEntry) {
       const chekinOtherSum = document.getElementById("other_sum_namber");
       chekinOtherSum.addEventListener("input", () => {
         const chekinOtherSum = document.getElementById("other_sum");
-        console.log(11);
+     
         chekinOtherSum.checked = true;
       });
       newOperationEntry(element, elem);
@@ -45,6 +45,7 @@ function getInfoBillOperation(element) {
   const allMonthSum = element.getAttribute(
     "data-bill-month-sum-dont-operation"
   );
+
 
   const modalClient = document.querySelector(".operation_entry_client-name");
   const modalContract = document.querySelector(
@@ -134,7 +135,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
     let object = {};
     form.forEach((value, key) => (object[key] = value));
     const dataJson = JSON.stringify(object);
-    console.log(dataJson);
+
     let csrfToken = getCookie("csrftoken");
 
     fetch(endpoint, {
@@ -154,7 +155,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
         }, 200);
       } else {
         const windowContent = document.getElementById(elem);
-        console.log(windowContent)
+    
         alertError(windowContent);
         const timerId = setTimeout(() => {
           location.reload();
@@ -171,16 +172,17 @@ function newOperationEntry(element, elem) {
   let operationAllSum = element.getAttribute(
     "data-bill-month-sum-dont-operation"
   );
-  console.log(operationAllSum)
+
   const idOperationrepl = operationIdvalue.replace(
     /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
     ""
   );
-  console.log(idOperationrepl)
+
   const idOperation = idOperationrepl.split("-");
-  console.log(idOperation)
+    console.log(idOperationrepl)
 
   if (idOperationrepl !== "") {
+    console.log(idOperationrepl)
     const sumcheked = document.querySelector(".sum_cheked");
 
     let data = new FormData();
@@ -192,7 +194,7 @@ function newOperationEntry(element, elem) {
       object.push(Obj);
     });
     
-    console.log(object);
+    
     let st = parseInt(operationAllSum.replace(/\s+/g, ""), 10);
     let sumOperationEnded = "";
     const dataJson = JSON.stringify(object);
@@ -208,7 +210,7 @@ function newOperationEntry(element, elem) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        
         const lastOperationWrap = document.querySelector(".previous_operation");
         lastOperationWrap.innerHTML = "";
 

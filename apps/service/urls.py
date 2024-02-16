@@ -3,6 +3,7 @@ from django.urls import include, path
 from . import views
 from rest_framework import routers
 from .api import view_sets
+from django.views.decorators.cache import cache_page
 
 app_name = "service"
 
@@ -22,7 +23,7 @@ urlpatterns = [
     # path("ADV", views.adv_index, name="adv"),
     # path("<int:client_id>", views.service_one, name="service_one"),
     path("", include(router.urls)),
-    path("<slug:slug>", views.service_one, name="service_one"),
+    path("<slug:slug>",(views.service_one),name="service_one"),
     # path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 # <int:client_id>/<slug:slug>

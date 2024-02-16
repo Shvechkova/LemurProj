@@ -46,3 +46,9 @@ class SubcontractMonthView(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+    @action(detail=False, methods=["get"], url_path=r"(?P<pk>\d+)/subcontract_li")
+    def subcontract_list(self, request, pk):
+        pk = self.kwargs["pk"]
+        queryset = SubcontractMonth.objects.filter(month_bill=pk)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)

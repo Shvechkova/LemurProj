@@ -11,11 +11,14 @@ if (btnSubcontarct) {
       let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
       budgetInnerAll.innerHTML = +sumAdv;
 
-      modal(elem);
+      const add_subc = document.querySelector(".subcontarct_add");
+      modal(elem,add_subc);
+      const c = document.querySelector(".modal_add_subcontract_wrapper")
+      // c.innerHTML = ""
+      c.innerHTML = '<div class="modal_add_contract modal_add-subcontract"><select class="modal-subcontract-type choice"><option disabled selected class="modal-select empty" value="0">Тип</option><option class="modal-select" value="adv">площадка</option><option class="modal-select" value="other">премия</option></select></div>'
 
-      // getOldSumcintract(element)
 
-
+      getOldSumcintract(idBill);
 
       getInfoBill(element);
       createInputSubcontract(element);
@@ -208,25 +211,67 @@ function addSubcontractFetch(idBill) {
   });
 }
 
-// function getOldSumcintract(element){
-// const idSubsAdv = element.getAttribute(
-//   "data-id-subcontr-adv"
-// );
-// const idSubsOther = element.getAttribute(
-//   "data-id-subcontr-other"
-// );
-// const idSubsAdvrepl = idSubsAdv.replace(
-//   /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
-//   ""
-// );
-// const idSubsOtherrepl = idSubsOther.replace(
-//   /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
-//   ""
-// );
-// const idOperationAdv = idSubsAdvrepl.split("-");
-// const idOperationOther = idSubsOtherrepl.split("-");
-// console.log(idOperationAdv,idOperationOther)
+function getOldSumcintract(idBill) {
+//  const endpoint = "/service/api/subcontract/" +idBill +"/subcontract_li/";
+//   let csrfToken = getCookie("csrftoken");
+ 
 
+//   fetch(endpoint, {
+//     method: "GET",
+//     // body: data,
+//     headers: {
+//       "Content-Type": "application/json",
+//       "X-CSRFToken": csrfToken,
+//     },
+//   })
+//    .then((response) => response.json())
+//       .then((data) => {
+//         console.log(data.length);
+//       if(data.length == 0){
+//         return
+//       } 
+//       else{
+//         const c = document.querySelector(".modal_add_subcontract_wrapper")
+//         c.innerHTML = ""
 
+        
 
-// }
+    
+//         data.forEach(function (value, key) {
+//           let modal_add_subcontract = document.createElement("div");
+//           modal_add_subcontract.className = "modal_add_contract modal_add-subcontract";
+//            c.append(modal_add_subcontract)
+//           console.log(value.adv)
+//           if(value.adv == 1){
+//             modal_add_subcontract.innerHTML = '<input type="text" class="modal-subcontract-type input-200" placeholder="1" value="площадка">'
+//           } else if(value.adv == 2){
+//             modal_add_subcontract.innerHTML = '<input type="text" class="modal-subcontract-type input-200" placeholder="1" value="премия">'
+//           }
+
+//           new Input(
+//           "text",
+//           "modal-subcontract-type input-200",
+//           "",
+//           "сумма"
+//         ).afterTo(modal_add_subcontract);
+          
+//         });
+       
+
+//         // let button = document.createElement("button");
+//         // button.className = "modal_add_subcontract";
+//         // button.innerHTML = "OK";
+//         // select.nextElementSibling.after(button);
+
+//         // new Input("hidden", "subcontract_id", "").afterTo(select);
+
+//         // createNextSubcontractInput(button);
+//         return
+      
+     
+
+         
+
+//       }
+//       }); 
+}

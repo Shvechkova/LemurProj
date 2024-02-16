@@ -112,7 +112,6 @@ function addMonthBill(dataBill,elem) {
     const adv_sum = document.getElementById("adv_all_sum").value;
     const diff_sum = contract_sum - adv_sum
     
-    const clientId = document.querySelector(".modal-client");
 
     let date = new Date();
 
@@ -122,19 +121,41 @@ function addMonthBill(dataBill,elem) {
     const contractName = contractId + "/" + year + "-" + month;
 
     const data = new FormData(form);
-    data.append("client", clientId.value);
     data.append("service", service_name);
     data.append("contract_number", contractName);
-    data.append("contract", contractId);
-    data.append("contract_sum", contract_sum);
-    data.append("adv_all_sum", adv_sum);
     data.append("diff_sum", diff_sum);
-    
+
+
+    let object = {};
+    data.forEach((value, key) => (object[key] = value));
+    const dataJson = JSON.stringify(object);
+    let csrfToken = getCookie("csrftoken");
+    const endpoint = "/clients/api/additional_contract/";
+    fetch(endpoint, {
+      method: "POST",
+      body: dataJson,
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "X-CSRFToken": csrfToken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const client = data.client;
+        const service = data.service;
+        const contract = data.main_contract;
+        const additional_contract = data.id;
+
+        const form = new FormData();
+        form.append("client", client);
+        form.append("service", service);
+        form.append("contract", contract);
+        form.append("additional_contract", additional_contract);
 
         let object = {};
-        data.forEach((value, key) => (object[key] = value));
+        form.forEach((value, key) => (object[key] = value));
         const dataJson = JSON.stringify(object);
-console.log(dataJson)
+
         let csrfToken = getCookie("csrftoken");
 
         fetch("/service/api/month_bill/", {
@@ -149,17 +170,17 @@ console.log(dataJson)
             const windowContent = document.getElementById(elem);
             alertSuccess(windowContent);
             const timerId = setTimeout(() => {
-              // location.reload();
+              location.reload();
             }, 200);
           } else {
             const windowContent = document.getElementById(elem);
             console.log(windowContent)
             alertError(windowContent);
             const timerId = setTimeout(() => {
-              // location.reload();
+              location.reload();
             }, 200);
           }
         });
-     
+      });
   });
 }
