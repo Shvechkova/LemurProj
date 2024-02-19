@@ -9,21 +9,14 @@
   {% include "service/includes/modal/operation_out.html" %}
 
 <input type="hidden" id="page_name" value="{{ title }}" />
-
+{% comment %} 
 <section class="bill-month">
   <button
           class="open-modal btn_month_bill"
           data-name="modal-add-bill">
           +
         </button>
-  {% comment %} <button
-    class="open-modal modal-new_month button_black"
-    data-name="modal-new_month"
-  >
-    Начать новый месяц?не работает
-  </button>
 
-  {% now "M Y" %} {{ month_bill_last.created_timestamp|date:"M Y" }}  {% endcomment %}
 
   {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
   <div class="bill_month_one-wrap">
@@ -155,70 +148,6 @@
        </div>
           {% endfor %}  
 
-          {% comment %} 
-        <div class="bill_w-120"> 
-           {% for sum_planning in bill.get_sum_planning_direct %} 
-              <div class="suborder_out_operation"
-                data-sub-type="1"
-                data-name="modal-suborder_out_operation"
-                data-bill-month-id="{{ bill.id }}"
-                data-bill-month-adv="{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %}"
-                data-bill-month-client-name="{{ bill.client.client_name }}"
-                data-bill-month-name="{{ bill.additional_contract.contract_number }}"
-                data-bill-month-data="{{ created_timestamp.grouper }}"
-                data-name-sub=" {{sum_planning.adv.name}}"
-                data-id-sub="{% if sum_planning.operationout_set.all %}
-                    {{ sum_planning.id }}
-                    {% endif %}"
-                data-id-sub-amount="{{ sum_planning.amount }}" 
-                > 
-                  {{sum_planning.amount}} ₽
-                  
-                
-
-                </div>
-          {% empty %}
-                {% for subcontr in bill.subcontractmonth_set.all %}
-                {% if subcontr.adv.id == 1 %}
-                {% endif %}
-                {% ifchanged %}0 ₽{% endifchanged %}
-                {% empty %} 
-                n/a
-                {% endfor %}
-          {% endfor %} 
-        </div>
-
-        <div class="bill_w-120"> 
-          {% for planning_target in bill.get_sum_planning_target %} 
-                <div class="suborder_out_operation"
-                data-sub-type="1"
-                data-name="modal-suborder_out_operation"
-                data-bill-month-id="{{ bill.id }}"
-                data-bill-month-adv="{% diff_adv_sum all_sum=bill.additional_contract.contract_sum all_adv=bill.additional_contract.adv_all_sum %}"
-                data-bill-month-client-name="{{ bill.client.client_name }}"
-                data-bill-month-name="{{ bill.additional_contract.contract_number }}"
-                data-bill-month-data="{{ created_timestamp.grouper }}"
-                data-name-sub=" {{planning_target.adv.name}}"
-                data-id-sub="{% if planning_target.operationout_set.all %}
-                  {{ planning_target.id }}
-                  {% endif %}"
-                data-id-sub-amount="{{ planning_target.amount }}" 
-              > 
-                  {{planning_target.amount}} ₽
-                  
-                  
-
-                </div>
-         {% empty %}
-               {% for subcontr in bill.subcontractmonth_set.all %}
-               {% if subcontr.adv.id == 2 %}
-               {% endif %}
-               {% ifchanged %}0 ₽{% endifchanged %}
-               {% empty %} 
-               n/a
-               {% endfor %}
-         {% endfor %} 
-       </div> {% endcomment %}
       <div class="bill_w-120">
          
           {{bill.sum_other_subcontr.amount__sum|default_if_none:"0"}} ₽ 
@@ -374,10 +303,7 @@
 
       <div class="bill_w-120 suborder_title-bg">
     
-        {% comment %} <h3>{% for total_subs in total_sub %} {% if total_subs.month|date:"M Y" == created_timestamp.grouper %} 
-          {{ total_subs.total_amount }} 
-          {% endif %}
-          {% endfor %} ₽</h3> {% endcomment %}
+  
 
       </div>
 
@@ -397,7 +323,594 @@
     </div> 
     {% endfor %}
   </div>
+</section> {% endcomment %}
+
+<section class="bill-month">
+{% for bill in bills %}
+  <div class="bill_month_one-wrap">
+    
+      {% ifchanged %}
+      <h3 class="bill_month-title">{{ now|date:"M Y" }}</h3>
+      <div class="bill-month_category-title">
+        <div class="bill-month-client-counter"></div>
+        <div class="bill_w-120"><h3>Клиент</h3></div>
+        <div class="bill_w-120"><h3>Договор</h3></div>
+        <div class="bill_w-120">
+          <h3>Счёт</h3>
+          <button
+            class="open-modal btn_month_bill"
+            data-name="modal-add-bill"
+            data-month="0"
+          >
+            +
+          </button>
+        </div>
+        <div class="bill_w-120"><h3>Ведение</h3></div>
+        <div class="bill_w-120 suborder_title-bg"><h3>Субподряд</h3></div>
+        
+        {% for suborder_name in suborders_name %}
+        
+        <div class="bill_w-120 suborder_title-bg "><h4> {{suborder_name.name}}</h4></div>
+        
+        {% endfor %}
+        
+        <div class="bill_w-120 suborder_title-bg">
+          
+        <h4>Премии</h4></div> 
+        <div class="bill_w-120 bill_oretation-add_title margin_left"><h3>Приход</h3></div>
+  
+        <div class="bill_w-120 bill_oretation-add_title"><h4>ООО</h4></div>
+        <div class="bill_w-120 bill_oretation-add_title"><h4>ИП</h4></div>
+        <div class="bill_w-120 bill_oretation-add_title"><h4>$</h4></div>
+  
+        <div class="bill_w-120 bill_oretation-exit_title margin_left"><h3>Расход</h3></div>
+        <div class="bill_w-120 bill_oretation-exit_title"><h4>ООО</h4></div>
+        <div class="bill_w-120 bill_oretation-exit_title"><h4>ИП</h4></div>
+        <div class="bill_w-120 bill_oretation-exit_title"><h4>$</h4></div>
+      </div>
+      {% endifchanged %}
+
+      <div class="bill-month_item-wrapper">
+        <div class="bill-month-client-counter">{{ forloop.counter }}</div>
+        <div class="bill-month-client-name bill_w-120">
+          {{ bill.client.client_name }}
+        </div>
+        
+        <div class="bill-month-client-contract bill_w-120">
+          {{ bill.contract_number }}
+        </div>
+        <div class="bill-month-client-sum bill_w-120">
+          {{ bill.contract_sum }} ₽
+        </div>
+        <div class="bill-month-client-adv_sum bill_w-120">
+          {{ bill.adv_all_sum }} ₽
+          
+        </div>
+ 
+
+     
+    {{bill.suborders_adv}} 
+         <div class="suborder-bg">
+        <div
+          class="bill-month-client-suborder_diff bill_w-120 add_sabcontactor"
+          data-name="modal-add-subcontract"
+        
+          data-bill-month-id="{{ bill.id }}" data-bill-month-client-name="{{ bill.client.client_name }}"
+          
+          data-bill-month-adv="{{bill.diff_sum}}"
+          
+          data-bill-month-name="{{ bill.contract_number }}"
+          data-bill-month-data="{{ created_timestamp|date:"M Y" }}"
+          data-bill-sb="{{ bill.subcontractmonth }}"
+          
+        >
+      
+      {{ bill.diff_sum }} ₽
+        </div>
+
+        {% if title == 1 %}
+        {% for suborder_name in suborders_name %}
+        
+        <div class="bill_w-120"> {{suborder_name.name}}</div>
+        
+        {% endfor %}
+              <div class="bill_w-120"> 
+                <div class="suborder_out_operation"
+                data-sub-type="1"
+                data-name="modal-suborder_out_operation"
+                data-bill-month-id="{{ bill.id }}"
+                data-bill-month-adv="diff_adv_sum "
+                data-bill-month-client-name="{{ bill.client.client_name }}"
+                data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+                data-bill-month-data="{{ created_timestamp.grouper }}"
+                data-name-sub=" {{ plan.adv }}"
+                data-id-sub="{{ plan.id }}"
+                data-id-sub-amount="{{ plan.sum }}" 
+                > 
+                {{ plan.sum }} ₽
+                </div>
+            </div>
+           
+
+
+        <div class="bill_w-120">
+        премии
+        
+        
+        </div> 
+
+        {% endif %}
+      </div> 
+      
+
+       {% for oper_entry in  bill.get_operation %}
+        {% ifchanged %}
+      <div class="oretation-add-bg"> 
+      
+       
+        <div
+          class=" add-operation-entry"
+          data-name="modal-add-operation-entry"
+          data-bill-month-id="{{ bill.id }}"
+          data-bill-month-sum="{{ bill.contract_sum }} "
+          data-bill-month-client-name="{{ bill.client.client_name }}"
+          data-bill-month-sum-dont-operation="{{ bill.contract_sum }} "
+          data-bill-month-name="{{ bill.contract_number }}"
+          data-bill-month-operation-entry="
+        {{oper_entry.id_operation_entry}}
+          "
+        >
+     
+
+        {% if oper_entry.operation_entry_all == bill.contract_sum %}
+        <p class="result_ok">{{ bill.contract_sum }} ₽</p>
+      
+      
+       {% elif oper_entry.diff_operation_entry > 0 %}
+        <div class="result_not-wrap"><p class="result_not">{{oper_entry.operation_entry_all}}₽
+          <p class="result_not_after">/долг {{oper_entry.diff_operation_entry }}₽</p>
+        </p>  </div>
+        {% else %} 
+        <div class="result_not-wrap"><p class="result_not">0 ₽
+          <p class="result_not_after">/долг {{ bill.contract_sum }}₽</p>
+        </p>  </div>
+        {% endif %} 
+        </div> 
+        
+        <div class="bill_w-120 operation_entry_bank ">
+          <p class="operation_entry_bank_true">
+            {% if oper_entry.operation_entry_bank1 %}
+              {{oper_entry.operation_entry_bank1 }}₽
+              {% else %} 0 ₽
+            {% endif %} 
+          </p>
+        </div>
+
+          <div class="bill_w-120 operation_entry_bank" >
+            <p class="operation_entry_bank_true">
+              {% if oper_entry.operation_entry_bank2 %}
+              {{oper_entry.operation_entry_bank2 }}₽
+              {% else %} 0 ₽
+            {% endif %}
+            </p>
+          </div> 
+
+          <div class="bill_w-120 operation_entry_bank">
+            <p class="operation_entry_bank_true">
+              {% if oper_entry.operation_entry_bank3 %}
+              {{oper_entry.operation_entry_bank3 }}₽
+              {% else %} 0 ₽
+            {% endif %}
+            </p>
+          </div> 
+         
+         </div>
+
+
+         <div class="oretation-out-bg bill_oretation-exit_title"> 
+      
+       
+          <div
+            class="add-operation-out"
+            
+          >
+       
+  
+          {% if oper_entry.operation_out_all == bill.diff_sum %}
+          <p class="result_ok">{{ bill.diff_sum }} ₽</p>
+        
+        
+         {% elif oper_entry.diff_operation_out > 0 %}
+          <div class="result_not-wrap"><p class="result_not">{{oper_entry.operation_out_all}}₽
+            <p class="result_not_after">/остаток {{oper_entry.diff_operation_out}}₽</p>
+          </p>  </div>
+          {% else %} 
+          <div class="result_not-wrap">
+            <p class="result_not">0 ₽
+            <p class="result_not_after">/остаток {{ bill.diff_sum }}₽</p>
+          </p>  </div>
+          {% endif %} 
+          </div> 
+          
+          <div class="bill_w-120 operation_entry_bank ">
+            <p class="operation_entry_bank_true">
+              {% if oper_entry.operation_out_bank1 %}
+                {{oper_entry.operation_out_bank1 }}₽
+                {% else %} 0 ₽
+              {% endif %} 
+            </p>
+          </div>
+  
+            <div class="bill_w-120 operation_entry_bank" >
+              <p class="operation_entry_bank_true">
+                {% if oper_entry.operation_out_bank2 %}
+                {{oper_entry.operation_out_bank2 }}₽
+                {% else %} 0 ₽
+              {% endif %}
+              </p>
+            </div> 
+  
+            <div class="bill_w-120 operation_entry_bank">
+              <p class="operation_entry_bank_true">
+                {% if oper_entry.operation_out_bank3 %}
+                {{oper_entry.operation_out_bank3 }}₽
+                {% else %} 0 ₽
+              {% endif %}
+              </p>
+            </div> 
+           
+           </div>
+        
+      
+
+  
+       {% endifchanged %}{% endfor %}
+    </div> 
+    </div>
+{% endfor %}
 </section>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock content %}
+
+
+
+
+
+{% comment %} {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
+  <div class="bill_month_one-wrap">
+    {% for created_timestamp in ordered_bill_list %}
+    <h3 class="bill_month-title">{{ created_timestamp.grouper }}</h3>
+
+    <div class="bill-month_category-title">
+      <div class="bill-month-client-counter"></div>
+      <div class="bill_w-120"><h3>Клиент</h3></div>
+      <div class="bill_w-120"><h3>Договор</h3></div>
+      <div class="bill_w-120">
+        <h3>Счёт</h3>
+        <button
+          class="open-modal btn_month_bill"
+          data-name="modal-add-bill"
+          data-month="0"
+        >
+          +
+        </button>
+      </div>
+      <div class="bill_w-120"><h3>Ведение</h3></div>
+      <div class="bill_w-120 suborder_title-bg"><h3>Субподряд</h3></div>
+
+      <div class="bill_w-120 suborder_title-bg "><h4> Директ</h4></div>
+      <div class="bill_w-120 suborder_title-bg"><h4>Таргет</h4></div>
+      <div class="bill_w-120 suborder_title-bg"><h4>Премии</h4></div>
+      <div class="bill_w-120 bill_oretation-add_title margin_left"><h3>Приход</h3></div>
+
+      <div class="bill_w-120 bill_oretation-add_title"><h4>ООО</h4></div>
+      <div class="bill_w-120 bill_oretation-add_title"><h4>ИП</h4></div>
+      <div class="bill_w-120 bill_oretation-add_title"><h4>$</h4></div>
+
+      <div class="bill_w-120 bill_oretation-exit_title margin_left"><h3>Расход</h3></div>
+      <div class="bill_w-120 bill_oretation-exit_title"><h4>ООО</h4></div>
+      <div class="bill_w-120 bill_oretation-exit_title"><h4>ИП</h4></div>
+      <div class="bill_w-120 bill_oretation-exit_title"><h4>$</h4></div>
+    </div>
+
+    {% for bill in created_timestamp.list %}
+    <div class="bill-month_item-wrapper">
+      <div class="bill-month-client-counter">{{ forloop.counter }}</div>
+      <div class="bill-month-client-name bill_w-120">
+        {{ bill.client.client_name }}
+      </div>
+      
+      <div class="bill-month-client-contract bill_w-120">
+        {{ bill.additional_contract.contract_number }}
+      </div>
+      <div class="bill-month-client-sum bill_w-120">
+        {{ bill.additional_contract.contract_sum }} ₽
+      </div>
+      <div class="bill-month-client-adv_sum bill_w-120">
+        {{ bill.additional_contract.adv_all_sum }} ₽
+        
+      </div>
+    <div class="suborder-bg">
+        <div
+          class="bill-month-client-suborder_diff bill_w-120 add_sabcontactor"
+          data-name="modal-add-subcontract"
+         
+          data-bill-month-id="{{ bill.id }}" data-bill-month-client-name="{{ bill.client.client_name }}"
+          
+          data-bill-month-adv="diff_adv_sum"
+          
+          data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+          data-bill-month-data="{{ created_timestamp.grouper }}"
+          data-bill-sb="{{ bill.subcontractmonth }}"
+          
+        >
+      
+       {{ bill.additional_contract.diff_sum }} ₽
+        </div>
+
+        {% if title == 1 %}
+      {% for plan in bill.get_sum_planning_adv %}
+          
+            {% if plan.adv == 1 %}
+            <div class="bill_w-120"> 
+              <div class="suborder_out_operation"
+              data-sub-type="1"
+              data-name="modal-suborder_out_operation"
+              data-bill-month-id="{{ bill.id }}"
+              data-bill-month-adv="diff_adv_sum "
+              data-bill-month-client-name="{{ bill.client.client_name }}"
+              data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+              data-bill-month-data="{{ created_timestamp.grouper }}"
+              data-name-sub=" {{ plan.adv }}"
+              data-id-sub="{{ plan.id }}"
+              data-id-sub-amount="{{ plan.sum }}" 
+              > 
+              {{ plan.sum }} ₽
+              </div>
+           </div>
+            {% endif %}
+
+           {% if plan.adv == 2  %} 
+           <div class="bill_w-120"> 
+            <div class="suborder_out_operation"
+            data-sub-type="1"
+            data-name="modal-suborder_out_operation"
+            data-bill-month-id="{{ bill.id }}"
+            data-bill-month-adv="diff_adv_sum "
+            data-bill-month-client-name="{{ bill.client.client_name }}"
+            data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+            data-bill-month-data="{{ created_timestamp.grouper }}"
+            data-name-sub=" {{plan.adv}}"
+            data-id-sub="{{plan.id}}"
+            data-id-sub-amount="{{plan.sum}}" 
+            > 
+            {{plan.sum}} ₽
+            </div>
+         </div>
+            {% endif %} 
+
+            {% if plan.adv == 0  %} 
+            <div class="bill_w-120"> 
+              
+              0 ₽
+           </div>
+            {% endif %} 
+
+
+          {% empty %}
+          <div class="bill_w-120"> 
+            n/a {{plan.id}}
+         </div>
+         <div class="bill_w-120"> 
+          n/a 
+       </div>
+          {% endfor %}  
+
+      <div class="bill_w-120">
+         
+          {{bill.sum_other_subcontr.amount__sum|default_if_none:"0"}} ₽ 
+         
+        </div> 
+
+        {% endif %}
+      </div> 
+    <div class="oretation-add-bg">
+      <div
+        class=" add-operation-entry"
+        data-name="modal-add-operation-entry"
+        data-bill-month-id="{{ bill.id }}"
+        data-bill-month-sum="{{ bill.additional_contract.contract_sum }} "
+        data-bill-month-client-name="{{ bill.client.client_name }}"
+        data-bill-month-sum-dont-operation="{{ bill.additional_contract.contract_sum }} "
+        data-bill-month-name="{{ bill.additional_contract.contract_number }}"
+        data-bill-month-operation-entry="
+        {% for operation_entry in bill.operationentry_set.all %} 
+        
+        -{{ operation_entry.id }}-
+        
+        {% endfor %}
+        "
+      >
+
+    
+      {% if bill.get_all_sum_entry_operation == bill.additional_contract.contract_sum %}
+      <p class="result_ok">{{ bill.additional_contract.contract_sum }} ₽</p>
+    
+      
+      {% elif bill.get_all_sum_entry_operation.result > 0 %}
+      <div class="result_not-wrap"><p class="result_not">{{bill.get_all_sum_entry_operation.operation_amount}}₽
+        <p class="result_not_after">/долг {{bill.get_all_sum_entry_operation.result}}₽</p>
+      </p>  </div>
+      {% else %}
+      <div class="result_not-wrap"><p class="result_not">0 ₽
+        <p class="result_not_after">/долг {{ bill.additional_contract.contract_sum }}₽</p>
+      </p>  </div>
+      {% endif %} 
+      </div>
+      
+      <div class="bill_w-120 operation_entry_bank ">
+        <p class="operation_entry_bank_true">
+          {% for oper_entry_bank1 in bill.get_sum_bank_operaton_entry_bank_one %}           
+            {{oper_entry_bank1.total_amount}} ₽
+            {% empty %}
+            0 ₽
+            {% endfor %}
+        </p>
+      </div>
+
+        <div class="bill_w-120 operation_entry_bank" >
+          <p class="operation_entry_bank_true">
+            {% for oper_entry_bank2 in bill.get_sum_bank_operaton_entry_bank_two %}           
+              {{oper_entry_bank2.total_amount}} ₽
+              {% empty %}
+              0 ₽
+              {% endfor %}
+          </p>
+        </div> 
+
+        <div class="bill_w-120 operation_entry_bank">
+          <p class="operation_entry_bank_true">
+            {% for oper_entry_bank3 in bill.get_sum_bank_operaton_entry_bank_three %}           
+              {{oper_entry_bank3.total_amount}} ₽
+              {% empty %}
+              0 ₽
+              {% endfor %}
+          </p>
+        </div> 
+        
+    </div>   
+
+    <div class="oretation-out-bg bill_oretation-exit_title">
+
+       <div class=" add-operation-out">
+       
+          {% if bill.diff_subcontr_out_operation.diff_sum == 0%} 
+        <p class="result_ok">{{bill.diff_subcontr_out_operation.all_sum_adv}} ₽</p>
+         {% else %}
+         <div class="result_not-wrap"><p class="result_not">
+           {{bill.diff_subcontr_out_operation.all_operation_sum_out}} ₽
+           <p class="result_not_after">/остаток {{bill.diff_subcontr_out_operation.diff_sum}} ₽</p>
+        </p>  </div> 
+         {% endif %}
+    
+        </div>  
+  
+        
+        {% for operation_out in bill.get_sum_bank_operaton_out_bank %}
+        {% if operation_out.bank == 1 %}
+        <div class="add-operation-out">
+          <p  class="operation_entry_bank_true">
+           {{operation_out.sum}} ₽
+         
+             </p>
+        </div>
+        {% endif %}
+        {% if operation_out.bank == 2 %}
+        <div class="add-operation-out">
+          <p  class="operation_entry_bank_true">
+           {{operation_out.sum}} ₽
+         
+             </p>
+        </div>
+        {% endif %}
+        {% if operation_out.bank == 3 %}
+        <div class="add-operation-out">
+          <p  class="operation_entry_bank_true">
+           {{operation_out.sum}} ₽
+         
+             </p>
+        </div>
+        {% endif %}
+        {% if operation_out.bank == 0 %}
+        <div class="add-operation-out">
+          <p  class="operation_entry_bank_true">
+           0 ₽
+         
+             </p>
+        </div>
+        {% endif %}
+        
+        
+        
+        {% endfor %}
+     
+
+      </div> 
+    </div>
+
+    {% endfor %}
+
+    
+
+    <div class="bill-month_result">
+      <div class="bill-month-client-counter"></div>
+      <div class="bill_w-120"><h3>Итого</h3></div>
+      <div class="bill_w-120"><h3></h3></div>
+      <div class="bill_w-120">
+        <h3> {% for income in total_income %} 
+          {% if income.month|date:"M Y" == created_timestamp.grouper %} {{ income.total_amount }} 
+          {% endif %} 
+        {% endfor %} ₽</h3>
+     
+      </div>
+      <div class="bill_w-120"><h3>{% for income_adv in total_adv %} {% if income_adv.month|date:"M Y" == created_timestamp.grouper %} 
+        {{ income_adv.total_amount }} 
+        {% endif %}
+        {% endfor %} ₽</h3>
+      </div>
+
+      <div class="bill_w-120 suborder_title-bg">
+    
+  
+
+      </div>
+
+      <div class="bill_w-120 suborder_title-bg "><h4> Директ</h4></div>
+      <div class="bill_w-120 suborder_title-bg"><h4>Таргет</h4></div>
+      <div class="bill_w-120 suborder_title-bg"><h4>Премии</h4></div>
+      <div class="bill_w-120 bill_oretation-add_title margin_left"><h3>Приход</h3></div>
+
+      <div class="bill_w-120 bill_oretation-add_title"><h4>ООО</h4></div>
+      <div class="bill_w-120 bill_oretation-add_title"><h4>ИП</h4></div>
+      <div class="bill_w-120 bill_oretation-add_title"><h4>$</h4></div>
+
+      <div class="bill_w-120 bill_oretation-exit_title margin_left"><h3>Расход</h3></div>
+      <div class="bill_w-120 bill_oretation-exit_title"><h4>ООО</h4></div>
+      <div class="bill_w-120 bill_oretation-exit_title"><h4>ИП</h4></div>
+      <div class="bill_w-120 bill_oretation-exit_title"><h4>$</h4></div>
+    </div> 
+    {% endfor %}
+  </div> {% endcomment %}

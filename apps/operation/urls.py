@@ -11,6 +11,7 @@ app_name = "operation"
 router = routers.DefaultRouter()
 router.register(r"api/entry", view_sets.OperationEntryViews)
 router.register(r"api/out", view_sets.OperationOutViews)
+router.register(r"api/operation", view_sets.OperationViews)
 
 
 

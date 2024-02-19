@@ -8,8 +8,9 @@ if (btnSubcontarct) {
       let elem = element.getAttribute("data-name");
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
+      console.log(sumAdv)
       let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
-      budgetInnerAll.innerHTML = +sumAdv;
+      budgetInnerAll.innerHTML = sumAdv;
 
       const add_subc = document.querySelector(".subcontarct_add");
       modal(elem,add_subc);

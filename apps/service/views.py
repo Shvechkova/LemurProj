@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
+from django.db.models import Prefetch
 # from apps import service
 
 from operator import itemgetter
@@ -68,11 +69,25 @@ def service_one(request, slug):
     # total_sub_adv = (
     #         ordered_bill.all().annotate(total_amount=Sum('subcontractmonth__amount'))
     #     )
+ 
+    now = datetime.datetime.now()
+    bill_now_mohth = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
+        'created_timestamp')).filter(
+    created_timestamp__year=now.year, created_timestamp__month=now.month
+    ).prefetch_related('client')
+        
+        
+    #     .prefetch_related('operation_set').all() 
+    # print(bill_now_mohth)
+        
+    # bill_all_mohth = ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth(
+    #     'created_timestamp')).prefetch_related("subcontract")
     
-    dfff = ServicesMonthlyBill.objects.dates('created_timestamp', 'month')
    
-    bill = ServicesMonthlyBill.objects.filter().dates('created_timestamp', 'month')
    
+    suborders_name = Adv.objects.all()
+        
+    
    
     title = category_service.id
     context = {
@@ -85,6 +100,9 @@ def service_one(request, slug):
         'subcontractors': subcontractors,
         'adv_category': advCategory,
         'operation_entry': operation_entry,
+        'bills': bill_now_mohth,
+        'now': now,
+        'suborders_name': suborders_name,
       
     }
     return render(request, "service/one_service.html", context)

@@ -31,7 +31,7 @@ if (addOperationEntry) {
       //   validate(elem, ".operation_add");
       // });
       getInfoBillOperation(element);
-      const endpointOperation = "/operations/api/entry/";
+      const endpointOperation = "/operations/api/operation/";
       addFetchOperationEntry(element, endpointOperation, elem);
     });
   });
@@ -131,6 +131,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
     form.append("comment", commentOperation);
     form.append("bank", bankChecked);
     form.append("monthly_bill", billId);
+    form.append("type_operation", 'entry');
 
     let object = {};
     form.forEach((value, key) => (object[key] = value));
@@ -200,7 +201,7 @@ function newOperationEntry(element, elem) {
     const dataJson = JSON.stringify(object);
 
     let csrfToken = getCookie("csrftoken");
-    fetch("/operations/api/entry/contract_filter_list/", {
+    fetch("/operations/api/operation/operation_entry_list/", {
       method: "POST",
       body: dataJson,
       headers: {
