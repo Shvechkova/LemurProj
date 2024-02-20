@@ -136,4 +136,6 @@ class Operation(models.Model):
     type_operation = models.CharField(
         max_length=5, choices=TYPE_OPERATION, default="out"
     )
+    
+  
 

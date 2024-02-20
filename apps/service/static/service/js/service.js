@@ -149,14 +149,14 @@ console.log(dataJson)
             const windowContent = document.getElementById(elem);
             alertSuccess(windowContent);
             const timerId = setTimeout(() => {
-              // location.reload();
+               location.reload();
             }, 200);
           } else {
             const windowContent = document.getElementById(elem);
             console.log(windowContent)
             alertError(windowContent);
             const timerId = setTimeout(() => {
-              // location.reload();
+               location.reload();
             }, 200);
           }
         });

@@ -263,7 +263,20 @@ function newOperationEntry(element, elem) {
           chekinOtherSum.checked = true;
         });
       });
-    // console.log(sumOperationEnded);
+   
+  }
+  else{
+    const sumChekedWrap = document.getElementById("sum_cheked");
+    sumChekedWrap.setAttribute("data-step", "1");
+    sumChekedWrap.innerHTML = ' <p>Сколько оплатили?</p><input  type="radio" id="100" name="sum" value="100" /><label for="100">100%</label><input type="radio" id="50" name="sum" value="50" /><label for="50">50%</label><input type="radio" id="other_sum" name="sum" value="1" /><label for="other_sum">Другая сумма</label><input data-validate="0"  type="number" id="other_sum_namber" name="" value="" />';
+
+    const chekinOtherSum = document.getElementById("other_sum_namber");
+        chekinOtherSum.addEventListener("input", () => {
+          const chekinOtherSum = document.getElementById("other_sum");
+
+          chekinOtherSum.checked = true;
+        });
+
   }
 
   return idOperationrepl;

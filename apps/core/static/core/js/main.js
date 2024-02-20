@@ -1,11 +1,10 @@
-
 // const opetaionEntryEmpty = document.querySelectorAll(".operation_entry_bank")
 
 // if(opetaionEntryEmpty){
 //   opetaionEntryEmpty.forEach((item)=>{
 //     console.log(item.firstChild)
 //     console.log(item.childNodes(".operation_entry_bank_true"))
-   
+
 //   })
 // }
 
@@ -25,14 +24,14 @@ function modal(elem, buttonAdd) {
   console.log(modalCloseAll);
   modalCloseAll.addEventListener("click", (event) => {
     modal_windows.classList.remove("modal-active");
-   
+
     buttonAdd.replaceWith(buttonAdd.cloneNode(true));
   });
 }
 
 // }
-function alertSuccess(element){
-element.querySelector(".modal-items-wrap").innerHTML = "Успех";
+function alertSuccess(element) {
+  element.querySelector(".modal-items-wrap").innerHTML = "Успех";
 }
 function alertError(element) {
   element.querySelector(".modal-items-wrap").innerHTML = "Неудача, повторите";
@@ -49,7 +48,7 @@ function getCookie(name) {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function validate(elem,btn) {
+function validate(elem, btn) {
   const modalWindows = document.getElementById(elem);
   const allInputModal = modalWindows.querySelectorAll("input");
   const allSelectModal = modalWindows.querySelectorAll("select");
@@ -59,23 +58,20 @@ function validate(elem,btn) {
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
-    
-      if (elInput.value == "") {
-        const c = elInput.getAttribute("data-validate");
-        if (c == 0){
-          add_contract.disabled = false;
-          inputYes = true;
-        } else {
-          
-          add_contract.disabled = true;
+    if (elInput.value == "") {
+      const c = elInput.getAttribute("data-validate");
+      if (c == 0) {
+        add_contract.disabled = false;
+        inputYes = true;
+      } else {
+        add_contract.disabled = true;
 
         throw false;
       }
-          
-      } else {
-        add_contract.disabled = false;
-        inputYes = true;
-      }
+    } else {
+      add_contract.disabled = false;
+      inputYes = true;
+    }
   });
 
   allSelectModal.forEach((elSelect) => {
@@ -129,12 +125,13 @@ function validate(elem,btn) {
 
 // класс конструктор инпутов
 class Input {
-  constructor(type, className, value, placeholder) {
+  constructor(type, className, value, placeholder,readonly) {
     this.elem = document.createElement("input");
     if (type) this.elem.type = type;
     if (className) this.elem.className = className;
     if (value) this.elem.value = value;
     if (placeholder) this.elem.placeholder = placeholder;
+    if(readonly == true) this.elem.readOnly = true;
   }
 
   appendTo(parent) {
@@ -177,3 +174,12 @@ function choiceColor() {
   });
 }
 
+// чекин окна другой сумы НЕ РАБОТАЕТ
+
+function ChekinOtherSum(inputOtherSum,radioOtherSum) {
+  const chekinOtherSum = document.getElementById(inputOtherSum);
+  chekinOtherSum.addEventListener("input", () => {
+    const chekinOtherSum = document.getElementById(radioOtherSum);
+    chekinOtherSum.checked = true;
+  });
+}

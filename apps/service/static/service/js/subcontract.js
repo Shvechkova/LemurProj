@@ -8,23 +8,22 @@ if (btnSubcontarct) {
       let elem = element.getAttribute("data-name");
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
-      console.log(sumAdv)
+      console.log(sumAdv);
       let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
       budgetInnerAll.innerHTML = sumAdv;
 
       const add_subc = document.querySelector(".subcontarct_add");
-      modal(elem,add_subc);
-      const c = document.querySelector(".modal_add_subcontract_wrapper")
+      modal(elem, add_subc);
+      const c = document.querySelector(".modal_add_subcontract_wrapper");
       // c.innerHTML = ""
-      c.innerHTML = '<div class="modal_add_contract modal_add-subcontract"><select class="modal-subcontract-type choice"><option disabled selected class="modal-select empty" value="0">Тип</option><option class="modal-select" value="adv">площадка</option><option class="modal-select" value="other">премия</option></select></div>'
-
+      c.innerHTML =
+        '<div class="modal_add_contract modal_add-subcontract"><select class="modal-subcontract-type choice"><option disabled selected class="modal-select empty" value="0">Тип</option><option class="modal-select" value="adv">площадка</option><option class="modal-select" value="other">премия</option></select></div>';
 
       getOldSumcintract(idBill);
-
       getInfoBill(element);
       createInputSubcontract(element);
       observerChangeCreateInput(element);
-      addSubcontractFetch(idBill);
+      addSubcontractFetch(idBill, elem);
     });
   });
 }
@@ -151,7 +150,7 @@ function observerChangeCreateInput(element) {
   });
 }
 
-function addSubcontractFetch(idBill) {
+function addSubcontractFetch(idBill, elem) {
   const buttonAddSubcontract = document.querySelector(".subcontarct_add ");
   buttonAddSubcontract.addEventListener("click", () => {
     const subcontractArr = document.querySelectorAll(".modal_add-subcontract ");
@@ -201,78 +200,121 @@ function addSubcontractFetch(idBill) {
         "X-CSRFToken": csrfToken,
       },
     })
-      // .then((response) => response.json(
+      .then((response) => response.json())
+      .then((data) => {
+        const updBill = {
+          id: idBill,
+          chekin_add_subcontr: true,
+        };
+        const endpoint = "/service/api/month_bill/" + idBill + "/";
+        let csrfToken = getCookie("csrftoken");
+        let data2 = JSON.stringify(updBill);
+        fetch(endpoint, {
+          method: "PUT",
+          body: data2,
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+        }).then((response) => {
+          if (response.ok) {
+            const windowContent = document.getElementById(elem);
+            alertSuccess(windowContent);
+            const timerId = setTimeout(() => {
+              location.reload();
+            }, 200);
+          } else {
+            const windowContent = document.getElementById(elem);
 
-      // ))
-      .then((response) => {
-        if (response.ok) {
-          location.reload();
-        }
+            alertError(windowContent);
+            const timerId = setTimeout(() => {
+              location.reload();
+            }, 200);
+          }
+        });
       });
   });
 }
 
 function getOldSumcintract(idBill) {
-//  const endpoint = "/service/api/subcontract/" +idBill +"/subcontract_li/";
-//   let csrfToken = getCookie("csrftoken");
- 
+  const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
+  let csrfToken = getCookie("csrftoken");
+  fetch(endpoint, {
+    method: "GET",
+    // body: data,
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.length == 0) {
+        return;
+      } else {
+        let endpoint = "/service/api/subcontract-category-adv/";
+        fetch(endpoint, {
+          method: "get",
+        })
+          .then((response) => response.json())
+          .then((dataCategoryAdv) => {
+           
+            const c = document.querySelector(".modal_add_subcontract_wrapper");
+            c.innerHTML = "";
+            data.forEach(function (value, key) {
+              console.log(value)
+              let modal_add_subcontract = document.createElement("div");
+              modal_add_subcontract.className =
+                "modal_add_contract modal_add-subcontract";
+              c.append(modal_add_subcontract);
+              console.log(value.adv);
+              if (value.adv != null) {
+                modal_add_subcontract.innerHTML =
+                  '<input type="text" readonly class="modal-subcontract-type input-130" placeholder="1" value="площадка">';
+              }
+              dataCategoryAdv.forEach((item) =>{
+                if(item.id == value.adv ){
+                new Input(
+                "text",
+                "modal-subcontract-type input-130",
+                item.name,
+                "сумма",
+                true
+              ).appendTo(modal_add_subcontract);
+                }
+              })
+              new Input(
+                "text",
+                "modal-subcontract-type input-200",
+                value.amount,
+                "сумма"
+              ).appendTo(modal_add_subcontract);
+              new Input("hidden", "subcontract_id", value.id).afterTo(modal_add_subcontract);
+            });
 
-//   fetch(endpoint, {
-//     method: "GET",
-//     // body: data,
-//     headers: {
-//       "Content-Type": "application/json",
-//       "X-CSRFToken": csrfToken,
-//     },
-//   })
-//    .then((response) => response.json())
-//       .then((data) => {
-//         console.log(data.length);
-//       if(data.length == 0){
-//         return
-//       } 
-//       else{
-//         const c = document.querySelector(".modal_add_subcontract_wrapper")
-//         c.innerHTML = ""
+            let modal_add_subcontract = document.createElement("div");
+            modal_add_subcontract.className =
+            "modal_add_contract modal_add-subcontract";
+            c.append(modal_add_subcontract);
 
-        
+            let modal_add_subcontract_select = document.createElement("select");
+            modal_add_subcontract_select.className =
+            "modal-subcontract-type choice";
+            modal_add_subcontract.append(modal_add_subcontract_select);
 
-    
-//         data.forEach(function (value, key) {
-//           let modal_add_subcontract = document.createElement("div");
-//           modal_add_subcontract.className = "modal_add_contract modal_add-subcontract";
-//            c.append(modal_add_subcontract)
-//           console.log(value.adv)
-//           if(value.adv == 1){
-//             modal_add_subcontract.innerHTML = '<input type="text" class="modal-subcontract-type input-200" placeholder="1" value="площадка">'
-//           } else if(value.adv == 2){
-//             modal_add_subcontract.innerHTML = '<input type="text" class="modal-subcontract-type input-200" placeholder="1" value="премия">'
-//           }
+            new selectOption('modal-select empty', 0, "", "Тип", 0, false
+            ).appendTo(modal_add_subcontract_select);
+            new selectOption('modal-select', "adv", "", "площадка", "selected", false
+            ).appendTo(modal_add_subcontract_select);
 
-//           new Input(
-//           "text",
-//           "modal-subcontract-type input-200",
-//           "",
-//           "сумма"
-//         ).afterTo(modal_add_subcontract);
-          
-//         });
-       
+            new selectOption('modal-select ', "other", "", "премия", "selected", false
+            ).appendTo(modal_add_subcontract_select);
 
-//         // let button = document.createElement("button");
-//         // button.className = "modal_add_subcontract";
-//         // button.innerHTML = "OK";
-//         // select.nextElementSibling.after(button);
 
-//         // new Input("hidden", "subcontract_id", "").afterTo(select);
-
-//         // createNextSubcontractInput(button);
-//         return
-      
-     
-
-         
-
-//       }
-//       }); 
+            createInputSubcontract()
+           
+          });
+      }
+    });
 }

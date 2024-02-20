@@ -67,5 +67,17 @@ class OperationViews(viewsets.ModelViewSet):
             obj.append(serializer.data)
         
         print(obj)   
-        return Response(obj)      
+        return Response(obj)
+    
+    @action(detail=False, methods=["post"], url_path=r"operation_out_filter")
+    def operation_out_filter(
+        self,
+        request,
+    ):
+     
+        data =  request.data
+        queryset = Operation.objects.filter(type_operation="out", suborder=data['id'])
+        serializer = self.serializer_class(queryset, many=True)
+           
+        return Response(serializer.data)       
    
