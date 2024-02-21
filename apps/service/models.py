@@ -307,7 +307,6 @@ class ServicesMonthlyBill(models.Model):
         suborders = SubcontractMonth.objects.filter(
             month_bill=self.id, adv__isnull=False
         ).select_related("adv")
-
         suborders_name = Adv.objects.all()
         obj = []
 
@@ -337,9 +336,94 @@ class ServicesMonthlyBill(models.Model):
 
         count_item = len(obj_new)
 
-       
+        # suborders = SubcontractMonth.objects.filter(
+        #     month_bill=self.id).select_related("adv","other")
+        
+        # suborders_name = Adv.objects.all()
+        # obj = []
+        # for subs_item in suborders_name:
+        #     name = {
+        #         "name_adv": subs_item.name,
+        #         "id_adv": subs_item.id,
+        #     }
+        #     obj.append(name)
 
-        return (obj_new)
+        # count_categoru = len(obj)
+        
+        # obj_new = [{"name-adv": 0, "id_subs": 0, "amount_subs": 0}] * count_categoru
+        # i = -1
+        # for sub in suborders:
+        #     if sub.adv != None:
+        #             i += 1
+        #             name = {
+        #                 "id_adv": nams["name_adv"],
+        #                 "name_adv": nams["id_adv"],
+        #                 "id_subs": suborder.id,
+        #                 "amount_subs": suborder.amount,
+        #             }
+        #             obj_new[i] = name
+        #             return (obj_new)  
+              
+        #     # if sub.other != None:
+        #     #     suborders_name = SubcontractOther.objects.all()
+               
+        #     #     obj = []
+        #     #     for subs_item in suborders_name:
+        #     #         name = {
+        #     #             "name_other": subs_item.name,
+        #     #             "id_other": subs_item.id,
+        #     #         }
+        #     #         obj.append(name)
+        #     #     print(obj)
+        #     #     count_categoru = len(obj)
+        #     #     obj_new = [{"name-other": 0, "id_subs": 0, "amount_subs": 0}] * count_categoru
+        #     #     i = -1
+        #     #     for nams, suborder in zip(obj, suborders):
+        #     #         i += 1
+        #     #         name = {
+        #     #             "id_adv": nams["name_adv"],
+        #     #             "name_adv": nams["id_adv"],
+        #     #             "id_subs": suborder.id,
+        #     #             "amount_subs": suborder.amount,
+        #     #         }
+        #     #         obj_new[i] = name
+               
+        return (obj_new)     
+              
+                
+                
+        
+        
+    
+    def suborders_other(self):
+        suborders = SubcontractMonth.objects.filter(
+            month_bill=self.id, other__isnull=False
+        ).select_related("other")
+
+       
+        obj = [] 
+        total_amount = 0
+        id_subs = ""
+        for subs_item in suborders:
+            total_amount += subs_item.amount
+            id_subs = id_subs + str(subs_item.id) + "-"  
+            name = {
+                "id_cat_other": subs_item.other.name,
+                "name_other": subs_item.other.name,
+                "id_other": subs_item.id,
+                "id_amount": subs_item.amount,
+                
+            }
+            obj.append(name)
+          
+        total = {
+                "total_amount": total_amount,
+                "id_subs": id_subs,  
+            }    
+        obj.append(total)   
+        print(obj)
+
+        return (obj)
 
     # def get_sum_planning_adv(self):
     #     plannig_sum = SubcontractMonth.objects.filter(

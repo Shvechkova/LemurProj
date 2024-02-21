@@ -2,11 +2,14 @@
  {% load category_service %}
 {% load adv_diff %}
 {% block content %}
- {% get_category_service %}
+ {% get_category_service %} 
+ {% include "service/includes/modal/suborder_peple.html" %}
  {% include "service/includes/modal/add_contract_new.html" %}
   {% include "service/includes/modal/subcontract.html" %} 
   {% include "service/includes/modal/operation.html" %}
   {% include "service/includes/modal/operation_out.html" %}
+ 
+
 
 <input type="hidden" id="page_name" value="{{ title }}" />
 {% comment %} 
@@ -392,7 +395,7 @@
    
          <div class="suborder-bg">
         <div
-          class="bill-month-client-suborder_diff bill_w-120 add_sabcontactor"
+          class="bill-month-client-suborder_diff bill_w-120 add_sabcontactor {% if bill.chekin_add_subcontr == 0 %} red {% endif %}"
           data-name="modal-add-subcontract"
         
           data-bill-month-id="{{ bill.id }}" data-bill-month-client-name="{{ bill.client.client_name }}"
@@ -407,13 +410,13 @@
       
       {{ bill.diff_sum }} ₽
         </div>
-         
+
         {% if title == 1 %}
-        {% for sub_adv in bill.suborders_adv %}
+         {% for sub_adv in bill.suborders_adv %}
           {% if bill.chekin_add_subcontr %}
             {% if sub_adv.name_adv != 0 %}
-              
-
+               
+              {% if sub_adv.amount_subs != 0 %}
               <div class="bill_w-120"> 
                 <div class="suborder_out_operation"
                 data-sub-type="1"
@@ -430,21 +433,53 @@
                 {{sub_adv.amount_subs}} ₽
                 </div>
             </div>
+              {% else %}<div class="bill_w-120"> 0 ₽</div>
+              {% endif %}
+
+              
 
               {% else %}
-              <div class="bill_w-120"> 0 ₽</div>
+              
             {% endif %}
             {% else %}
-            <div class="bill_w-120"> n/a</div>
+            <div class="bill_w-120 red"> n/a</div>
           {% endif %}
+        {% endfor %} 
+        {% for sub_other in bill.suborders_other %}
+       
+        {% if sub_other.total_amount != 0 %}
+        {% if forloop.last %}
+        
+        
+
+         <div class="bill_w-120"> 
+          <div class="suborder_out_operation_people"
+          data-sub-type="2"
+          data-name="modal-suborder_out_operation_people"
+          data-bill-month-id="{{ bill.id }}"
+          data-bill-month-adv="{{ bill.diff_sum}}"
+          data-bill-month-client-name="{{ bill.client.client_name }}"
+          data-bill-month-name="{{ bill.contract_number }}"
+          data-bill-month-data="{{ created_timestamp|date:"M Y" }}"
          
-        
-        
-        
+          data-id-sub=" {{sub_other.id_subs}}"
+          data-id-sub-amount=" {{sub_other.total_amount}} " 
+          > 
+          {{sub_other.total_amount}}  ₽
+          </div>
+      </div>
+        {% endif %}
+      
+     
+         {% else %}
+         <div class="bill_w-120 {% if bill.chekin_add_subcontr == 0 %} red {% endif %}"> 0 ₽</div>
+        {% endif %}
+       
+   
+        {% empty %}
+       
         {% endfor %}
-        <div class="bill_w-120">
-        премии
-        </div> 
+       
         {% endif %}
       </div> 
       

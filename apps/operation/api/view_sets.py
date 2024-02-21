@@ -50,7 +50,7 @@ class OperationOutViews(viewsets.ModelViewSet):
 class OperationViews(viewsets.ModelViewSet):
     queryset = Operation.objects.all()
     serializer_class = OperationSerializer
-    http_method_names = ["get", "post",]
+    http_method_names = ["get", "post","delete"]
     
     @action(detail=False, methods=["post"], url_path=r"operation_entry_list")
     def operation_entry_filter(

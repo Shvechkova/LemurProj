@@ -52,3 +52,28 @@ class SubcontractMonthView(viewsets.ModelViewSet):
         queryset = SubcontractMonth.objects.filter(month_bill=pk)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=["post", "put"], url_path=r"upd_subs")
+    def upd_contracts(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
+        data = request.data
+        print(data)
+        for contracts in data:
+            id = contracts["id"]
+            if id == "":
+                serializer = self.serializer_class(data=contracts)
+                if serializer.is_valid():
+                    serializer.save()
+            else:
+                contract = SubcontractMonth.objects.get(pk=id)
+                serializer = self.serializer_class(
+                    instance=contract, data=contracts, partial=True
+                )
+                if serializer.is_valid():
+                    serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

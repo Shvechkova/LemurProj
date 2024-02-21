@@ -125,13 +125,14 @@ function validate(elem, btn) {
 
 // класс конструктор инпутов
 class Input {
-  constructor(type, className, value, placeholder,readonly) {
+  constructor(type, className, value, placeholder,readonly,dataname) {
     this.elem = document.createElement("input");
     if (type) this.elem.type = type;
     if (className) this.elem.className = className;
     if (value) this.elem.value = value;
     if (placeholder) this.elem.placeholder = placeholder;
     if(readonly == true) this.elem.readOnly = true;
+    if(dataname ) this.elem.setAttribute("data-id", dataname)  
   }
 
   appendTo(parent) {

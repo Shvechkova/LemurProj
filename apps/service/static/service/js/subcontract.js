@@ -8,7 +8,7 @@ if (btnSubcontarct) {
       let elem = element.getAttribute("data-name");
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
-      console.log(sumAdv);
+
       let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
       budgetInnerAll.innerHTML = sumAdv;
 
@@ -112,25 +112,31 @@ function createNextSubcontractInput(button) {
 function changeSum(element, mutationRecords) {
   let sumAdv = element.getAttribute("data-bill-month-adv");
 
+  let sumAdvReplace = sumAdv.replace(/\s+/g, "");
+
   const wrapSubcontractors = document.querySelectorAll(
     ".modal-subcontract-input_sum"
   );
   let useBudget = document.querySelector(".modal_adv_budget_not_use");
-  var sum = 0;
-  useBudget.innerHTML = sum;
+  var sum = sumAdvReplace;
+  // useBudget.innerHTML = sum;
   wrapSubcontractors.forEach((el, value) => {
     // sum += cashUse;
     // useBudget.innerHTML = sum
 
     el.addEventListener("keyup", () => {
+      sum = sumAdvReplace - sum;
+
+      sum = sumAdvReplace - el.value;
+      useBudget.innerHTML = sum;
       // sum += cashUse;
       // let cashUseActuall = el.value
       // sum += cashUseActuall;
       // useBudget.innerHTML = sum
     });
-    let cashUse = +el.value;
-    sum += cashUse;
-    useBudget.innerHTML = sum;
+    // let cashUse = +el.value;
+    // sum += cashUse;
+    // useBudget.innerHTML = sum;
   });
 }
 
@@ -140,7 +146,6 @@ function observerChangeCreateInput(element) {
   );
 
   let observer = new MutationObserver((mutationRecords) => {
-    // console.log(mutationRecords)
     changeSum(element, mutationRecords);
   });
   observer.observe(wrapSubcontractors, {
@@ -160,38 +165,64 @@ function addSubcontractFetch(idBill, elem) {
 
     subcontractArr.forEach((element, i) => {
       contractChild = element.children;
-
       const nameSubcontract = contractChild[1];
-      var choseNameSubcontract =
-        nameSubcontract.options[nameSubcontract.selectedIndex].getAttribute(
-          "data-id"
-        );
-
       let subcontractAdv;
       let subcontractOther;
-      if (contractChild[0].value == "adv") {
-        subcontractAdv = choseNameSubcontract;
-        subcontractOther = null;
-      } else {
-        subcontractOther = choseNameSubcontract;
-        subcontractAdv = null;
+     
+      let idelemOld = contractChild[3];
+      if (idelemOld === undefined) {}
+      else{
+        if (idelemOld.classList.contains('subcontract_id')) {
+          let namesubs =  contractChild[0].getAttribute("placeholder")
+          choseNameSubcontract = nameSubcontract.getAttribute("data-id");
+          if (namesubs == "adv") {
+            subcontractAdv = choseNameSubcontract;
+            subcontractOther = null;
+          } else {
+            subcontractOther = choseNameSubcontract;
+            subcontractAdv = null;
+          }
+          let amount = contractChild[2].value;
+          const contractObj = {
+            id: idelemOld.value,
+            month_bill: idBill,
+            amount: amount,
+            adv: subcontractAdv,
+            other: subcontractOther,
+          };
+
+          arrSubcontarctAll.push(contractObj);
+        } else {
+          var choseNameSubcontract =
+            nameSubcontract.options[nameSubcontract.selectedIndex].getAttribute(
+              "data-id"
+            );
+
+          if (contractChild[0].value == "adv") {
+            subcontractAdv = choseNameSubcontract;
+            subcontractOther = null;
+          } else {
+            subcontractOther = choseNameSubcontract;
+            subcontractAdv = null;
+          }
+          let amount = contractChild[3].value;
+          const contractObj = {
+            id: '',
+            month_bill: idBill,
+            amount: amount,
+            adv: subcontractAdv,
+            other: subcontractOther,
+          };
+
+          arrSubcontarctAll.push(contractObj);
+        }
       }
-
-      let amount = contractChild[3].value;
-
-      const contractObj = {
-        month_bill: idBill,
-        amount: amount,
-        adv: subcontractAdv,
-        other: subcontractOther,
-      };
-
-      arrSubcontarctAll.push(contractObj);
     });
 
-    const endpoint = "/service/api/subcontract/add/";
+    const endpoint = "/service/api/subcontract/upd_subs/";
     let csrfToken = getCookie("csrftoken");
     let data = JSON.stringify(arrSubcontarctAll);
+    console.log(data)
     fetch(endpoint, {
       method: "POST",
       body: data,
@@ -221,14 +252,14 @@ function addSubcontractFetch(idBill, elem) {
             const windowContent = document.getElementById(elem);
             alertSuccess(windowContent);
             const timerId = setTimeout(() => {
-              location.reload();
+              // location.reload();
             }, 200);
           } else {
             const windowContent = document.getElementById(elem);
 
             alertError(windowContent);
             const timerId = setTimeout(() => {
-              location.reload();
+              // location.reload();
             }, 200);
           }
         });
@@ -249,7 +280,6 @@ function getOldSumcintract(idBill) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       if (data.length == 0) {
         return;
       } else {
@@ -259,61 +289,82 @@ function getOldSumcintract(idBill) {
         })
           .then((response) => response.json())
           .then((dataCategoryAdv) => {
-           
             const c = document.querySelector(".modal_add_subcontract_wrapper");
             c.innerHTML = "";
             data.forEach(function (value, key) {
-              console.log(value)
               let modal_add_subcontract = document.createElement("div");
               modal_add_subcontract.className =
                 "modal_add_contract modal_add-subcontract";
               c.append(modal_add_subcontract);
-              console.log(value.adv);
+
               if (value.adv != null) {
                 modal_add_subcontract.innerHTML =
-                  '<input type="text" readonly class="modal-subcontract-type input-130" placeholder="1" value="площадка">';
+                  '<input type="text" readonly class="modal-subcontracts input-130" placeholder="adv" value="площадка" data-adv="adv">';
+              } else {
+                modal_add_subcontract.innerHTML =
+                '<input type="text" readonly class="modal-subcontracts input-130" placeholder="adv" value="премия" data-adv="other">';
               }
-              dataCategoryAdv.forEach((item) =>{
-                if(item.id == value.adv ){
-                new Input(
-                "text",
-                "modal-subcontract-type input-130",
-                item.name,
-                "сумма",
-                true
-              ).appendTo(modal_add_subcontract);
-                }
-              })
+              dataCategoryAdv.forEach((item) => {
+                if (item.id == value.adv) {
+                  new Input(
+                    "text",
+                    "modal-subcontracts   input-130 subs-old",
+                    item.name,
+                    "сумма",
+                    true,
+                    item.id
+                  ).appendTo(modal_add_subcontract);
+                } 
+              });
               new Input(
                 "text",
-                "modal-subcontract-type input-200",
+                "modal-subcontracs input-200",
                 value.amount,
                 "сумма"
               ).appendTo(modal_add_subcontract);
-              new Input("hidden", "subcontract_id", value.id).afterTo(modal_add_subcontract);
+
+              new Input("hidden", "subcontract_id", value.id).appendTo(
+                modal_add_subcontract
+              );
             });
 
             let modal_add_subcontract = document.createElement("div");
             modal_add_subcontract.className =
-            "modal_add_contract modal_add-subcontract";
+              "modal_add_contract modal_add-subcontract";
             c.append(modal_add_subcontract);
 
             let modal_add_subcontract_select = document.createElement("select");
             modal_add_subcontract_select.className =
-            "modal-subcontract-type choice";
+              "modal-subcontract-type choice";
             modal_add_subcontract.append(modal_add_subcontract_select);
 
-            new selectOption('modal-select empty', 0, "", "Тип", 0, false
+            new selectOption(
+              "modal-select empty",
+              0,
+              "",
+              "Тип",
+              0,
+              false
             ).appendTo(modal_add_subcontract_select);
-            new selectOption('modal-select', "adv", "", "площадка", "selected", false
+            new selectOption(
+              "modal-select",
+              "adv",
+              "",
+              "площадка",
+              "selected",
+              false
             ).appendTo(modal_add_subcontract_select);
 
-            new selectOption('modal-select ', "other", "", "премия", "selected", false
+            new selectOption(
+              "modal-select ",
+              "other",
+              "",
+              "премия",
+              "selected",
+              false
             ).appendTo(modal_add_subcontract_select);
 
-
-            createInputSubcontract()
-           
+            createInputSubcontract();
           });
       }
     });

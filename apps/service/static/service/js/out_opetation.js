@@ -17,9 +17,9 @@ if (addOperationOut) {
 
       const add_operation = document.querySelector(".operation_add_out");
       modal(elem, add_operation);
-      const nameElemOtherSum = 'other_sum_namber_out'
-      const nameRadioOtherSum = 'other_sum_out'
-      ChekinOtherSum(nameElemOtherSum,nameRadioOtherSum)
+      const nameElemOtherSum = "other_sum_namber_out";
+      const nameRadioOtherSum = "other_sum_out";
+      ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
 
       getInfoBillOperationOperOut(element);
 
@@ -231,10 +231,20 @@ function newOperationOut(element, elem) {
             const sumoperation = item.amount;
 
             let dataOperation = d.toLocaleString("ru", options);
+            let prevOperationItem = document.createElement("div");
+            prevOperationItem.className = "previous_operation_item";
+            lastOperationWrap.append(prevOperationItem);
+
+            let prevOperationDel = document.createElement("button");
+            prevOperationDel.className = "previous_operation_del";
+
+            prevOperationItem.append(prevOperationDel);
+            prevOperationDel.setAttribute("data-id-peration", item.id);
+            prevOperationDel.innerHTML = "-";
 
             let prevOperationTitle = document.createElement("div");
             prevOperationTitle.className = "previous_operation_title";
-            lastOperationWrap.append(prevOperationTitle);
+            prevOperationItem.append(prevOperationTitle);
             prevOperationTitle.innerHTML =
               dataOperation +
               " - оплата " +
@@ -247,13 +257,14 @@ function newOperationOut(element, elem) {
 
             let prevOperationComm = document.createElement("div");
             prevOperationComm.className = "previous_operation_comment";
-            lastOperationWrap.append(prevOperationComm);
+            prevOperationItem.append(prevOperationComm);
             if (comment != "") {
               prevOperationComm.innerHTML = "Комментарий: " + comment;
             }
             st -= +sumoperation;
           });
-
+          
+          DelOperationOut(element);
           sumOperationEnded = st;
 
           const sumExpected = document.querySelector(
@@ -267,20 +278,18 @@ function newOperationOut(element, elem) {
             sumOperationEnded +
             '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out">Другая сумма</label><input data-validate="0" type="number" id="other_sum_namber_out" name="" value="" />';
 
-             const nameElemOtherSum = 'other_sum_namber_out'
-      const nameRadioOtherSum = 'other_sum_out'
-      ChekinOtherSum(nameElemOtherSum,nameRadioOtherSum)
-
-          
+          const nameElemOtherSum = "other_sum_namber_out";
+          const nameRadioOtherSum = "other_sum_out";
+          ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
         } else {
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "1");
           sumChekedWrap.innerHTML =
             '<p>Сколько оплатили?</p><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out">Другая сумма</label><input data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" />';
 
-            const nameElemOtherSum = 'other_sum_namber_out'
-            const nameRadioOtherSum = 'other_sum_out'
-            ChekinOtherSum(nameElemOtherSum,nameRadioOtherSum)
+          const nameElemOtherSum = "other_sum_namber_out";
+          const nameRadioOtherSum = "other_sum_out";
+          ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
         }
 
         // });
@@ -289,3 +298,35 @@ function newOperationOut(element, elem) {
 
   return idOperationrepl;
 }
+
+function DelOperationOut(element) {
+  const delButton = document.querySelectorAll(".previous_operation_del");
+  delButton.forEach((item) => {
+    item.addEventListener("click", () => {
+      idOperation = item.getAttribute("data-id-peration");
+      console.log(idOperation);
+      endpoint = "/operations/api/operation/" + idOperation + "/";
+
+      item.parentElement.remove();
+
+      fetch(endpoint, {
+        method: "DELETE",
+        // body: dataJson,
+        headers: {
+          "Content-Type": "application/json",
+          // "X-CSRFToken": csrfToken,
+        },
+      }).then((response) => {
+        if (response.ok) {
+         
+          const add_operation = document.querySelector(".operation_add_out");
+          add_operation.replaceWith(add_operation.cloneNode(true));
+           element.click();
+          
+          return
+        }
+      });
+    });
+  });
+}
+
