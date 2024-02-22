@@ -582,3 +582,7 @@ input[type="date"]:before {
 .previous_operation_item{
   display: flex;
 }
+
+.wrapper_oper_out_other{
+  display: none;
+}

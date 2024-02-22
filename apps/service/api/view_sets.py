@@ -35,7 +35,7 @@ class SubcontractCategoryOtherView(viewsets.ModelViewSet):
 class SubcontractMonthView(viewsets.ModelViewSet):
     queryset = SubcontractMonth.objects.all()
     serializer_class = SubcontractMonthSerializer
-    http_method_names = ["get", "post", "put"]  
+    http_method_names = ["get", "post", "put",'delete']  
     
     @action(detail=False, methods=["post", "put"], url_path=r"add")
     def create_subcontracts(self, request, *args, **kwargs):

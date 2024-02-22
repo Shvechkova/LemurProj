@@ -19,7 +19,7 @@ if (btnSubcontarct) {
       c.innerHTML =
         '<div class="modal_add_contract modal_add-subcontract"><select class="modal-subcontract-type choice"><option disabled selected class="modal-select empty" value="0">Тип</option><option class="modal-select" value="adv">площадка</option><option class="modal-select" value="other">премия</option></select></div>';
 
-      getOldSumcintract(idBill);
+      getOldSumcintract(idBill, element);
       getInfoBill(element);
       createInputSubcontract(element);
       observerChangeCreateInput(element);
@@ -168,12 +168,12 @@ function addSubcontractFetch(idBill, elem) {
       const nameSubcontract = contractChild[1];
       let subcontractAdv;
       let subcontractOther;
-     
+
       let idelemOld = contractChild[3];
-      if (idelemOld === undefined) {}
-      else{
-        if (idelemOld.classList.contains('subcontract_id')) {
-          let namesubs =  contractChild[0].getAttribute("placeholder")
+      if (idelemOld === undefined) {
+      } else {
+        if (idelemOld.classList.contains("subcontract_id")) {
+          let namesubs = contractChild[0].getAttribute("placeholder");
           choseNameSubcontract = nameSubcontract.getAttribute("data-id");
           if (namesubs == "adv") {
             subcontractAdv = choseNameSubcontract;
@@ -207,7 +207,7 @@ function addSubcontractFetch(idBill, elem) {
           }
           let amount = contractChild[3].value;
           const contractObj = {
-            id: '',
+            id: "",
             month_bill: idBill,
             amount: amount,
             adv: subcontractAdv,
@@ -222,7 +222,7 @@ function addSubcontractFetch(idBill, elem) {
     const endpoint = "/service/api/subcontract/upd_subs/";
     let csrfToken = getCookie("csrftoken");
     let data = JSON.stringify(arrSubcontarctAll);
-    console.log(data)
+    console.log(data);
     fetch(endpoint, {
       method: "POST",
       body: data,
@@ -267,7 +267,7 @@ function addSubcontractFetch(idBill, elem) {
   });
 }
 
-function getOldSumcintract(idBill) {
+function getOldSumcintract(idBill,element) {
   const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
   let csrfToken = getCookie("csrftoken");
   fetch(endpoint, {
@@ -300,34 +300,81 @@ function getOldSumcintract(idBill) {
               if (value.adv != null) {
                 modal_add_subcontract.innerHTML =
                   '<input type="text" readonly class="modal-subcontracts input-130" placeholder="adv" value="площадка" data-adv="adv">';
+                dataCategoryAdv.forEach((item) => {
+                  if (item.id == value.adv) {
+                    new Input(
+                      "text",
+                      "modal-subcontracts   input-130 subs-old",
+                      item.name,
+                      "сумма",
+                      true,
+                      item.id
+                    ).appendTo(modal_add_subcontract);
+
+                    new Input(
+                      "text",
+                      "modal-subcontracs input-200",
+                      value.amount,
+                      "сумма"
+                    ).appendTo(modal_add_subcontract);
+      
+                    new Input("hidden", "subcontract_id", value.id).appendTo(
+                      modal_add_subcontract
+                    );
+                    let prevOperationDel = document.createElement("button");
+                    prevOperationDel.className = "subcontract_del";
+      
+                    modal_add_subcontract.append(prevOperationDel);
+                    prevOperationDel.setAttribute("data-id-peration", value.id);
+                    prevOperationDel.innerHTML = "-";
+                  }
+                });
               } else {
-                modal_add_subcontract.innerHTML =
-                '<input type="text" readonly class="modal-subcontracts input-130" placeholder="adv" value="премия" data-adv="other">';
+                let endpoint = "/service/api/subcontract-category-other/";
+                fetch(endpoint, {
+                  method: "get",
+                })
+                  .then((response) => response.json())
+                  .then((dataCategoryOther) => {
+                    dataCategoryOther.forEach((item) => {
+                      if (item.id == value.other) {
+                        modal_add_subcontract.innerHTML =
+                          '<input type="text" readonly class="modal-subcontracts input-130" placeholder="other" value="премия" data-adv="other">';
+                        new Input(
+                          "text",
+                          "modal-subcontracts   input-130 subs-old",
+                          item.name,
+                          "сумма",
+                          true,
+                          item.id
+                        ).appendTo(modal_add_subcontract);
+                        new Input(
+                          "text",
+                          "modal-subcontracs input-200",
+                          value.amount,
+                          "сумма"
+                        ).appendTo(modal_add_subcontract);
+
+                        new Input(
+                          "hidden",
+                          "subcontract_id",
+                          value.id
+                        ).appendTo(modal_add_subcontract);
+
+                        let prevOperationDel = document.createElement("button");
+                        prevOperationDel.className = "subcontract_del";
+
+                        modal_add_subcontract.append(prevOperationDel);
+                         prevOperationDel.setAttribute("data-id-peration",value.id);
+                        prevOperationDel.innerHTML = "-";
+                      }
+                    });
+                  });
               }
-              dataCategoryAdv.forEach((item) => {
-                if (item.id == value.adv) {
-                  new Input(
-                    "text",
-                    "modal-subcontracts   input-130 subs-old",
-                    item.name,
-                    "сумма",
-                    true,
-                    item.id
-                  ).appendTo(modal_add_subcontract);
-                } 
-              });
-              new Input(
-                "text",
-                "modal-subcontracs input-200",
-                value.amount,
-                "сумма"
-              ).appendTo(modal_add_subcontract);
 
-              new Input("hidden", "subcontract_id", value.id).appendTo(
-                modal_add_subcontract
-              );
+              
             });
-
+            DelSubcontr(element)
             let modal_add_subcontract = document.createElement("div");
             modal_add_subcontract.className =
               "modal_add_contract modal_add-subcontract";
@@ -365,7 +412,55 @@ function getOldSumcintract(idBill) {
             ).appendTo(modal_add_subcontract_select);
 
             createInputSubcontract();
+           
           });
       }
     });
 }
+
+function FetchCatSubsOther() {
+  let endpoint = "/service/api/subcontract-category-other/";
+  fetch(endpoint, {
+    method: "get",
+  })
+    .then((response) => response.json())
+    .then((dataCategoryOther) => {
+      return dataCategoryOther;
+    });
+}
+
+
+function DelSubcontr(element) {
+  console.log(1)
+  const delButton = document.querySelectorAll(".subcontract_del");
+  delButton.forEach((item) => {
+    item.addEventListener("click", () => {
+      console.log(1111)
+      idOperation = item.getAttribute("data-id-peration");
+      console.log(idOperation);
+      endpoint = "/service/api/subcontract/" + idOperation + "/";
+
+      item.parentElement.remove();
+
+      let csrfToken = getCookie("csrftoken");
+
+      fetch(endpoint, {
+        method: "DELETE",
+        
+        headers: {
+          "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+      }).then((response) => {
+        if (response.ok) {
+          const add_operation = document.querySelector(".subcontarct_add");
+          add_operation.replaceWith(add_operation.cloneNode(true));
+          element.click();
+
+          return;
+        }
+      });
+    });
+  });
+}
+

@@ -421,7 +421,7 @@ class ServicesMonthlyBill(models.Model):
                 "id_subs": id_subs,  
             }    
         obj.append(total)   
-        print(obj)
+    
 
         return (obj)
 

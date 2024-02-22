@@ -263,7 +263,7 @@ function newOperationOut(element, elem) {
             }
             st -= +sumoperation;
           });
-          
+
           DelOperationOut(element);
           sumOperationEnded = st;
 
@@ -318,15 +318,13 @@ function DelOperationOut(element) {
         },
       }).then((response) => {
         if (response.ok) {
-         
           const add_operation = document.querySelector(".operation_add_out");
           add_operation.replaceWith(add_operation.cloneNode(true));
-           element.click();
-          
-          return
+          element.click();
+
+          return;
         }
       });
     });
   });
 }
-

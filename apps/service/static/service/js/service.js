@@ -7,7 +7,11 @@ if (addBill) {
     el.addEventListener("click", () => {
       let elem = el.getAttribute("data-name");
       let dataBill = el.getAttribute("data-month");
-     
+      let dataCatServise = el.getAttribute("data-cat-service");
+      if (dataCatServise != 1){
+        const advWrap = document.querySelector(".adv_all_sum_wrapper")
+        advWrap.style.display = "none"
+      }
       const pageName = document.getElementById("page_name").value;
       const selectContract = document.querySelector(
         ".modal-client_main-contract"
@@ -122,6 +126,7 @@ function addMonthBill(dataBill,elem) {
     const contractName = contractId + "/" + year + "-" + month;
 
     const data = new FormData(form);
+
     data.append("client", clientId.value);
     data.append("service", service_name);
     data.append("contract_number", contractName);
@@ -129,7 +134,7 @@ function addMonthBill(dataBill,elem) {
     data.append("contract_sum", contract_sum);
     data.append("adv_all_sum", adv_sum);
     data.append("diff_sum", diff_sum);
-    
+  
 
         let object = {};
         data.forEach((value, key) => (object[key] = value));
@@ -149,14 +154,14 @@ console.log(dataJson)
             const windowContent = document.getElementById(elem);
             alertSuccess(windowContent);
             const timerId = setTimeout(() => {
-               location.reload();
+              //  location.reload();
             }, 200);
           } else {
             const windowContent = document.getElementById(elem);
             console.log(windowContent)
             alertError(windowContent);
             const timerId = setTimeout(() => {
-               location.reload();
+              //  location.reload();
             }, 200);
           }
         });

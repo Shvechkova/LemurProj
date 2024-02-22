@@ -155,12 +155,6 @@ def service_one(request, slug):
         }
     ]
 
-    # suborder_total = SubcontractMonth.objects.filter(
-    #     month_bill__service=category_service,
-    #     created_timestamp__year=now.year,
-    #     created_timestamp__month=now.month,adv__isnull=False
-    # )
-
     obj_suborder_adv = []
 
     for subs_item in suborders_name:
@@ -177,9 +171,28 @@ def service_one(request, slug):
         name['total_amount'] = suborder_total['total_amount']
         obj_suborder_adv.append(name)
         
+        suborder_total_other = SubcontractMonth.objects.filter(
+        month_bill__service=category_service,
+        created_timestamp__year=now.year,
+        created_timestamp__month=now.month,other__isnull=False
+    ).aggregate(total_amount=Sum('amount'))
+        
+        
+    old_month = now.month - 1
+    if old_month < 0 :
+        old_month = 12
+    year = now.year
+    if old_month == 12 :
+        year = year - 1
+    print(year - 1)  
+    bill_now_old = (
+        ServicesMonthlyBill.objects.filter(service=category_service)
+        .annotate(month=TruncMonth("created_timestamp"))
+        .filter(created_timestamp__year=old_month, created_timestamp__month=old_month)
+        .select_related("client")
+    )
 
-
-
+    
 
     title = category_service.id
     context = {
@@ -199,5 +212,6 @@ def service_one(request, slug):
         "total_month_diff_sum": total_month_diff_sum,
         "total_oper": total_oper,
         "obj_suborder_adv": obj_suborder_adv,
+        "suborder_total_other": suborder_total_other
     }
     return render(request, "service/one_service.html", context)

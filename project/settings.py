@@ -113,7 +113,7 @@ DATABASES = {
         "USER": "dyugaev_anast",
         "PASSWORD": "PRgD0%1V",
         "HOST": "dyugaev.beget.tech",
-        'CONN_MAX_AGE': 60,
+        # 'CONN_MAX_AGE': 60,
         
     }
 }
