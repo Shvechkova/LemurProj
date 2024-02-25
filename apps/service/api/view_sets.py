@@ -21,6 +21,8 @@ class ServiceView(viewsets.ModelViewSet):
 class ServicesMonthlyBillView(viewsets.ModelViewSet):
     queryset = ServicesMonthlyBill.objects.all()
     serializer_class = ServicesMonthlyBillSerializer
+    http_method_names = ["get", "post", "put", 'delete']
+    
     
 class SubcontractCategoryAdvView(viewsets.ModelViewSet):
     queryset = Adv.objects.all()

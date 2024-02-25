@@ -1,3 +1,12 @@
+
+  window.onload = function () {
+    document.body.classList.add('loaded_hiding');
+    window.setTimeout(function () {
+      document.body.classList.add('loaded');
+      document.body.classList.remove('loaded_hiding');
+    }, 100);
+  }
+
 // const opetaionEntryEmpty = document.querySelectorAll(".operation_entry_bank")
 
 // if(opetaionEntryEmpty){
@@ -125,14 +134,14 @@ function validate(elem, btn) {
 
 // класс конструктор инпутов
 class Input {
-  constructor(type, className, value, placeholder,readonly,dataname) {
+  constructor(type, className, value, placeholder, readonly, dataname) {
     this.elem = document.createElement("input");
     if (type) this.elem.type = type;
     if (className) this.elem.className = className;
     if (value) this.elem.value = value;
     if (placeholder) this.elem.placeholder = placeholder;
-    if(readonly == true) this.elem.readOnly = true;
-    if(dataname ) this.elem.setAttribute("data-id", dataname)  
+    if (readonly == true) this.elem.readOnly = true;
+    if (dataname) this.elem.setAttribute("data-id", dataname);
   }
 
   appendTo(parent) {
@@ -177,7 +186,7 @@ function choiceColor() {
 
 // чекин окна другой сумы НЕ РАБОТАЕТ
 
-function ChekinOtherSum(inputOtherSum,radioOtherSum) {
+function ChekinOtherSum(inputOtherSum, radioOtherSum) {
   const chekinOtherSum = document.getElementById(inputOtherSum);
   chekinOtherSum.addEventListener("input", () => {
     const chekinOtherSum = document.getElementById(radioOtherSum);

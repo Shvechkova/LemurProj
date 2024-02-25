@@ -13,7 +13,8 @@ from django.db.models import Q
 # Create your models here.f
 # created_timestamp = models.DateTimeField(default=timezone.now)
 class Service(models.Model):
-    name = models.CharField("Категории услуг", max_length=150, blank=True, null=True)
+    name = models.CharField(
+        "Категории услуг", max_length=150, blank=True, null=True)
 
 
 # конкретная услуга клиента
@@ -44,7 +45,8 @@ class ServiceClient(models.Model):
 
 # ежемесячный счет по услуге
 class ServicesMonthlyBill(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
+    client = models.ForeignKey(
+        Client, on_delete=models.PROTECT, blank=True, null=True)
     service = models.ForeignKey(
         Service, on_delete=models.PROTECT, blank=True, null=True
     )
@@ -69,7 +71,8 @@ class ServicesMonthlyBill(models.Model):
 
     contract_sum = models.PositiveIntegerField("сумма контракта", default="0")
 
-    adv_all_sum = models.PositiveIntegerField("сумма ведения для адв", default="0")
+    adv_all_sum = models.PositiveIntegerField(
+        "сумма ведения для адв", default="0")
 
     diff_sum = models.PositiveIntegerField(
         "сумма для распределения по скбподряду адв", default="0"
@@ -79,7 +82,8 @@ class ServicesMonthlyBill(models.Model):
         "чекин получения полной оплаты от клиента", default=False
     )
 
-    chekin_sum_adv = models.BooleanField("чекин оплаты всех субподрядов", default=False)
+    chekin_sum_adv = models.BooleanField(
+        "чекин оплаты всех субподрядов", default=False)
 
     chekin_add_subcontr = models.BooleanField(
         "чекин есть ли распределение денег по субподрядам", default=False
@@ -316,10 +320,10 @@ class ServicesMonthlyBill(models.Model):
                 "id_adv": subs_item.id,
             }
             obj.append(name)
-            
-            
+
         count_categoru = len(obj)
-        obj_new = [{"name-adv": 0, "id_subs": 0, "amount_subs": 0}] * count_categoru
+        obj_new = [{"name-adv": 0, "id_subs": 0,
+                    "amount_subs": 0}] * count_categoru
         i = -1
         for nams, suborder in zip(obj, suborders):
 
@@ -330,7 +334,7 @@ class ServicesMonthlyBill(models.Model):
                 "id_subs": suborder.id,
                 "amount_subs": suborder.amount,
             }
-            
+
             obj_new[i] = name
             # obj_new.append(name)
 
@@ -338,7 +342,7 @@ class ServicesMonthlyBill(models.Model):
 
         # suborders = SubcontractMonth.objects.filter(
         #     month_bill=self.id).select_related("adv","other")
-        
+
         # suborders_name = Adv.objects.all()
         # obj = []
         # for subs_item in suborders_name:
@@ -349,7 +353,7 @@ class ServicesMonthlyBill(models.Model):
         #     obj.append(name)
 
         # count_categoru = len(obj)
-        
+
         # obj_new = [{"name-adv": 0, "id_subs": 0, "amount_subs": 0}] * count_categoru
         # i = -1
         # for sub in suborders:
@@ -362,11 +366,11 @@ class ServicesMonthlyBill(models.Model):
         #                 "amount_subs": suborder.amount,
         #             }
         #             obj_new[i] = name
-        #             return (obj_new)  
-              
+        #             return (obj_new)
+
         #     # if sub.other != None:
         #     #     suborders_name = SubcontractOther.objects.all()
-               
+
         #     #     obj = []
         #     #     for subs_item in suborders_name:
         #     #         name = {
@@ -387,41 +391,34 @@ class ServicesMonthlyBill(models.Model):
         #     #             "amount_subs": suborder.amount,
         #     #         }
         #     #         obj_new[i] = name
-               
-        return (obj_new)     
-              
-                
-                
-        
-        
-    
+
+        return (obj_new)
+
     def suborders_other(self):
         suborders = SubcontractMonth.objects.filter(
             month_bill=self.id, other__isnull=False
         ).select_related("other")
 
-       
-        obj = [] 
+        obj = []
         total_amount = 0
         id_subs = ""
         for subs_item in suborders:
             total_amount += subs_item.amount
-            id_subs = id_subs + str(subs_item.id) + "-"  
+            id_subs = id_subs + str(subs_item.id) + "-"
             name = {
                 "id_cat_other": subs_item.other.name,
                 "name_other": subs_item.other.name,
                 "id_other": subs_item.id,
                 "id_amount": subs_item.amount,
-                
+
             }
             obj.append(name)
-          
+
         total = {
-                "total_amount": total_amount,
-                "id_subs": id_subs,  
-            }    
-        obj.append(total)   
-    
+            "total_amount": total_amount,
+            "id_subs": id_subs,
+        }
+        obj.append(total)
 
         return (obj)
 
@@ -531,16 +528,18 @@ class SubcontractMonth(models.Model):
     )
     # Запланированные траты
     amount = models.PositiveIntegerField("сумма субподряд", default="0")
-    percent = models.PositiveIntegerField("процент для исполнителя", default="0")
+    percent = models.PositiveIntegerField(
+        "процент для исполнителя", default="0")
     month_bill = models.ForeignKey(
-        ServicesMonthlyBill, on_delete=models.SET_NULL, blank=True, null=True
+        ServicesMonthlyBill, on_delete=models.CASCADE, blank=True, null=True
     )
     # chekin_sum_out =  models.BooleanField(default=False)
 
 
 #  Субподряд площадки
 class Adv(models.Model):
-    name = models.CharField("название площадки", max_length=200, blank=True, null=True)
+    name = models.CharField("название площадки",
+                            max_length=200, blank=True, null=True)
 
 
 class SubcontractOther(models.Model):
