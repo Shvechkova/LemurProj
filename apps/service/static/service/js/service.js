@@ -33,6 +33,7 @@ if (addBill) {
 
       modal(elem, battonAdd);
       getClientFilterCategory(pageName, dataBill,elem);
+      addMonthBill(dataBill,elem);
     });
   });
 }
@@ -96,7 +97,7 @@ function getClientFilterCategory(pageName, dataBill,elem) {
               const contractSum = document.querySelector(".modal-contract_sum");
               contractSum.value = value.contract_sum;
             });
-            addMonthBill(dataBill,elem);
+            // addMonthBill(dataBill,elem);
           });
       });
     });
@@ -125,15 +126,23 @@ function addMonthBill(dataBill,elem) {
 
     const contractName = contractId + "/" + year + "-" + month;
 
-    const data = new FormData(form);
+    const data = new FormData();
 
     data.append("client", clientId.value);
     data.append("service", service_name);
     data.append("contract_number", contractName);
     data.append("contract", contractId);
     data.append("contract_sum", contract_sum);
-    data.append("adv_all_sum", adv_sum);
+   
     data.append("diff_sum", diff_sum);
+   
+    if(service_name == '1' ){
+      console.log(1)
+       data.append("adv_all_sum", adv_sum);
+    } else {
+      console.log(2)
+       data.append("adv_all_sum", 0);
+    }
   
 
         let object = {};

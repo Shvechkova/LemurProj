@@ -84,6 +84,13 @@ def service_one(request, slug):
         .filter(created_timestamp__year=now.year, created_timestamp__month=now.month)
         .select_related("client")
     )
+    suborders_name_no_adv = SubcontractMonth.objects.filter(
+        month_bill__service=category_service,
+        created_timestamp__year=now.year,
+        created_timestamp__month=now.month,other__isnull=False
+    ).values("other_id__name").order_by("other").distinct()
+
+    print(suborders_name_no_adv)
 
     total_month_contract_sum = 0
     total_month_adv_all_sum = 0
@@ -156,7 +163,12 @@ def service_one(request, slug):
     ]
 
     obj_suborder_adv = []
-
+    
+    if category_service == 'adv':
+        suborders_name_item = suborders_name
+    # else:
+    #    suborders_name_item = suborders_name_no_adv    
+        
     for subs_item in suborders_name:
         name = {
             "name_adv": subs_item.name,
@@ -175,7 +187,7 @@ def service_one(request, slug):
         month_bill__service=category_service,
         created_timestamp__year=now.year,
         created_timestamp__month=now.month,other__isnull=False
-    ).aggregate(total_amount=Sum('amount'))
+    ).aggregate(total_amount=Sum('amount',default=0))
         
         
     old_month = now.month - 1
@@ -184,7 +196,7 @@ def service_one(request, slug):
     year = now.year
     if old_month == 12 :
         year = year - 1
-    print(year - 1)  
+     
     bill_now_old = (
         ServicesMonthlyBill.objects.filter(service=category_service)
         .annotate(month=TruncMonth("created_timestamp"))
@@ -192,7 +204,8 @@ def service_one(request, slug):
         .select_related("client")
     )
 
-    
+
+  
 
     title = category_service.id
     context = {
@@ -212,6 +225,8 @@ def service_one(request, slug):
         "total_month_diff_sum": total_month_diff_sum,
         "total_oper": total_oper,
         "obj_suborder_adv": obj_suborder_adv,
-        "suborder_total_other": suborder_total_other
+        "suborder_total_other": suborder_total_other,
+        "suborders_name_no_adv": suborders_name_no_adv,
+        
     }
     return render(request, "service/one_service.html", context)

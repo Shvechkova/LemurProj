@@ -72,7 +72,7 @@ class ServicesMonthlyBill(models.Model):
     contract_sum = models.PositiveIntegerField("сумма контракта", default="0")
 
     adv_all_sum = models.PositiveIntegerField(
-        "сумма ведения для адв", default="0")
+        "сумма ведения для адв", default=None, blank=True, null=True)
 
     diff_sum = models.PositiveIntegerField(
         "сумма для распределения по скбподряду адв", default="0"
@@ -419,6 +419,124 @@ class ServicesMonthlyBill(models.Model):
             "id_subs": id_subs,
         }
         obj.append(total)
+
+        return (obj)
+    
+    def suborders_other_no_adv(self):
+        suborders = SubcontractMonth.objects.filter(
+            month_bill=self.id, other__isnull=False
+        ).select_related("other")
+        suborders_name = SubcontractOther.objects.all()
+
+        obj = []
+        
+        for subs_item in suborders_name:
+            name = {
+                "name": subs_item.name,
+                "id_other": 0,
+                "id_amount": 0,
+                
+            }
+            obj.append(name)
+
+        count_categoru = len(obj) +1
+        
+        total_amount = 0
+        id_subs = ""
+        i = -1
+        obj_new = [{"name_other": 0, "id_other": 0,
+                    "id_amount": 0}] * count_categoru
+        
+        
+        for subs_item in suborders:
+            total_amount += subs_item.amount
+            id_subs = id_subs + str(subs_item.id) + "-"
+            i += 1
+            name = {
+                
+                "name_other": subs_item.other.name,
+                "id_other": subs_item.id,
+                "id_amount": subs_item.amount,
+
+            }
+            obj_new[i] = name
+            # obj.append(name)
+            
+             
+        obj_new_zip = []
+        e = 0
+        new_list = []
+        for x in range(len(obj)):
+            for y in range(len(obj_new)):
+                if obj[x]['name'] == obj_new[y]['name_other']:
+                    obj[x].update(obj_new[y])
+        
+       
+                     
+        # for nams1, subs_item1 in zip(obj, obj_new):
+        #     nams1.update(subs_item1)  
+        #     new_list.append(nams1)
+        #     # print(subs_item1)
+        #     # print(nams1)
+          
+        #     # e += 1
+            
+        #     # if  nams1["name"] == subs_item1["name_other"]:
+        #     #      name = {
+        #     #         "name_other": nams1["name"],
+        #     #         "id_other": subs_item1["id_other"],
+        #     #         "id_amount": subs_item1["id_amount"],
+        #     #     }
+        #     # else:
+        #     #     name = {
+        #     #         "name_other": nams1["name"],
+        #     #         "id_other": 0,
+        #     #         "id_amount": 0,
+        #     #     }
+                
+        #     # obj_new_zip.append(name)
+            
+        # print(new_list)
+        # for subs_item in suborders:
+        #     total_amount += subs_item.amount
+        #     id_subs = id_subs + str(subs_item.id) + "-"
+        #     name = {
+                
+        #         "name_other": subs_item.other.name,
+        #         "id_other": subs_item.id,
+        #         "id_amount": subs_item.amount,
+
+        #     }
+        #     obj.append(name)
+            
+            
+           
+        total = {
+            "total_amount": total_amount,
+            "id_subs": id_subs,
+        }
+        obj.insert(0,total)    
+       
+        return (obj)
+    
+    def suborders_other_no_adv_total(self):
+        suborders = SubcontractMonth.objects.filter(
+            month_bill=self.id, other__isnull=False
+        ).select_related("other")
+
+        obj = []
+        total_amount = 0
+        id_subs = ""
+        for subs_item in suborders:
+            total_amount += subs_item.amount
+            id_subs = id_subs + str(subs_item.id) + "-"
+           
+
+        total = {
+            "total_amount": total_amount,
+            "id_subs": id_subs,
+        }
+        obj.insert(0,total)
 
         return (obj)
 
