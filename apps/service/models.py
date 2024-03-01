@@ -7,10 +7,6 @@ from django.db.models.functions import TruncMonth
 from django.db.models import Q
 
 
-# from apps.operation.models import OperationEntry, OperationOut
-
-
-# Create your models here.f
 # created_timestamp = models.DateTimeField(default=timezone.now)
 class Service(models.Model):
     name = models.CharField(
@@ -61,9 +57,11 @@ class ServicesMonthlyBill(models.Model):
         "SubcontractMonth", on_delete=models.SET_NULL, blank=True, null=True
     )
 
-    created_timestamp = models.DateTimeField(
+    created_timestamp = models.DateField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
+    
+    # data = models.DateTimeField(default=timezone.now)
 
     contract_number = models.CharField(
         "название номер контракта", max_length=200, default=None
@@ -286,8 +284,21 @@ class ServicesMonthlyBill(models.Model):
                     sum_operation_out_bank3 += oper_out.amount
 
         diff_operation_entry = self.contract_sum - sum_all_operation_entry
-        diff_operation_out = self.diff_sum - sum_all_operation_out
-
+        
+        if self.adv_all_sum == 0 :
+            suborders = SubcontractMonth.objects.filter( month_bill=self.id, other__isnull=False).select_related("other").aggregate(total_amount=Sum('amount',default=0))
+           
+            diff_operation_out = suborders['total_amount'] - sum_all_operation_out
+            # sum_all_operation_out = suborders
+           
+            
+        else:
+            diff_operation_out = self.diff_sum - sum_all_operation_out  
+       
+       
+        
+        
+        
         obj = [
             {
                 "operation_entry_all": sum_all_operation_entry,
@@ -304,6 +315,8 @@ class ServicesMonthlyBill(models.Model):
                 "operation_out_bank3": sum_operation_out_bank3,
             }
         ]
+        
+        
 
         return obj
 
@@ -378,7 +391,7 @@ class ServicesMonthlyBill(models.Model):
         #     #             "id_other": subs_item.id,
         #     #         }
         #     #         obj.append(name)
-        #     #     print(obj)
+        #     #    
         #     #     count_categoru = len(obj)
         #     #     obj_new = [{"name-other": 0, "id_subs": 0, "amount_subs": 0}] * count_categoru
         #     #     i = -1
@@ -476,8 +489,7 @@ class ServicesMonthlyBill(models.Model):
         # for nams1, subs_item1 in zip(obj, obj_new):
         #     nams1.update(subs_item1)  
         #     new_list.append(nams1)
-        #     # print(subs_item1)
-        #     # print(nams1)
+        #     #
           
         #     # e += 1
             
@@ -496,7 +508,7 @@ class ServicesMonthlyBill(models.Model):
                 
         #     # obj_new_zip.append(name)
             
-        # print(new_list)
+       
         # for subs_item in suborders:
         #     total_amount += subs_item.amount
         #     id_subs = id_subs + str(subs_item.id) + "-"
@@ -641,7 +653,7 @@ class SubcontractMonth(models.Model):
         null=True,
     )
 
-    created_timestamp = models.DateTimeField(
+    created_timestamp = models.DateField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
     # Запланированные траты

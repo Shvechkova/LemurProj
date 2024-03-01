@@ -5,6 +5,7 @@ const addOperationOut = document.querySelectorAll(".suborder_out_operation");
 if (addOperationOut) {
   addOperationOut.forEach((element) => {
     element.addEventListener("click", () => {
+      document.getElementById('date-operation_out').valueAsDate = new Date();
       const lastOperationWrap = document.querySelector(
         ".previous_operation_out"
       );
@@ -138,7 +139,7 @@ function addFetchOperationOut(element, endpoint, elem) {
     const commentOperation = document.getElementById(
       "operation_comment_out"
     ).value;
-
+    const data_select = document.getElementById('date-operation_out').value
     const form = new FormData();
     form.append("amount", sumChecked);
     form.append("comment", commentOperation);
@@ -146,6 +147,7 @@ function addFetchOperationOut(element, endpoint, elem) {
     form.append("suborder", billId);
     form.append("monthly_bill", billMonthId);
     form.append("type_operation", "out");
+    form.append("data", data_select);
 
     let object = {};
     form.forEach((value, key) => (object[key] = value));

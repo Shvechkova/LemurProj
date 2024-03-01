@@ -5,6 +5,7 @@ const addOperationEntry = document.querySelectorAll(".add-operation-entry");
 if (addOperationEntry) {
   addOperationEntry.forEach((element) => {
     element.addEventListener("click", () => {
+      document.getElementById('date-operation').valueAsDate = new Date();
       const lastOperationWrap = document.querySelector(".previous_operation");
       lastOperationWrap.innerHTML = "";
 
@@ -124,13 +125,14 @@ function addFetchOperationEntry(element, endpoint, elem) {
     }
 
     const commentOperation = document.getElementById("operation_comment").value;
-
+    const data_select = document.getElementById('date-operation').value
     const form = new FormData();
     form.append("amount", sumChecked);
     form.append("comment", commentOperation);
     form.append("bank", bankChecked);
     form.append("monthly_bill", billId);
     form.append("type_operation", "entry");
+    form.append("data", data_select);
 
     let object = {};
     form.forEach((value, key) => (object[key] = value));

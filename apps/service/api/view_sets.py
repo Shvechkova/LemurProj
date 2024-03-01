@@ -23,6 +23,17 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
     serializer_class = ServicesMonthlyBillSerializer
     http_method_names = ["get", "post", "put", 'delete']
     
+    @action(detail=False, methods=["post"],  url_path=r"new_month")
+    def subcontract_list(self, request):
+        data = request.data
+        print(data)
+        bill_now_mohth = ServicesMonthlyBill.objects.filter(service=data['service'], created_timestamp__year=data['year'],created_timestamp__month=data['month'])
+        
+        print(bill_now_mohth)
+        
+        
+        return Response()
+    
     
 class SubcontractCategoryAdvView(viewsets.ModelViewSet):
     queryset = Adv.objects.all()
@@ -79,3 +90,5 @@ class SubcontractMonthView(viewsets.ModelViewSet):
                     serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    

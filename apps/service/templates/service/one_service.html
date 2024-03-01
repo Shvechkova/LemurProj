@@ -8,15 +8,48 @@
   {% include "service/includes/modal/operation.html" %}
   {% include "service/includes/modal/operation_out.html" %}
   <input type="hidden" id="page_name" value="{{ title }}" />
+  <button class="button new_month" 
+  data-cat-service="{{ title }}"
+  data-month="{{ now|date:'m' }}"
+  data-year="{{ now|date:'Y' }}"
+
+  >копировать месяц</button>
   <div class="open-modal btn_month_bill"
        data-name="modal-add-bill"
        data-cat-service="{{ title }}">+</div>
+    <div class="bill-sorting-date"
+       data-sort-month="1">
+        опции просмотра:
+     <button class = " btn_sorting_month"
+     data-sort-month="1">Сейчас</button>
+     <button class = " btn_sorting_month"
+     data-sort-month="2">Прошлый месяц</button>
+     <button class = " btn_sorting_month"
+     data-sort-month="3">3 месяца</button>
+     <button class = " btn_sorting_month"
+     data-sort-month="12">Год</button>
+     <button class = " btn_sorting_month"
+     data-sort-month="999">Все время</button>
+     </div>
+     {% comment %} {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
+
+     <ul>
+     {% for created_timestamp in ordered_bill_list %}
+         <li>{{ created_timestamp.grouper }}
+         <ul>
+           {% for bill in created_timestamp.list %} {% endcomment %}
   <section class="bill-month">
-    {% for bill in bills %}
+    {% regroup bills by created_timestamp|date:"M Y" as ordered_bill_list %}
+    {% for created_timestamp in ordered_bill_list %}
+
+    {% for bill in created_timestamp.list %} 
+
+      {% comment %} {% for bill in bills %} {% endcomment %}
    
       <div class="bill_month_one-wrap">
-        {% ifchanged %} <button class="button">копировать месяц</button>
-          <h3 class="bill_month-title">{{ now|date:'F Y' }}</h3>
+        {% ifchanged %} 
+       
+          <h3 class="bill_month-title">{{ bill.month|date:'F Y' }}</h3>
           <div class="bill-month_category-title">
             <div class="bill-month-del"></div>
             <div class="bill-month-client-counter"></div>
@@ -262,7 +295,10 @@
                       </div>
                     {% endif %}
                   {% else %}
-                    <div class="mr_p_oper bill_w-80 fsz15 {% if bill.chekin_add_subcontr == 0 %}red{% endif %}">0 ₽</div>
+                    <div class="mr_p_oper bill_w-80 fsz15 {% if bill.chekin_add_subcontr == 0 %}red">
+                      n/a {% else %}">
+                      0 ₽{% endif %}
+                    </div>
                   {% endif %}
                 {% empty %}
                 {% endfor %}
@@ -291,16 +327,21 @@
               data-created="{{ bill.created_timestamp|date:'m.Y' }}">
             {% for cat_other in suborders_name_no_adv %}
               {% if cat_other.other_id__name == other_tot.name %}
-               <div  class="mr_p_oper bill_w-80 fsz15" data-sub-type="1"
-               data-name="modal-suborder_out_operation"
-               data-bill-month-id="{{ bill.id }}"
-               data-bill-month-adv="{{ bill.diff_sum }}"
-               data-bill-month-client-name="{{ bill.client.client_name }}"
-               data-bill-month-name="{{ bill.contract_number }}"
-               data-bill-month-data="{{ created_timestamp|date:'F Y' }}"
-               data-name-sub=" {{ sub_adv.name_adv }}"
-               data-id-sub="{{ sub_adv.id_subs }}"
-               data-id-sub-amount="{{ sub_adv.amount_subs }}">{{other_tot.id_amount }} ₽</div> 
+              
+
+               <div class="bill_w-80 mr_p_oper ">
+                <div class="suborder_out_operation fsz15 "
+                     data-sub-type="1"
+                     data-name="modal-suborder_out_operation"
+                     data-bill-month-id="{{ bill.id }}"
+                     data-bill-month-adv="{{ bill.diff_sum }}"
+                     data-bill-month-client-name="{{ bill.client.client_name }}"
+                     data-bill-month-name="{{ bill.contract_number }}"
+                     data-bill-month-data="{{ created_timestamp|date:'F Y' }}"
+                     data-name-sub=" {{ other_tot.name }}"
+                     data-id-sub="{{ other_tot.id_other }}"
+                     data-id-sub-amount="{{ other_tot.id_amount }}">{{other_tot.id_amount }} ₽</div>
+              </div>
                {% else %}
               {% endif %}
               {% endfor %}
@@ -380,6 +421,7 @@
                 </div>
               </div>
               <div class="out_subs-oper-bg {% if forloop.parentloop.last %}last-loop-bg-out{% endif %}">
+                {% if title == "ADV" %}
                 <div class=" mr40 mr_p_oper bill-month-client-suborder_diff  add_sabcontactor add-operation-entry ">
                   {% if oper_entry.operation_out_all == bill.diff_sum %}
                     <p class="result_ok">{{ bill.diff_sum }} ₽</p>
@@ -399,6 +441,27 @@
                     </div>
                   {% endif %}
                 </div>
+                {% else %}
+                <div class=" mr40 mr_p_oper bill-month-client-suborder_diff  add_sabcontactor add-operation-entry ">
+                  {% if oper_entry.diff_operation_out == 0 %}
+                    <p class="result_ok">{{ oper_entry.operation_out_all }} ₽</p>
+                  {% elif oper_entry.diff_operation_out > 0 %}
+                    <div class="result_not-wrap">
+                      <p class="result_not">
+                        {{ oper_entry.operation_out_all }}₽
+                        <p class="result_not_after">/остаток {{ oper_entry.diff_operation_out }}₽</p>
+                      </p>
+                    </div>
+                  {% else %}
+                    <div class="result_not-wrap">
+                      <p class="result_not">
+                        0 ₽
+                        <p class="result_not_after">/остаток {{ bill.diff_sum }}₽</p>
+                      </p>
+                    </div>
+                  {% endif %}
+                </div>
+                {% endif %}
                 <div class="bill_w-80 mr_p_oper"
                      data-shrink="none"
                      data-type-shrink="out"
@@ -453,6 +516,7 @@
         </div>
       </div>
       {% if forloop.last %}
+      
         <div class="bill-month_category-result bill-month_category-ended">
           <div class="bill-month-del"></div>
           <div class="bill-month-client-counter"></div>
@@ -460,21 +524,23 @@
             <h3>Итого</h3>
           </div>
           <div class="bill_w-120-result"></div>
+          {% for total_months in total_month %}
+          {% if total_months.month|date:'M Y' == created_timestamp.grouper   %}
+        
           <div class="bill_w-120-result">
-            <h3>{{ total_month_contract_sum }} ₽</h3>
+            <h3>{{ total_months.contract_sum }} ₽</h3>
           </div>
+          
           {% if title == 1 %} 
           <div class="bill_w-120-result">
-            <h3>{{ total_month_adv_all_sum }} ₽</h3>
+            <h3>{{ total_months.adv_all_sum }} ₽</h3>
           </div>
-         
-         
           <div class="suborder_title-bg-result">
             <div class="bill_w-120-result bill_w-120-result-upd">
-              <h3>{{ total_month_diff_sum }} ₽</h3>
+              <h3>{{ total_months.diff_sum }} ₽</h3>
               <div class="elem16"></div>
             </div>
-            <div class="display-none-active-title"
+            {% comment %} <div class="display-none-active-title"
                  data-shrink="none"
                  data-type-shrink="suborder"
                  data-created="{{ bill.created_timestamp|date:'m.Y' }}">
@@ -489,13 +555,10 @@
                    data-created="{{ bill.created_timestamp|date:'m.Y' }}">
                 <h4>{{ suborder_total_other.total_amount }} ₽</h4>
               </div>
-            </div>
+            </div> {% endcomment %}
           </div> 
           {% else %}
-          
-         
-    
-          <div class="suborder_title-bg-result">
+          {% comment %} <div class="suborder_title-bg-result">
             <div class="bill_w-120-result bill_w-120-result-upd">
               <h3>{{ suborder_total_other.total_amount  }} ₽</h3>
               <div class="elem16"></div>
@@ -504,86 +567,366 @@
             data-shrink="none"
             data-type-shrink="suborder"
             data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-            {% for name_no_adv_tiotal in suborders_name_no_adv %}
+          {% for obj_suborder in obj_suborder_adv %}
             <div class="title-bill_w-80-result fsz15 ">
-              <h4>{{ total_adv.total_amount }} ₽</h4>
+              <h4>{{ obj_suborder.total_amount }} ₽</h4>
             </div>
-            {% endfor %}
+            {% endfor %} 
+          
           </div>
-
-
-          </div> 
-         
+          </div>   {% endcomment %}
           {% endif %}
-          {% for total_operat in total_oper %}
-            <div class="suborder_entry-bg-result">
-              {% if total_operat.total_diff_operation_entry == 0 %}
-                <div class="bill_w-120-result-upd mr40">
-                  <h3>{{ total_operat.total_sum_all_operation_entry }}  ₽</h3>
-                </div>
-              {% else %}
-                <div class="title-bill-120  mr40 not_check">
-                  <h3 class="result_not">
-                    {{ total_operat.total_sum_all_operation_entry }} ₽
-                    <p class="result_not_after">/долг {{ total_operat.total_diff_operation_entry }} ₽</p>
-                  </h3>
-                </div>
-              {% endif %}
-              <div class="title-bill_w-80-result fsz15 "
-               data-shrink="none"
-                   data-type-shrink="entry"
-                   data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-                <h4>{{ total_operat.total_sum_operation_entry_bank1 }}  ₽</h4>
-              </div>
-              <div class="title-bill_w-80-result fsz15 "
-               data-shrink="none"
-                   data-type-shrink="entry"
-                   data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-                <h4>{{ total_operat.total_sum_operation_entry_bank2 }}  ₽</h4>
-              </div>
-              <div class="title-bill_w-80-result fsz15 "
-               data-shrink="none"
-                   data-type-shrink="entry"
-                   data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-                <h4>{{ total_operat.total_sum_operation_entry_bank3 }}  ₽</h4>
-              </div>
-            </div> 
-            <div class="suborder_entry-bg-result">
-          {% if total_operat.total_diff_operation_out == 0 %}
-         
-              <div class="bill_w-120-result-upd mr40">
-                <h3>{{ total_operat.total_sum_all_operation_out }}  ₽</h3>
-              </div>
-            {% else %}
-              <div class="title-bill-120  mr40 not_check">
-                <h3 class="result_not">
-                  {{ total_operat.total_sum_all_operation_out }} ₽
-                  <p class="result_not_after">/остаток {{ total_operat.total_diff_operation_out }} ₽</p>
-                </h3>
-              </div>
-            {% endif %} 
-            <div class="title-bill_w-80-result fsz15 "
-             data-shrink="none"
-                   data-type-shrink="out"
-                   data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-              <h4>{{ total_operat.total_sum_operation_out_bank1 }}  ₽</h4>
-            </div>
-            <div class="title-bill_w-80-result fsz15 "
-             data-shrink="none"
-                   data-type-shrink="out"
-                   data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-              <h4>{{ total_operat.total_sum_operation_out_bank2 }}  ₽</h4>
-            </div>
-            <div class="title-bill_w-80-result fsz15 "
-             data-shrink="none"
-                   data-type-shrink="out"
-                   data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-              <h4>{{ total_operat.total_sum_operation_out_bank3 }}  ₽</h4>
-            </div> 
-</div>
+          {% endif %}
           {% endfor %}
+
+         {% for sum_month in total_month %}
+         {% if sum_month.month|date:'M Y' == created_timestamp.grouper   %}
+         {{sum_month}}
+         <div class="suborder_entry-bg-result">
+                    {% if sum_month.total_diff_operation_entry == 0 and sum_month.sum_entry_operation %}
+                    <div class="bill_w-120-result-upd mr40">
+                      <h3>{{ sum_month.sum_entry_operation|default:"0" }}  ₽</h3>
+                    </div>
+                    {% else %}
+                    <div class="title-bill-120  mr40 not_check">
+                      <h3 class="result_not">
+                        {{ sum_month.sum_entry_operation }} ₽
+                        <p class="result_not_after">/долг {{ sum_month.total_diff_operation_entry }} ₽</p>
+                      </h3>
+                    </div>
+                    {% endif %} 
+            </div> 
+            {% endif %}
+         {% endfor %}
+            
+       
+           
+         
         </div>
       {% endif %}
+
+
+
+
+
+
+    {% endfor %}
     {% endfor %}
   </section>
+
 {% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} 
+{% if forloop.last %}
+      
+<div class="bill-month_category-result bill-month_category-ended">
+  <div class="bill-month-del"></div>
+  <div class="bill-month-client-counter"></div>
+  <div class="bill_w-120-result">
+    <h3>Итого</h3>
+  </div>
+  <div class="bill_w-120-result"></div>
+  {% for total_months in total_month %}
+  {% if total_months.month|date:'M Y' == created_timestamp.grouper   %}
+  <div class="bill_w-120-result">
+    <h3>{{ total_months.contract_sum }} ₽</h3>
+  </div>
+  
+  {% if title == 1 %} 
+  <div class="bill_w-120-result">
+    <h3>{{ total_months.adv_all_sum }} ₽</h3>
+  </div>
+  <div class="suborder_title-bg-result">
+    <div class="bill_w-120-result bill_w-120-result-upd">
+      <h3>{{ total_months.diff_sum }} ₽</h3>
+      <div class="elem16"></div>
+    </div>
+    <div class="display-none-active-title"
+         data-shrink="none"
+         data-type-shrink="suborder"
+         data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      {% for total_adv in obj_suborder_adv %}
+        <div class="title-bill_w-80-result fsz15 ">
+          <h4>{{ total_adv.total_amount }} ₽</h4>
+        </div>
+      {% endfor %}
+      <div class="title-bill_w-80-result fsz15  "
+           data-shrink="none"
+           data-type-shrink="suborder"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+        <h4>{{ suborder_total_other.total_amount }} ₽</h4>
+      </div>
+    </div>
+  </div> 
+  {% else %}
+  <div class="suborder_title-bg-result">
+    <div class="bill_w-120-result bill_w-120-result-upd">
+      <h3>{{ suborder_total_other.total_amount  }} ₽</h3>
+      <div class="elem16"></div>
+    </div>
+    <div class="display-none-active-title"
+    data-shrink="none"
+    data-type-shrink="suborder"
+    data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+    {% for obj_suborder in obj_suborder_adv %}
+    <div class="title-bill_w-80-result fsz15 ">
+      <h4>{{ obj_suborder.total_amount }} ₽</h4>
+    </div>
+    {% endfor %}
+  
+  </div>
+  </div>  
+  {% endif %}
+  {% endif %}
+  {% endfor %} {% endcomment %}
+  {% comment %} {% if title == 1 %} 
+  <div class="bill_w-120-result">
+    <h3>{{ total_month_adv_all_sum }} ₽</h3>
+  </div>
+  <div class="suborder_title-bg-result">
+    <div class="bill_w-120-result bill_w-120-result-upd">
+      <h3>{{ total_month_diff_sum }} ₽</h3>
+      <div class="elem16"></div>
+    </div>
+    <div class="display-none-active-title"
+         data-shrink="none"
+         data-type-shrink="suborder"
+         data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      {% for total_adv in obj_suborder_adv %}
+        <div class="title-bill_w-80-result fsz15 ">
+          <h4>{{ total_adv.total_amount }} ₽</h4>
+        </div>
+      {% endfor %}
+      <div class="title-bill_w-80-result fsz15  "
+           data-shrink="none"
+           data-type-shrink="suborder"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+        <h4>{{ suborder_total_other.total_amount }} ₽</h4>
+      </div>
+    </div>
+  </div> 
+  {% else %}
+  <div class="suborder_title-bg-result">
+    <div class="bill_w-120-result bill_w-120-result-upd">
+      <h3>{{ suborder_total_other.total_amount  }} ₽</h3>
+      <div class="elem16"></div>
+    </div>
+    <div class="display-none-active-title"
+    data-shrink="none"
+    data-type-shrink="suborder"
+    data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+    {% for obj_suborder in obj_suborder_adv %}
+    <div class="title-bill_w-80-result fsz15 ">
+      <h4>{{ obj_suborder.total_amount }} ₽</h4>
+    </div>
+    {% endfor %}
+  
+  </div>
+  </div>  
+  {% endif %}{% endcomment %}
+  {% comment %} {% for total_operat in operation %}
+  <div class="suborder_entry-bg-result">
+    {% if total_operat.month|date:'M Y' == created_timestamp.grouper and total_operat.type_operation == "entry"   %}
+      {% for diff_sum in diff_sum_oper %}
+    
+        {% if diff_sum.total_month|date:'M Y' == created_timestamp.grouper %}
+          {% if diff_sum.total_diff_operation_entry == 0 %}
+          <div class="bill_w-120-result-upd mr40">
+            <h3>pp{{ total_operat.total }}  ₽</h3>
+          </div>
+          {% else %}
+          <div class="title-bill-120  mr40 not_check">
+            <h3 class="result_not">ii
+              {{ total_operat.total }} ₽
+              <p class="result_not_after">/долг {{ diff_sum.total_diff_operation_entry }} ₽</p>
+            </h3>
+          </div>
+          {% endif %} 
+         {% else %}
+       
+        
+          {% endif %}
+      
+      {% endfor %} {% endcomment %}
+
+    {% comment %} {% if total_operat.total_diff_operation_entry == 0 %}
+    <div class="bill_w-120-result-upd mr40">
+      <h3>{{ total_operat.total_sum_all_operation_entry }}  ₽</h3>
+    </div>
+  {% else %}
+    <div class="title-bill-120  mr40 not_check">
+      <h3 class="result_not">
+        {{ total_operat.total_sum_all_operation_entry }} ₽
+        <p class="result_not_after">/долг {{ total_operat.total_diff_operation_entry }} ₽</p>
+      </h3>
+    </div>
+  {% endif %}  {% endcomment %}
+
+    {% comment %} {% endif %}
+   
+   
+   
+    {% if total_operat.total_diff_operation_entry == 0 %}
+      <div class="bill_w-120-result-upd mr40">
+        <h3>{{ total_operat.total_sum_all_operation_entry }}  ₽</h3>
+      </div>
+    {% else %}
+      <div class="title-bill-120  mr40 not_check">
+        <h3 class="result_not">
+          {{ total_operat.total_sum_all_operation_entry }} ₽
+          <p class="result_not_after">/долг {{ total_operat.total_diff_operation_entry }} ₽</p>
+        </h3>
+      </div>
+    {% endif %}
+    <div class="title-bill_w-80-result fsz15 "
+     data-shrink="none"
+         data-type-shrink="entry"
+         data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      <h4>{{ total_operat.total_sum_operation_entry_bank1 }}  ₽</h4>
+    </div>
+    <div class="title-bill_w-80-result fsz15 "
+     data-shrink="none"
+         data-type-shrink="entry"
+         data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      <h4>{{ total_operat.total_sum_operation_entry_bank2 }}  ₽</h4>
+    </div>
+    <div class="title-bill_w-80-result fsz15 "
+     data-shrink="none"
+         data-type-shrink="entry"
+         data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      <h4>{{ total_operat.total_sum_operation_entry_bank3 }}  ₽</h4>
+    </div>
+  </div> 
+  {% endfor %}  {% endcomment %}
+  {% comment %} {% for total_operat in total_oper %}
+    <div class="suborder_entry-bg-result">
+      {% if total_operat.total_diff_operation_entry == 0 %}
+        <div class="bill_w-120-result-upd mr40">
+          <h3>{{ total_operat.total_sum_all_operation_entry }}  ₽</h3>
+        </div>
+      {% else %}
+        <div class="title-bill-120  mr40 not_check">
+          <h3 class="result_not">
+            {{ total_operat.total_sum_all_operation_entry }} ₽
+            <p class="result_not_after">/долг {{ total_operat.total_diff_operation_entry }} ₽</p>
+          </h3>
+        </div>
+      {% endif %}
+      <div class="title-bill_w-80-result fsz15 "
+       data-shrink="none"
+           data-type-shrink="entry"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+        <h4>{{ total_operat.total_sum_operation_entry_bank1 }}  ₽</h4>
+      </div>
+      <div class="title-bill_w-80-result fsz15 "
+       data-shrink="none"
+           data-type-shrink="entry"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+        <h4>{{ total_operat.total_sum_operation_entry_bank2 }}  ₽</h4>
+      </div>
+      <div class="title-bill_w-80-result fsz15 "
+       data-shrink="none"
+           data-type-shrink="entry"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+        <h4>{{ total_operat.total_sum_operation_entry_bank3 }}  ₽</h4>
+      </div>
+    </div> 
+    <div class="suborder_entry-bg-result">
+  {% if total_operat.total_diff_operation_out == 0 %}
+ 
+      <div class="bill_w-120-result-upd mr40">
+        <h3>{{ total_operat.total_sum_all_operation_out }}  ₽</h3>
+      </div>
+    {% else %}
+      <div class="title-bill-120  mr40 not_check">
+        <h3 class="result_not">
+          {{ total_operat.total_sum_all_operation_out }} ₽
+          <p class="result_not_after">/остаток {{ total_operat.total_diff_operation_out }} ₽</p>
+        </h3>
+      </div>
+    {% endif %} 
+    <div class="title-bill_w-80-result fsz15 "
+     data-shrink="none"
+           data-type-shrink="out"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      <h4>{{ total_operat.total_sum_operation_out_bank1 }}  ₽</h4>
+    </div>
+    <div class="title-bill_w-80-result fsz15 "
+     data-shrink="none"
+           data-type-shrink="out"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      <h4>{{ total_operat.total_sum_operation_out_bank2 }}  ₽</h4>
+    </div>
+    <div class="title-bill_w-80-result fsz15 "
+     data-shrink="none"
+           data-type-shrink="out"
+           data-created="{{ bill.created_timestamp|date:'m.Y' }}">
+      <h4>{{ total_operat.total_sum_operation_out_bank3 }}  ₽</h4>
+    </div> 
+</div>
+  {% endfor %} {% endcomment %}
+{% comment %} </div>
+{% endif %}
+{% endfor %}
+{% endfor %}
+</section> {% endcomment %}
+
+
+

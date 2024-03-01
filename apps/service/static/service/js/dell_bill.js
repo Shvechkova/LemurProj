@@ -69,8 +69,6 @@ function getStateLocalStorage() {
   var dataBtnsuborder = sessionStorage.getItem("data-btn-deg-suborder");
   var databtndegentry = sessionStorage.getItem("data-btn-deg-entry");
   var databtndegout = sessionStorage.getItem("data-btn-deg-out");
-  console.log(dataBtnsuborder);
-  console.log(databtndegentry);
   var entry = sessionStorage.getItem("entry");
   var suborder = sessionStorage.getItem("suborder");
   var out = sessionStorage.getItem("out");
@@ -109,3 +107,36 @@ function getStateLocalStorage() {
 
   });
 }
+
+const newBillMonth = document.querySelector(".new_month")
+
+newBillMonth.addEventListener("click", ()=>{
+  console.log(window.location.origin)
+ 
+
+  location.href= window.location.origin +"/service/new_month";
+  window.history.back ();
+})
+// установка сортировки месяца 
+const sortDate = document.querySelector(".bill-sorting-date")
+const sortMonthReload = sessionStorage.getItem("sortMonth");
+if (sortMonthReload) {
+  sortDate.setAttribute('bill-sorting-date', sortMonthReload)
+}
+
+
+
+const btnSort = document.querySelectorAll(".btn_sorting_month")
+
+btnSort.forEach((item)=>{
+  item.addEventListener("click", ()=>{
+    const monthDate = item.getAttribute("data-sort-month")
+    sortDate.setAttribute('data-sort-month', monthDate)
+    sessionStorage.setItem('sortMonth', monthDate);
+    document.cookie = 'sortMonth=' + monthDate 
+     location.reload()
+  })
+})
+
+
+

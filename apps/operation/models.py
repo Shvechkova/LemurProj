@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from apps.service.models import ServicesMonthlyBill, SubcontractMonth
 
@@ -86,6 +87,9 @@ class Operation(models.Model):
     created_timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
+    data = models.DateField(verbose_name="Дата добавления вручную"
+    )
+ 
     amount = models.PositiveIntegerField(default="0")
 
     comment = models.TextField("Комментарий", blank=True, null=True)

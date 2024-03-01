@@ -20,6 +20,7 @@ router.register(r"api/subcontract", view_sets.SubcontractMonthView)
 
 urlpatterns = [
     path("", views.index, name="index"),
+     path("new_month", views.new_month, name="new_month"),
     # path("ADV", views.adv_index, name="adv"),
     # path("<int:client_id>", views.service_one, name="service_one"),
     path("", include(router.urls)),
