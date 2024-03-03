@@ -60,7 +60,7 @@ class ServicesMonthlyBill(models.Model):
     created_timestamp = models.DateField(
         auto_now_add=True, verbose_name="Дата добавления"
     )
-    
+
     # data = models.DateTimeField(default=timezone.now)
 
     contract_number = models.CharField(
@@ -284,21 +284,18 @@ class ServicesMonthlyBill(models.Model):
                     sum_operation_out_bank3 += oper_out.amount
 
         diff_operation_entry = self.contract_sum - sum_all_operation_entry
-        
-        if self.adv_all_sum == 0 :
-            suborders = SubcontractMonth.objects.filter( month_bill=self.id, other__isnull=False).select_related("other").aggregate(total_amount=Sum('amount',default=0))
-           
-            diff_operation_out = suborders['total_amount'] - sum_all_operation_out
+
+        if self.adv_all_sum == 0:
+            suborders = SubcontractMonth.objects.filter(month_bill=self.id, other__isnull=False).select_related(
+                "other").aggregate(total_amount=Sum('amount', default=0))
+
+            diff_operation_out = suborders['total_amount'] - \
+                sum_all_operation_out
             # sum_all_operation_out = suborders
-           
-            
+
         else:
-            diff_operation_out = self.diff_sum - sum_all_operation_out  
-       
-       
-        
-        
-        
+            diff_operation_out = self.diff_sum - sum_all_operation_out
+
         obj = [
             {
                 "operation_entry_all": sum_all_operation_entry,
@@ -315,43 +312,51 @@ class ServicesMonthlyBill(models.Model):
                 "operation_out_bank3": sum_operation_out_bank3,
             }
         ]
-        
-        
 
         return obj
 
     def suborders_adv(self):
         suborders = SubcontractMonth.objects.filter(
             month_bill=self.id, adv__isnull=False
-        ).select_related("adv")
+        ).select_related("adv").values('id', 'adv__name', 'amount', 'adv_id')
         suborders_name = Adv.objects.all()
         obj = []
+        # for suborder in suborders:
+        #     print(suborder)
 
         for subs_item in suborders_name:
             name = {
                 "name_adv": subs_item.name,
                 "id_adv": subs_item.id,
+                "id_subs": 0,
+                "amount": 0,
             }
             obj.append(name)
 
-        count_categoru = len(obj)
-        obj_new = [{"name-adv": 0, "id_subs": 0,
-                    "amount_subs": 0}] * count_categoru
-        i = -1
-        for nams, suborder in zip(obj, suborders):
+        # count_categoru = len(obj)
+        # obj_new = [{"name-adv": 0, "id_subs": 0,
+        #             "amount_subs": 0}] * count_categoru
+        # i = -1
+        # for nams, suborder in zip(obj, suborders):
 
-            i += 1
-            name = {
-                "id_adv": nams["name_adv"],
-                "name_adv": nams["id_adv"],
-                "id_subs": suborder.id,
-                "amount_subs": suborder.amount,
-            }
+        #     i += 1
+        #     name = {
+        #         "id_adv": suborder['adv__name'],
+        #         "name_adv": suborder["adv_id"],
+        #         "id_subs": suborder['id'],
+        #         "amount_subs": suborder['amount'],
+        #     }
 
-            obj_new[i] = name
-            # obj_new.append(name)
+        #     obj_new[i] = name
+        #     # obj_new.append(name)
 
-        count_item = len(obj_new)
+        # count_item = len(obj_new)
+
+        for x in range(len(obj)):
+            for y in range(len(suborders)):
+                if obj[x]['id_adv'] == suborders[y]['adv_id']:
+                    obj[x]['id_subs'] = suborders[y]['id']
+                    obj[x]['amount'] = suborders[y]['amount']
 
         # suborders = SubcontractMonth.objects.filter(
         #     month_bill=self.id).select_related("adv","other")
@@ -391,7 +396,7 @@ class ServicesMonthlyBill(models.Model):
         #     #             "id_other": subs_item.id,
         #     #         }
         #     #         obj.append(name)
-        #     #    
+        #     #
         #     #     count_categoru = len(obj)
         #     #     obj_new = [{"name-other": 0, "id_subs": 0, "amount_subs": 0}] * count_categoru
         #     #     i = -1
@@ -405,7 +410,7 @@ class ServicesMonthlyBill(models.Model):
         #     #         }
         #     #         obj_new[i] = name
 
-        return (obj_new)
+        return (obj)
 
     def suborders_other(self):
         suborders = SubcontractMonth.objects.filter(
@@ -434,7 +439,7 @@ class ServicesMonthlyBill(models.Model):
         obj.append(total)
 
         return (obj)
-    
+
     def suborders_other_no_adv(self):
         suborders = SubcontractMonth.objects.filter(
             month_bill=self.id, other__isnull=False
@@ -442,31 +447,30 @@ class ServicesMonthlyBill(models.Model):
         suborders_name = SubcontractOther.objects.all()
 
         obj = []
-        
+
         for subs_item in suborders_name:
             name = {
                 "name": subs_item.name,
                 "id_other": 0,
                 "id_amount": 0,
-                
+
             }
             obj.append(name)
 
-        count_categoru = len(obj) +1
-        
+        count_categoru = len(obj) + 1
+
         total_amount = 0
         id_subs = ""
         i = -1
         obj_new = [{"name_other": 0, "id_other": 0,
                     "id_amount": 0}] * count_categoru
-        
-        
+
         for subs_item in suborders:
             total_amount += subs_item.amount
             id_subs = id_subs + str(subs_item.id) + "-"
             i += 1
             name = {
-                
+
                 "name_other": subs_item.other.name,
                 "id_other": subs_item.id,
                 "id_amount": subs_item.amount,
@@ -474,8 +478,7 @@ class ServicesMonthlyBill(models.Model):
             }
             obj_new[i] = name
             # obj.append(name)
-            
-             
+
         obj_new_zip = []
         e = 0
         new_list = []
@@ -483,16 +486,14 @@ class ServicesMonthlyBill(models.Model):
             for y in range(len(obj_new)):
                 if obj[x]['name'] == obj_new[y]['name_other']:
                     obj[x].update(obj_new[y])
-        
-       
-                     
+
         # for nams1, subs_item1 in zip(obj, obj_new):
-        #     nams1.update(subs_item1)  
+        #     nams1.update(subs_item1)
         #     new_list.append(nams1)
         #     #
-          
+
         #     # e += 1
-            
+
         #     # if  nams1["name"] == subs_item1["name_other"]:
         #     #      name = {
         #     #         "name_other": nams1["name"],
@@ -505,32 +506,29 @@ class ServicesMonthlyBill(models.Model):
         #     #         "id_other": 0,
         #     #         "id_amount": 0,
         #     #     }
-                
+
         #     # obj_new_zip.append(name)
-            
-       
+
         # for subs_item in suborders:
         #     total_amount += subs_item.amount
         #     id_subs = id_subs + str(subs_item.id) + "-"
         #     name = {
-                
+
         #         "name_other": subs_item.other.name,
         #         "id_other": subs_item.id,
         #         "id_amount": subs_item.amount,
 
         #     }
         #     obj.append(name)
-            
-            
-           
+
         total = {
             "total_amount": total_amount,
             "id_subs": id_subs,
         }
-        obj.insert(0,total)    
-       
+        obj.insert(0, total)
+
         return (obj)
-    
+
     def suborders_other_no_adv_total(self):
         suborders = SubcontractMonth.objects.filter(
             month_bill=self.id, other__isnull=False
@@ -542,13 +540,12 @@ class ServicesMonthlyBill(models.Model):
         for subs_item in suborders:
             total_amount += subs_item.amount
             id_subs = id_subs + str(subs_item.id) + "-"
-           
 
         total = {
             "total_amount": total_amount,
             "id_subs": id_subs,
         }
-        obj.insert(0,total)
+        obj.insert(0, total)
 
         return (obj)
 
@@ -663,10 +660,12 @@ class SubcontractMonth(models.Model):
     month_bill = models.ForeignKey(
         ServicesMonthlyBill, on_delete=models.CASCADE, blank=True, null=True
     )
+
     # chekin_sum_out =  models.BooleanField(default=False)
 
-
 #  Субподряд площадки
+
+
 class Adv(models.Model):
     name = models.CharField("название площадки",
                             max_length=200, blank=True, null=True)
