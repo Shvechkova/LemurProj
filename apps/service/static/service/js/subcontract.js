@@ -8,12 +8,21 @@ if (btnSubcontarct) {
       let elem = element.getAttribute("data-name");
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
+      let typeSuborder = element.getAttribute("data-type-suborder");
 
       let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
       budgetInnerAll.innerHTML = sumAdv;
 
       const add_subc = document.querySelector(".subcontarct_add");
       modal(elem, add_subc);
+
+      if (typeSuborder == "awords") {
+        const modalWindow = document.getElementById(elem);
+        const buget = modalWindow.querySelector(".modal_adv_buget");
+        buget.innerHTML =
+          "<div class='modal_adv_buget'><h3>Субподряд и премии:</h3></div>";
+      }
+
       const c = document.querySelector(".modal_add_subcontract_wrapper");
       // c.innerHTML = ""
       c.innerHTML =
@@ -21,9 +30,15 @@ if (btnSubcontarct) {
 
       getOldSumcintract(idBill, element);
       getInfoBill(element);
-      createInputSubcontract(element);
+      createInputSubcontract(element,elem);
       observerChangeCreateInput(element);
       addSubcontractFetch(idBill, elem);
+      
+      
+      const modalWindows = document.getElementById(elem);
+      modalWindows.addEventListener("input", () => {
+        validate(elem, ".subcontarct_add ")
+      });
     });
   });
 }
@@ -45,7 +60,7 @@ function getInfoBill(element) {
   modalData.innerHTML = contractData;
 }
 
-function createInputSubcontract(element) {
+function createInputSubcontract(element,elem) {
   const subTypeSelect = document.querySelectorAll(".modal-subcontract-type");
   subTypeSelect.forEach((el) => {
     el.addEventListener("change", (event) => {
@@ -92,6 +107,10 @@ function createInputSubcontract(element) {
         });
     });
   });
+  const modalWindows = document.getElementById(elem);
+      modalWindows.addEventListener("input", () => {
+        validate(elem, ".subcontarct_add ")
+      });
 }
 
 function createNextSubcontractInput(button) {
@@ -118,25 +137,43 @@ function changeSum(element, mutationRecords) {
     ".modal-subcontract-input_sum"
   );
   let useBudget = document.querySelector(".modal_adv_budget_not_use");
+  let useBudgetAfterUse = document.getElementById("sum_adv_after_use");
+
+  console.log(useBudget);
   var sum = sumAdvReplace;
+  let useBudgetAfterUseIn = useBudgetAfterUse.value;
+
+  // useBudgetAfterUse.value = sumAdvReplace;
   // useBudget.innerHTML = sum;
   wrapSubcontractors.forEach((el, value) => {
-    // sum += cashUse;
-    // useBudget.innerHTML = sum
-
     el.addEventListener("keyup", () => {
-      sum = sumAdvReplace - sum;
+      const slash = document.querySelector(".modal_adv_budget_not_use_slash")
+      slash.style.display = "block"
+      if (useBudgetAfterUseIn > 0) {
+        if (el.value == "") {
+          intEl = 0;
+        } else {
+          intEl = parseInt(el.value);
+        }
+        let useBudgetAfterUseInit = parseInt(useBudgetAfterUseIn);
 
-      sum = sumAdvReplace - el.value;
-      useBudget.innerHTML = sum;
-      // sum += cashUse;
-      // let cashUseActuall = el.value
-      // sum += cashUseActuall;
-      // useBudget.innerHTML = sum
+        sum = useBudgetAfterUseInit - intEl;
+        useBudget.innerHTML = + sum;
+        useBudgetAfterUse.value = sum;
+      } else {
+        let intEl;
+        if (el.value == "") {
+          intEl = 0;
+        } else {
+          intEl = parseInt(el.value);
+        }
+        sum = sumAdvReplace - intEl;
+        useBudget.innerHTML =  + sum;
+        useBudgetAfterUse.value = sum;
+      }
+
+  
     });
-    // let cashUse = +el.value;
-    // sum += cashUse;
-    // useBudget.innerHTML = sum;
   });
 }
 
@@ -252,14 +289,14 @@ function addSubcontractFetch(idBill, elem) {
             const windowContent = document.getElementById(elem);
             alertSuccess(windowContent);
             const timerId = setTimeout(() => {
-              // location.reload();
+              location.reload();
             }, 200);
           } else {
             const windowContent = document.getElementById(elem);
 
             alertError(windowContent);
             const timerId = setTimeout(() => {
-              // location.reload();
+              location.reload();
             }, 200);
           }
         });
@@ -267,7 +304,7 @@ function addSubcontractFetch(idBill, elem) {
   });
 }
 
-function getOldSumcintract(idBill,element) {
+function getOldSumcintract(idBill, element) {
   const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
   let csrfToken = getCookie("csrftoken");
   fetch(endpoint, {
@@ -317,13 +354,13 @@ function getOldSumcintract(idBill,element) {
                       value.amount,
                       "сумма"
                     ).appendTo(modal_add_subcontract);
-      
+
                     new Input("hidden", "subcontract_id", value.id).appendTo(
                       modal_add_subcontract
                     );
                     let prevOperationDel = document.createElement("button");
                     prevOperationDel.className = "subcontract_del";
-      
+
                     modal_add_subcontract.append(prevOperationDel);
                     prevOperationDel.setAttribute("data-id-peration", value.id);
                     prevOperationDel.innerHTML = "-";
@@ -365,16 +402,17 @@ function getOldSumcintract(idBill,element) {
                         prevOperationDel.className = "subcontract_del";
 
                         modal_add_subcontract.append(prevOperationDel);
-                         prevOperationDel.setAttribute("data-id-peration",value.id);
+                        prevOperationDel.setAttribute(
+                          "data-id-peration",
+                          value.id
+                        );
                         prevOperationDel.innerHTML = "-";
                       }
                     });
                   });
               }
-
-              
             });
-            DelSubcontr(element)
+            DelSubcontr(element);
             let modal_add_subcontract = document.createElement("div");
             modal_add_subcontract.className =
               "modal_add_contract modal_add-subcontract";
@@ -412,7 +450,6 @@ function getOldSumcintract(idBill,element) {
             ).appendTo(modal_add_subcontract_select);
 
             createInputSubcontract();
-           
           });
       }
     });
@@ -429,13 +466,12 @@ function FetchCatSubsOther() {
     });
 }
 
-
 function DelSubcontr(element) {
-  console.log(1)
+  console.log(1);
   const delButton = document.querySelectorAll(".subcontract_del");
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
-      console.log(1111)
+      console.log(1111);
       idOperation = item.getAttribute("data-id-peration");
       console.log(idOperation);
       endpoint = "/service/api/subcontract/" + idOperation + "/";
@@ -446,10 +482,10 @@ function DelSubcontr(element) {
 
       fetch(endpoint, {
         method: "DELETE",
-        
+
         headers: {
           "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
+          "X-CSRFToken": csrfToken,
         },
       }).then((response) => {
         if (response.ok) {
@@ -463,4 +499,3 @@ function DelSubcontr(element) {
     });
   });
 }
-

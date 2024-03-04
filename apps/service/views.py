@@ -96,10 +96,10 @@ def service_one(request, slug):
     # )
     suborders_name_no_adv = SubcontractMonth.objects.filter(
         month_bill__service=category_service,
-        created_timestamp__year=now.year,
-        created_timestamp__month=now.month, other__isnull=False
-    ).values("other_id__name", "other_id__id").order_by("other").distinct()
-
+        created_timestamp__year__gte=year,
+        created_timestamp__month__gte=old_month, other__isnull=False
+    ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total=Sum('amount', default=0)).values("other_id__name", "other_id__id","month",'total').order_by("other").distinct()
+    # print(suborders_name_no_adv)
     total_month = ServicesMonthlyBill.objects.filter(
         service=category_service,
     ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(contract_sum=(
@@ -153,6 +153,7 @@ def service_one(request, slug):
                     total_month[x]['bank1_out'] = operation[y]['bank1']
                     total_month[x]['bank2_out'] = operation[y]['bank2']
                     total_month[x]['bank3_out'] = operation[y]['bank3']
+                    
 
         diff_sum_oper.append(obj)
 
@@ -164,7 +165,7 @@ def service_one(request, slug):
     # else:
     #     suborders_name_item = suborders_name_no_adv
 
-    # надо ли передеть не в кверисет?
+   
     if slug == 'ADV':
         suborder_total_other = SubcontractMonth.objects.filter(
             month_bill__service=category_service,
@@ -185,24 +186,43 @@ def service_one(request, slug):
             obj_suborder_adv.append(suborder_total)
 
     else:
+        suborder_total_other = SubcontractMonth.objects.filter(
+            month_bill__service=category_service,
+            created_timestamp__year__gte=year, created_timestamp__month__gte=old_month, other__isnull=False
+        ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=(
+            Sum('amount', default=0)))
+        
+        for x in range(len(total_month)):
+            for y in range(len(suborder_total_other)):
+                
+                if total_month[x]['month'] == suborder_total_other[y]['month']:
+                    
+                    total_month[x]['total_suborder_not_adv'] = suborder_total_other[y]['total_amount']
+                    total_month[x]['total_suborder_not_adv_diff'] = 0
+                    
+                    if suborder_total_other[y]['total_amount']:
+                        total_month[x]['total_suborder_not_adv_diff'] = suborder_total_other[y]['total_amount'] - total_month[y]['sum_out_operation'] 
+                    
+        
         for subs_item in suborders_name_no_adv:
             name = {
-                "name_adv": subs_item['other_id__name'],
-                "id_adv": subs_item['other_id__id'],
+                # "name_adv": subs_item['other_id__name'],
+                # "id_adv": subs_item['other_id__id'],
             }
             suborder_total = SubcontractMonth.objects.filter(
                 month_bill__service=category_service,
                 created_timestamp__year__gte=year, created_timestamp__month__gte=old_month, other=subs_item[
                     'other_id__id']
-            ).aggregate(total_amount=Sum('amount'))
-            name['total_amount'] = suborder_total['total_amount']
-            obj_suborder_adv.append(name)
-
-    # suborder_total_other = SubcontractMonth.objects.filter(
-    #     month_bill__service=category_service,
-    #     created_timestamp__year__gte=year, created_timestamp__month__gte=old_month, other__isnull=False
-    # ).aggregate(total_amount=Sum('amount', default=0))
-    print(obj_suborder_other)
+            ).annotate(month=TruncMonth('created_timestamp')).values('month',"amount").values("other_id__name", "other_id__id","month",'amount').aggregate(total_amount=Sum('amount'))
+            
+            # name['total_amount'] = suborder_total['total_amount']
+            # name['month'] = suborder_total['month']
+            # name['other_id__name'] = suborder_total['other_id__name']
+            # obj_suborder_adv.append(name)
+            # print(subs_item)
+           
+            
+    
     title = category_service.id
     context = {
         "title": title,
@@ -245,11 +265,11 @@ def new_month(request):
         new_bill.save()
         if subcontr_old.exists():
             for subs_old in subcontr_old:
-                print(subs_old)
+              
                 new_subs = subs_old
                 new_subs.pk = None
                 new_subs.month_bill_id = new_bill.id
-                print(new_subs)
+               
                 new_subs.save()
                 new_bill_qurery = ServicesMonthlyBill.objects.filter(
                     id=new_bill.id).update(chekin_add_subcontr=True)

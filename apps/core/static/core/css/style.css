@@ -780,11 +780,28 @@ input[type="date"]:before {
 
 .client_info_modal {
   display: flex;
-  gap: 10px;
+  gap: 40px;
+  margin-top: 28px;
+  margin-bottom: 20px;
 }
 
 .bill-month_category-ended {
   /* height: 120px; */
+}
+.modal_adv_budget_all{
+  font-weight: 700;
+font-size: 20px;
+}
+.modal_adv_budget_not_use{
+  font-weight: 700;
+font-size: 15px;
+color: #f00;
+}
+.modal_adv_budget_not_use_slash{
+  font-weight: 700;
+  font-size: 15px;
+  color: #f00;
+  display: none;
 }
 
 .not_check {
