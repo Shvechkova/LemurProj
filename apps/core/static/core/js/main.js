@@ -18,6 +18,7 @@
 // }
 
 function modal(elem, buttonAdd) {
+  
   const modal_windows = document.getElementById(elem);
   modal_windows.classList.add("modal-active");
 
@@ -61,12 +62,14 @@ function validate(elem, btn) {
   const modalWindows = document.getElementById(elem);
   const allInputModal = modalWindows.querySelectorAll("input");
   const allSelectModal = modalWindows.querySelectorAll("select");
-  // console.log(allInputModal)
+  //  console.log(allInputModal)
+  //  console.log(allSelectModal)
   const add_contract = document.querySelector(btn);
   let inputYes;
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
+    // console.log(elInput.value)
     if (elInput.value == "") {
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
@@ -84,7 +87,9 @@ function validate(elem, btn) {
   });
 
   allSelectModal.forEach((elSelect) => {
+    
     const elSelectChecked = elSelect.options[elSelect.selectedIndex].value;
+    // console.log(elSelectChecked)
     if (elSelectChecked == 0 || elSelectChecked == "") {
       add_contract.disabled = true;
       throw false;

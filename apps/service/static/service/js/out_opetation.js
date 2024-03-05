@@ -5,7 +5,7 @@ const addOperationOut = document.querySelectorAll(".suborder_out_operation");
 if (addOperationOut) {
   addOperationOut.forEach((element) => {
     element.addEventListener("click", () => {
-      document.getElementById('date-operation_out').valueAsDate = new Date();
+      document.getElementById("date-operation_out").valueAsDate = new Date();
       const lastOperationWrap = document.querySelector(
         ".previous_operation_out"
       );
@@ -139,7 +139,7 @@ function addFetchOperationOut(element, endpoint, elem) {
     const commentOperation = document.getElementById(
       "operation_comment_out"
     ).value;
-    const data_select = document.getElementById('date-operation_out').value
+    const data_select = document.getElementById("date-operation_out").value;
     const form = new FormData();
     form.append("amount", sumChecked);
     form.append("comment", commentOperation);
@@ -278,7 +278,7 @@ function newOperationOut(element, elem) {
           sumChekedWrap.innerHTML =
             '<p>Сколько оплатили?</p><input checked type="radio" id="100_out" name="sum" value="' +
             sumOperationEnded +
-            '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out">Другая сумма</label><input data-validate="0" type="number" id="other_sum_namber_out" name="" value="" />';
+            '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out"></label><input placeholder="Другая сумма" data-validate="0" type="number" id="other_sum_namber_out" name="" value="" />';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";
@@ -287,7 +287,7 @@ function newOperationOut(element, elem) {
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "1");
           sumChekedWrap.innerHTML =
-            '<p>Сколько оплатили?</p><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out">Другая сумма</label><input data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" />';
+            '<h3>Сколько оплатили?</h3><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out"></label><input placeholder="Другая сумма" data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" />';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";

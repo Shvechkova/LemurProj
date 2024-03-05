@@ -5,7 +5,7 @@
       <div class="modal-items-wrap">
 
         <div class="modal_adv_buget">
-          <h3>Субподряд:</h3>
+          <h3>Ожидаемое поступление:</h3>
           <h3 class="name_suborder_modal_out"></h3>
           <h3 class="sum_operation_suborders_all">0</h3> 
           <h3 class="">/</h3> 
@@ -25,7 +25,7 @@
           <input type="date" id="date-operation_out" class=" input-130" placeholder="">
         </div>
         <div class="" id="bank_cheked_out">
-          <p>Откуда оплатили?</p>
+          <h3>Откуда оплатили?</h3>
           <input  type="radio" id="OOO_out" name="bank" value="1" />
           <label for="OOO_out">ООО</label>
 
@@ -37,7 +37,7 @@
         </div>
 
         <div id="sum_cheked_out" data-step="1">
-          <p>Сколько оплатили?</p>
+          <h3>Сколько оплатили?</h3>
           <input  type="radio" id="100_out" name="sum" value="100" />
           <label for="100_out">100%</label>
 
@@ -45,18 +45,21 @@
           <label for="50_out">50%</label>
 
           <input type="radio" id="other_sum_out" name="sum" value="1" />
-          <label for="other_sum_out">Другая сумма</label>
+          <label for="other_sum_out"></label>
 
-          <input data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" />
+          <input data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" placeholder="Другая сумма"/>
         </div>
 
         <div class="operation_entry_comment">
+          <h3>Комментарий</h3>
           <input data-validate="0"
-            type="text"
+            type="hidden"
             id="operation_comment_out"
             name="operation_comment_entry"
             value=""
           />
+          <textarea name="text" id="operation_comment_out"
+          name="operation_comment_entry"></textarea>
         </div>
 
         <button class="operation_add_out button_black">Сохранить</button>

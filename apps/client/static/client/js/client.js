@@ -12,7 +12,7 @@ if (modal_add_client) {
     const add_contract = document.querySelector(".client_contract_add");
     add_contract.disabled = true;
     modal(elem, add_contract);
-
+    
     addManager();
     const contractWrapper = document.getElementById("modal_contract_wrapper");
     contractWrapper.innerHTML = "";
@@ -23,9 +23,10 @@ if (modal_add_client) {
     choiceColor();
 
     const modalWindows = document.getElementById(elem);
-    modalWindows.addEventListener("input", () => {
+    modalWindows.addEventListener("input", () => {console.log(modalWindows)
       validate(elem, ".client_contract_add");
     });
+
 
     const endpointClient = "/clients/api/client/";
     const endpointContact = "/clients/api/contract/";

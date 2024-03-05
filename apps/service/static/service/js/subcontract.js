@@ -10,39 +10,52 @@ if (btnSubcontarct) {
       let sumAdv = element.getAttribute("data-bill-month-adv");
       let typeSuborder = element.getAttribute("data-type-suborder");
 
-      let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
-      budgetInnerAll.innerHTML = sumAdv;
+      const title = document.querySelector("#page_name").value;
+      if (title == "1") {
+        // замена использованныых бюджетов если адв
+        let useBudget = document.querySelector(".modal_adv_budget_not_use");
+        let useBudgetAfterUse = document.getElementById("sum_adv_after_use");
+        useBudgetAfterUse.value = "";
+        useBudget.innerHTML = "";
+        const slash = document.querySelector(".modal_adv_budget_not_use_slash");
+        slash.style.display = "none";
+        // вставка бюджета
+        let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
+        budgetInnerAll.innerHTML = sumAdv;
+      }
 
+      // открытие модалки
       const add_subc = document.querySelector(".subcontarct_add");
       modal(elem, add_subc);
-
+      // окно для адв или остальных изменение тйтла
       if (typeSuborder == "awords") {
         const modalWindow = document.getElementById(elem);
         const buget = modalWindow.querySelector(".modal_adv_buget");
         buget.innerHTML =
           "<div class='modal_adv_buget'><h3>Субподряд и премии:</h3></div>";
       }
-
+      // очистка от загруженных субконтрактов
       const c = document.querySelector(".modal_add_subcontract_wrapper");
       // c.innerHTML = ""
       c.innerHTML =
         '<div class="modal_add_contract modal_add-subcontract"><select class="modal-subcontract-type choice"><option disabled selected class="modal-select empty" value="0">Тип</option><option class="modal-select" value="adv">площадка</option><option class="modal-select" value="other">премия</option></select></div>';
-
+      
+        // основные функции
       getOldSumcintract(idBill, element);
       getInfoBill(element);
-      createInputSubcontract(element,elem);
+      createInputSubcontract(element, elem);
       observerChangeCreateInput(element);
       addSubcontractFetch(idBill, elem);
-      
-      
+      // валидация
       const modalWindows = document.getElementById(elem);
       modalWindows.addEventListener("input", () => {
-        validate(elem, ".subcontarct_add ")
+        validate(elem, ".subcontarct_add ");
+        validate(elem, ".modal_add_subcontract ");
       });
     });
   });
 }
-
+// функции заполнения тайтлов инфой о контракте
 function getInfoBill(element) {
   const clientName = element.getAttribute("data-bill-month-client-name");
   const contractName = element.getAttribute("data-bill-month-name");
@@ -59,8 +72,8 @@ function getInfoBill(element) {
   modalContract.innerHTML = contractName;
   modalData.innerHTML = contractData;
 }
-
-function createInputSubcontract(element,elem) {
+// создание инпутов для заполнение субконтракта fetch категорий 
+function createInputSubcontract(element, elem) {
   const subTypeSelect = document.querySelectorAll(".modal-subcontract-type");
   subTypeSelect.forEach((el) => {
     el.addEventListener("change", (event) => {
@@ -90,7 +103,7 @@ function createInputSubcontract(element,elem) {
           });
           new Input(
             "number",
-            "modal-subcontract-input_sum input-200",
+            "modal-subcontract-input_sum input-200 num_budet",
             "",
             "сумма"
           ).afterTo(select);
@@ -98,22 +111,22 @@ function createInputSubcontract(element,elem) {
           let button = document.createElement("button");
           button.className = "modal_add_subcontract";
           button.innerHTML = "OK";
+          button.disabled = true
           select.nextElementSibling.after(button);
 
-          new Input("hidden", "subcontract_id", "").afterTo(select);
+          new Input("hidden", "subcontract_id", "0").afterTo(select);
+          const buttonAdd = document.querySelector(".subcontarct_add");
+          buttonAdd.disabled = true;
 
-          createNextSubcontractInput(button);
+          createNextSubcontractInput(button, elem);
+
           return;
         });
     });
   });
-  const modalWindows = document.getElementById(elem);
-      modalWindows.addEventListener("input", () => {
-        validate(elem, ".subcontarct_add ")
-      });
 }
-
-function createNextSubcontractInput(button) {
+// добавление инпутов после клика по ок
+function createNextSubcontractInput(button, elem) {
   button.addEventListener("click", () => {
     let wrapperSubcontractInp = button.parentNode;
 
@@ -124,57 +137,71 @@ function createNextSubcontractInput(button) {
 
     wrapperSubcontractInp.after(dupNode);
     dupNode.append(dupSelect);
+
     createInputSubcontract();
+
+    // const modalWindows = document.getElementById(elem);
+    //   modalWindows.addEventListener("input", () => {
+    //     validate(elem, ".subcontarct_add ")
+    //   });
   });
 }
-
+// обсчет выводимой в татле сумме распред не распред субподряда
 function changeSum(element, mutationRecords) {
-  let sumAdv = element.getAttribute("data-bill-month-adv");
+  const title = document.querySelector("#page_name").value;
+  if (title == "1") {
+    let sumAdv = element.getAttribute("data-bill-month-adv");
 
-  let sumAdvReplace = sumAdv.replace(/\s+/g, "");
+    let sumAdvReplace = sumAdv.replace(/\s+/g, "");
 
-  const wrapSubcontractors = document.querySelectorAll(
-    ".modal-subcontract-input_sum"
-  );
-  let useBudget = document.querySelector(".modal_adv_budget_not_use");
-  let useBudgetAfterUse = document.getElementById("sum_adv_after_use");
+    const wrapSubcontractors = document.querySelectorAll(
+      ".modal-subcontract-input_sum"
+    );
+    let useBudget = document.querySelector(".modal_adv_budget_not_use");
+    let useBudgetAfterUse = document.getElementById("sum_adv_after_use");
 
-  console.log(useBudget);
-  var sum = sumAdvReplace;
-  let useBudgetAfterUseIn = useBudgetAfterUse.value;
+    var sum = sumAdvReplace;
+    let useBudgetAfterUseIn = useBudgetAfterUse.value;
+    let sumOld = 0;
 
-  // useBudgetAfterUse.value = sumAdvReplace;
-  // useBudget.innerHTML = sum;
-  wrapSubcontractors.forEach((el, value) => {
-    el.addEventListener("keyup", () => {
-      const slash = document.querySelector(".modal_adv_budget_not_use_slash")
-      slash.style.display = "block"
-      if (useBudgetAfterUseIn > 0) {
-        if (el.value == "") {
-          intEl = 0;
+    wrapSubcontractors.forEach((el, value) => {
+      el.addEventListener("keyup", () => {
+        const slash = document.querySelector(".modal_adv_budget_not_use_slash");
+
+        slash.style.display = "block";
+        if (useBudgetAfterUseIn >= 0 && useBudgetAfterUseIn != "") {
+          if (el.value == "") {
+            intEl = 0;
+          } else {
+            intEl = parseInt(el.value);
+          }
+          let useBudgetAfterUseInit = parseInt(useBudgetAfterUseIn);
+          console.log(useBudgetAfterUseInit);
+          sum = useBudgetAfterUseInit - intEl;
+          var num = +sum;
+          var result = num.toLocaleString();
+          console.log(result);
+          useBudget.innerHTML = result;
+          useBudgetAfterUse.value = sum;
         } else {
-          intEl = parseInt(el.value);
-        }
-        let useBudgetAfterUseInit = parseInt(useBudgetAfterUseIn);
+          console.log(111);
+          let intEl;
+          if (el.value == "") {
+            intEl = 0;
+          } else {
+            intEl = parseInt(el.value);
+          }
+          sum = sumAdvReplace - intEl;
 
-        sum = useBudgetAfterUseInit - intEl;
-        useBudget.innerHTML = + sum;
-        useBudgetAfterUse.value = sum;
-      } else {
-        let intEl;
-        if (el.value == "") {
-          intEl = 0;
-        } else {
-          intEl = parseInt(el.value);
+          var num = +sum;
+          var result = num.toLocaleString();
+          console.log(result);
+          useBudget.innerHTML = result;
+          useBudgetAfterUse.value = sum;
         }
-        sum = sumAdvReplace - intEl;
-        useBudget.innerHTML =  + sum;
-        useBudgetAfterUse.value = sum;
-      }
-
-  
+      });
     });
-  });
+  }
 }
 
 function observerChangeCreateInput(element) {
@@ -191,12 +218,11 @@ function observerChangeCreateInput(element) {
     // characterDataOldValue: true // передавать старое значение в колбэк
   });
 }
-
+// отправка субконтрактов
 function addSubcontractFetch(idBill, elem) {
   const buttonAddSubcontract = document.querySelector(".subcontarct_add ");
   buttonAddSubcontract.addEventListener("click", () => {
     const subcontractArr = document.querySelectorAll(".modal_add-subcontract ");
-
     let arrSubcontarctAll = [];
     let contractId;
 
@@ -205,8 +231,8 @@ function addSubcontractFetch(idBill, elem) {
       const nameSubcontract = contractChild[1];
       let subcontractAdv;
       let subcontractOther;
-
       let idelemOld = contractChild[3];
+
       if (idelemOld === undefined) {
       } else {
         if (idelemOld.classList.contains("subcontract_id")) {
@@ -259,7 +285,7 @@ function addSubcontractFetch(idBill, elem) {
     const endpoint = "/service/api/subcontract/upd_subs/";
     let csrfToken = getCookie("csrftoken");
     let data = JSON.stringify(arrSubcontarctAll);
-    console.log(data);
+
     fetch(endpoint, {
       method: "POST",
       body: data,
@@ -274,6 +300,7 @@ function addSubcontractFetch(idBill, elem) {
           id: idBill,
           chekin_add_subcontr: true,
         };
+        // чекин о заполнении субкотрактов
         const endpoint = "/service/api/month_bill/" + idBill + "/";
         let csrfToken = getCookie("csrftoken");
         let data2 = JSON.stringify(updBill);
@@ -309,7 +336,6 @@ function getOldSumcintract(idBill, element) {
   let csrfToken = getCookie("csrftoken");
   fetch(endpoint, {
     method: "GET",
-    // body: data,
     headers: {
       "Content-Type": "application/json",
       "X-CSRFToken": csrfToken,
@@ -350,7 +376,7 @@ function getOldSumcintract(idBill, element) {
 
                     new Input(
                       "text",
-                      "modal-subcontracs input-200",
+                      "modal-subcontracs input-200 num_budet",
                       value.amount,
                       "сумма"
                     ).appendTo(modal_add_subcontract);
@@ -358,15 +384,16 @@ function getOldSumcintract(idBill, element) {
                     new Input("hidden", "subcontract_id", value.id).appendTo(
                       modal_add_subcontract
                     );
-                    let prevOperationDel = document.createElement("button");
+                    let prevOperationDel = document.createElement("div");
                     prevOperationDel.className = "subcontract_del";
 
                     modal_add_subcontract.append(prevOperationDel);
                     prevOperationDel.setAttribute("data-id-peration", value.id);
-                    prevOperationDel.innerHTML = "-";
+                    prevOperationDel.innerHTML = "+";
                   }
                 });
               } else {
+                // старые субконтракты для категории другое
                 let endpoint = "/service/api/subcontract-category-other/";
                 fetch(endpoint, {
                   method: "get",
@@ -398,7 +425,7 @@ function getOldSumcintract(idBill, element) {
                           value.id
                         ).appendTo(modal_add_subcontract);
 
-                        let prevOperationDel = document.createElement("button");
+                        let prevOperationDel = document.createElement("div");
                         prevOperationDel.className = "subcontract_del";
 
                         modal_add_subcontract.append(prevOperationDel);
@@ -406,13 +433,40 @@ function getOldSumcintract(idBill, element) {
                           "data-id-peration",
                           value.id
                         );
-                        prevOperationDel.innerHTML = "-";
+                        prevOperationDel.innerHTML = "+";
                       }
                     });
+                    DelSubcontr(element);
                   });
               }
             });
             DelSubcontr(element);
+            const title = document.querySelector("#page_name").value;
+            if (title == "1") {
+              // установка бюджета без запланироывнныфх трат
+              let sumAdv = element.getAttribute("data-bill-month-adv");
+              let sumAdvReplace = sumAdv.replace(/\s+/g, "");
+              sumOld = +sumAdvReplace;
+              const numBudetAll = document.querySelectorAll(".num_budet");
+
+              if (numBudetAll) {
+                numBudetAll.forEach((el) => {
+                  sumOld -= +el.value;
+                });
+              }
+              let useBudget = document.querySelector(
+                ".modal_adv_budget_not_use"
+              );
+              let useBudgetAfterUse =
+                document.getElementById("sum_adv_after_use");
+              useBudgetAfterUse.value = sumOld;
+              useBudget.innerHTML = sumOld;
+              const slash = document.querySelector(
+                ".modal_adv_budget_not_use_slash"
+              );
+              slash.style.display = "block";
+            }
+
             let modal_add_subcontract = document.createElement("div");
             modal_add_subcontract.className =
               "modal_add_contract modal_add-subcontract";
@@ -455,6 +509,7 @@ function getOldSumcintract(idBill, element) {
     });
 }
 
+// категории субконтрактов если есть заполненные
 function FetchCatSubsOther() {
   let endpoint = "/service/api/subcontract-category-other/";
   fetch(endpoint, {
@@ -465,13 +520,11 @@ function FetchCatSubsOther() {
       return dataCategoryOther;
     });
 }
-
+// удаление субкотнрактов
 function DelSubcontr(element) {
-  console.log(1);
   const delButton = document.querySelectorAll(".subcontract_del");
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
-      console.log(1111);
       idOperation = item.getAttribute("data-id-peration");
       console.log(idOperation);
       endpoint = "/service/api/subcontract/" + idOperation + "/";
@@ -491,6 +544,7 @@ function DelSubcontr(element) {
         if (response.ok) {
           const add_operation = document.querySelector(".subcontarct_add");
           add_operation.replaceWith(add_operation.cloneNode(true));
+          // имитация клика по первичной графе запуск функции заново
           element.click();
 
           return;
