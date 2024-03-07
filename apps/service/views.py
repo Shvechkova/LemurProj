@@ -3,6 +3,7 @@ import datetime
 from itertools import groupby
 from math import sumprod
 from django.forms import DateField
+from django.core.cache import cache
 
 from rest_framework.decorators import action
 from django.http import HttpResponseRedirect
@@ -12,8 +13,6 @@ from django.db.models.functions import TruncMonth
 from django.db.models import Prefetch
 from django.db.models import Func, F, Value
 from django.db.models import F, Q
-
-# from apps import service
 
 from operator import itemgetter
 from itertools import groupby
@@ -43,6 +42,23 @@ def index(request):
 
 
 def service_one(request, slug):
+    def loc_mem_cache(key, function, timeout=300):
+        cache_data = cache.get(key)
+        if not cache_data:
+            cache_data = function()
+            cache.set(key, cache_data, timeout)
+        return cache_data
+
+    def service_cache():
+        def cache_function():
+            service = Service.objects.all()
+            return service
+
+        return loc_mem_cache('service', cache_function, 200)
+
+    service = service_cache()
+    # service = Service.objects.all()
+
     # куки для установки дат сортировки
     if request.COOKIES.get('sortMonth'):
         month = request.COOKIES["sortMonth"]
@@ -78,28 +94,39 @@ def service_one(request, slug):
         old_month = 1
         year = 1990
 
-    bill_now_mohth = (
-        ServicesMonthlyBill.objects.filter(service=category_service)
-        .annotate(month=TruncMonth("created_timestamp"))
-        .filter(created_timestamp__year__gte=year, created_timestamp__month__gte=old_month)
-        .select_related("client").order_by("-month"))
-
-    # for bill in bill_now_mohth:
-    #     print(bill)
-    #     print(bill.month)
-    suborders_name = Adv.objects.all()
     # bill_now_mohth = (
     #     ServicesMonthlyBill.objects.filter(service=category_service)
     #     .annotate(month=TruncMonth("created_timestamp"))
-    #     .filter(created_timestamp__year=now.year, created_timestamp__month=now.month)
-    #     .select_related("client")
-    # )
+    #     .filter(created_timestamp__year__gte=year, created_timestamp__month__gte=old_month)
+    #     .select_related("client").order_by("-month"))
+
+    def bill_month_cache():
+        def cache_function():
+            bill_now_mohth11 = (ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth("created_timestamp")).filter(
+                created_timestamp__year__gte=year, created_timestamp__month__gte=old_month).select_related("client").order_by("-month"))
+            return bill_now_mohth11
+
+        return loc_mem_cache('bill_now_mohth', cache_function, 2)
+    bill_now_mohth = bill_month_cache()
+
+    def suborders_name_cache():
+        def cache_function():
+            suborders_name = Adv.objects.all()
+
+            return suborders_name
+
+        return loc_mem_cache('suborders_name', cache_function, 200)
+    suborders_name = suborders_name_cache()
+    # suborders_name = Adv.objects.all()
+
     suborders_name_no_adv = SubcontractMonth.objects.filter(
         month_bill__service=category_service,
         created_timestamp__year__gte=year,
         created_timestamp__month__gte=old_month, other__isnull=False
     ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total=Sum('amount', default=0)).values("other_id__name", "other_id__id", "month", 'total').order_by("other").distinct()
-    # print(suborders_name_no_adv)
+
+    
+    
     total_month = ServicesMonthlyBill.objects.filter(
         service=category_service,
     ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(contract_sum=(
@@ -123,6 +150,23 @@ def service_one(request, slug):
         Sum('amount', filter=Q(bank=3), default=0)
     )
     )
+    # def oper_total():
+    #     def cache_function_total():
+    #         total_month = ServicesMonthlyBill.objects.filter(
+    #     service=category_service,
+    # ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(contract_sum=(
+    #     Sum('contract_sum', default=0)
+    # ), adv_all_sum=(
+    #     Sum('adv_all_sum', default=0)
+    # ), diff_sum=(
+    #     Sum('diff_sum', default=0)
+    # )
+    # )
+
+    #         return total_month
+
+    #     return loc_mem_cache('operation', cache_function_total, 2)
+    # total_month = oper_total()
 
     diff_sum_oper = []
     for x in range(len(total_month)):
@@ -218,10 +262,11 @@ def service_one(request, slug):
             # name['other_id__name'] = suborder_total['other_id__name']
             # obj_suborder_adv.append(name)
             # print(subs_item)
-
+    type_url = "service"
     title = category_service.id
     context = {
         "title": title,
+        "type_url": type_url,
         "category_service": category_service,
 
         "bills": bill_now_mohth,
@@ -234,7 +279,8 @@ def service_one(request, slug):
         "operation": operation,
         "total_month": total_month,
         "diff_sum_oper": diff_sum_oper,
-        "obj_suborder_other": obj_suborder_other
+        "obj_suborder_other": obj_suborder_other,
+        "service": service
 
     }
     return render(request, "service/one_service.html", context)
@@ -276,3 +322,20 @@ def new_month(request):
     }
 
     return render(request, "service/service.html", context)
+
+
+# from django.core.cache import cache
+
+# def loc_mem_cache(key, function, timeout=300):
+#     cache_data = cache.get(key)
+#     if not cache_data:
+#         cache_data = function()
+#         cache.set(key, cache_data, timeout)
+#     return cache_data
+
+
+def favorite_list(self):
+    def cache_function():
+        return Favorite.objects.filter(user=self)
+
+    return loc_mem_cache('user_favorite_list_' + str(self.id), cache_function, 2)

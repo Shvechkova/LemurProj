@@ -41,6 +41,7 @@ h3 {
 button {
   cursor: pointer;
 }
+
 .preloader {
   position: fixed;
   left: 0;
@@ -49,7 +50,8 @@ button {
   bottom: 0;
   overflow: hidden;
   /* фоновый цвет */
-  background: #e0e0e0;
+  backdrop-filter: blur(15px);
+  background: #e0e0e033;
   z-index: 1001;
 }
 
@@ -63,6 +65,9 @@ button {
   margin-left: -35px;
   text-align: center;
   animation: preloader-rotate 2s infinite linear;
+}
+
+.preloader svg {
 }
 
 @keyframes preloader-rotate {
@@ -100,7 +105,7 @@ button {
 .header_nav {
   display: flex;
   gap: 70px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .header_nav-link {
@@ -109,10 +114,23 @@ button {
 .menu-active {
   border-radius: 25px;
   border: 3px solid #000;
-  padding: 13px 25px;
-  margin-left: -25px;
-  margin-right: -25px;
-  margin-top: -13px;
+  padding: 8px 18px;
+  margin-left: -18px;
+  margin-right: -18px;
+  margin-top: -8px;
+}
+.menu-active_service {
+  border: 3px solid #000;
+  background: #000;
+  color: #fff;
+}
+.menu_service {
+  border-radius: 25px;
+  border: 3px solid #000;
+  padding: 8px 18px;
+  margin-left: -18px;
+  margin-right: -18px;
+  margin-top: -8px;
 }
 
 .submenu {
@@ -123,7 +141,6 @@ button {
 .submenu-link {
   border-radius: 25px;
   border: 3px solid #000;
-  
 }
 
 .submenu-active {
@@ -191,7 +208,7 @@ button {
 .modal-items {
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 14px 24px;
+  padding: 24px 24px;
   margin: 0 auto;
   display: flex;
   position: relative;
@@ -256,13 +273,12 @@ input[type="date"] {
 }
 
 .modal_close {
-
-    font-size: 40px;
-    position: absolute;
-    right: 4px;
-    top: -5px;
-    transform: rotate(45deg);
-    cursor: pointer;
+  font-size: 40px;
+  position: absolute;
+  right: 4px;
+  top: -5px;
+  transform: rotate(45deg);
+  cursor: pointer;
 }
 
 /* 
@@ -276,7 +292,7 @@ input[type="date"]:before {
 }
 
 .modal-items-wrap--610 {
-   width: 610px; 
+  width: 610px;
 }
 
 .modal-client_name {
@@ -343,6 +359,8 @@ input[type="date"]:before {
   color: #fff;
   padding: 10px 19px;
   background-color: #000;
+  margin-top: 10px;
+  margin-left: 70%;
 }
 
 .button_black:disabled {
@@ -443,13 +461,15 @@ input[type="date"]:before {
   align-items: flex-end;
   width: auto;
 }
+
 .bill-month_category-result {
   width: fit-content;
   display: flex;
- 
+
   align-items: flex-end;
   width: auto;
 }
+
 .title-bill-120 {
   width: 120px !important;
   margin-top: 21px;
@@ -459,6 +479,7 @@ input[type="date"]:before {
   margin-right: 20px;
   padding-left: 20px;
 }
+
 .bill_w-120 {
   width: 120px !important;
   margin-top: 33px;
@@ -468,6 +489,7 @@ input[type="date"]:before {
   overflow: hidden;
   margin-right: 20px;
 }
+
 .bill_w-120-result {
   width: 120px !important;
   margin-top: 7px;
@@ -477,6 +499,7 @@ input[type="date"]:before {
   overflow: hidden;
   margin-right: 20px;
 }
+
 .bill_w-120-result-upd {
   width: 140px !important;
   margin-top: 7px;
@@ -485,7 +508,7 @@ input[type="date"]:before {
   align-items: center;
   overflow: hidden;
   margin-right: 42px;
-      padding-left: 20px;
+  padding-left: 20px;
 }
 
 .bill_w-80 {
@@ -497,6 +520,7 @@ input[type="date"]:before {
   overflow: hidden;
   margin-right: 20px;
 }
+
 .title-bill_w-80 {
   width: 100px !important;
   margin-top: 26px;
@@ -518,9 +542,10 @@ input[type="date"]:before {
   margin-right: 20px;
   padding-left: 20px;
 }
-.elem16{
- 
+
+.elem16 {
 }
+
 .bill-month_item-wrapper {
   display: flex;
   align-items: flex-end;
@@ -542,13 +567,14 @@ input[type="date"]:before {
 
 .bill-month-client-del {
   display: flex;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   position: relative;
-  left: -16px;
+  left: -27px;
   transform: rotate(45deg);
   opacity: 0;
   transition: 0.2s;
 }
+
 .bill-month-del {
   width: 20px;
 }
@@ -561,14 +587,17 @@ input[type="date"]:before {
   background-color: #f4f4f4;
   display: flex;
 }
+
 .entry-bg {
   background-color: #f3fcf2;
   display: flex;
 }
+
 .out-bg {
-  background-color: #FFEDED;
+  background-color: #ffeded;
   display: flex;
 }
+
 .suborder_title-bg {
   background-color: #f4f4f4;
   border-top-left-radius: 25px;
@@ -577,8 +606,8 @@ input[type="date"]:before {
   margin-left: -20px;
   margin-right: 30px;
 }
+
 .suborder_title-bg-result {
- 
   display: flex;
   margin-left: -20px;
   margin-right: 30px;
@@ -592,16 +621,16 @@ input[type="date"]:before {
   margin-left: -20px;
   margin-right: 30px;
 }
+
 .suborder_entry-bg-result {
- 
   display: flex;
   margin-left: -20px;
   margin-right: 30px;
-      align-items: flex-end;
+  align-items: flex-end;
 }
 
 .suborder_out-bg {
-  background-color: #FFEDED;
+  background-color: #ffeded;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
   display: flex;
@@ -623,19 +652,20 @@ input[type="date"]:before {
   margin-left: -20px;
   margin-right: 30px;
 }
+
 .out_subs-oper-bg {
-  background-color: #FFEDED;
+  background-color: #ffeded;
 
   display: flex;
   margin-left: -20px;
-  
 }
 
-.btn_month_bill {
+.btn_month_bill  {
   margin-left: 5px;
   width: 16px;
   height: 16px;
-  background: #000;
+  background: #000000;
+  border: none;
   border-radius: 50%;
   color: #fff;
   display: flex;
@@ -644,10 +674,14 @@ input[type="date"]:before {
   font-size: 25px;
   font-weight: 500;
 }
+.btn_month_bill-del{
+  background: #ff0404;
+}
 
 .bill_oretation-add_title {
   background-color: #f3fcf2;
 }
+
 .mr_p_oper {
   margin-right: 20px;
   padding-left: 20px;
@@ -662,6 +696,7 @@ input[type="date"]:before {
   background-color: #f3fcf2;
   display: flex;
 }
+
 .last-loop-bg {
   background-color: #f4f4f4;
   border-bottom-left-radius: 25px;
@@ -679,23 +714,28 @@ input[type="date"]:before {
   position: relative;
   padding-bottom: 20px;
 }
+
 .last-loop-bg-out {
-  background-color: #FFEDED;
+  background-color: #ffeded;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
   display: flex;
   position: relative;
   padding-bottom: 20px;
 }
+
 .last-loop-btn-del {
   margin-top: 33px;
 }
+
 .last-loop {
   align-items: flex-start;
 }
+
 .last-loop-btn {
   padding-top: 33px;
 }
+
 .no-validate {
   border: 1px solid red !important;
 }
@@ -716,9 +756,12 @@ input[type="date"]:before {
 .suborder_out_operation {
   cursor: pointer;
 }
+
 .fsz15 {
   font-size: 15px;
+  overflow: visible !important;
 }
+
 .result_ok {
   color: green;
 }
@@ -773,8 +816,13 @@ input[type="date"]:before {
 
 .operation {
   display: flex;
-  gap: 10px;
-  margin: 10px 0;
+  gap: 40px;
+  margin: 28px 0;
+}
+
+.previous_operation_out,
+.previous_operation {
+  margin: 28px 0;
 }
 
 .modal_adv_buget {
@@ -793,16 +841,19 @@ input[type="date"]:before {
 .bill-month_category-ended {
   /* height: 120px; */
 }
-.modal_adv_budget_all{
+
+.modal_adv_budget_all {
   font-weight: 700;
-font-size: 20px;
+  font-size: 20px;
 }
-.modal_adv_budget_not_use{
+
+.modal_adv_budget_not_use {
   font-weight: 700;
-font-size: 15px;
-color: #f00;
+  font-size: 15px;
+  color: #f00;
 }
-.modal_adv_budget_not_use_slash{
+
+.modal_adv_budget_not_use_slash {
   font-weight: 700;
   font-size: 15px;
   color: #f00;
@@ -820,6 +871,10 @@ color: #f00;
 
 .previous_operation_item {
   display: flex;
+  position: relative;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
 }
 
 .wrapper_oper_out_other {
@@ -842,27 +897,31 @@ color: #f00;
   font-size: 25px;
   cursor: pointer;
   font-weight: 500;
-  
 }
 
- [data-btn-deg-out="180"]{
-rotate: 180deg;
- }
- [data-btn-deg-out="0"]{
+[data-btn-deg-out="180"] {
+  rotate: 180deg;
+}
+
+[data-btn-deg-out="0"] {
   rotate: 0deg;
- }
-  [data-btn-deg-entry="180"]{
-rotate: 180deg;
- }
- [data-btn-deg-entry="0"]{
+}
+
+[data-btn-deg-entry="180"] {
+  rotate: 180deg;
+}
+
+[data-btn-deg-entry="0"] {
   rotate: 0deg;
- }
-  [data-btn-deg-suborder="180"]{
-rotate: 180deg;
- }
- [data-btn-deg-suborder="0"]{
+}
+
+[data-btn-deg-suborder="180"] {
+  rotate: 180deg;
+}
+
+[data-btn-deg-suborder="0"] {
   rotate: 0deg;
- }
+}
 
 .display-none-active,
 .display-none-active-other,
@@ -870,9 +929,11 @@ rotate: 180deg;
 .display-none-active-title {
   display: flex;
 }
+
 [data-shrink="none"] {
   display: none;
 }
+
 [data-shrink="block"] {
   display: block;
   display: flex;
@@ -881,7 +942,9 @@ rotate: 180deg;
 .shrink-active {
   display: none;
 }
-.subcontract_del{
+
+.subcontract_del,
+.previous_operation_del {
   display: flex;
   width: 20px;
   height: 20px;
@@ -907,9 +970,9 @@ rotate: 180deg;
   background: #c9c9c9;
   border-radius: 5px;
   font-weight: 700;
-font-size: 20px;
-color: #fff;
-border:none;
+  font-size: 20px;
+  color: #fff;
+  border: none;
 }
 
 .modal_add_subcontract {
@@ -918,21 +981,263 @@ border:none;
   background: #169e00;
   border-radius: 5px;
   font-weight: 700;
-font-size: 20px;
-color: #fff;
-border:none;
+  font-size: 20px;
+  color: #fff;
+  border: none;
 }
 
-#other_sum_namber_out{
-  width: 180px;
-height: 44px;
-}
-#operation_comment_out{
+#operation_comment_out {
   border-radius: 5px;
-width: 430px;
-height: 89px;
-background: #f5f5f5;
-border:none;
+  width: 100%;
+  height: 89px;
+  background: #f5f5f5;
+  border: none;
+}
+#operation_comment {
+  border-radius: 5px;
+  width: 100%;
+  height: 89px;
+  background: #f5f5f5;
+  border: none;
+}
+#operation_comment_out_other {
+  border-radius: 5px;
+  width: 100%;
+  height: 89px;
+  background: #f5f5f5;
+  border: none;
 }
 
+.bank_date_wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+}
 
+#sum_cheked_out {
+  margin-top: 33px;
+  margin-bottom: 33px;
+}
+#sum_cheked {
+  margin-top: 33px;
+  margin-bottom: 33px;
+}
+
+#date-operation_out {
+  color: #000;
+}
+
+input[type="radio"] {
+  border: 2px solid #c9c9c9;
+  border-radius: 13px;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* background-color only for content */
+  background-clip: content-box;
+
+  background-color: #fff;
+  border-radius: 50%;
+}
+/* 
+input[type="radio"]::-ms-check {
+  background: #fff;
+  border: 2px solid #c9c9c9;
+  accent-color: #c9c9c9;
+  color:#fff;
+} */
+
+input[type="radio"]:checked {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* create custom radiobutton appearance */
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  /* background-color only for content */
+  background-clip: content-box;
+  border: 2px solid #bbbbbb;
+  background-color: #e7e6e7;
+  border-radius: 50%;
+}
+
+.input_bank_wrap_add {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  align-items: center;
+  margin-top: 15px;
+}
+.input_bank_wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  align-items: center;
+  margin-top: 15px;
+}
+.input_bank_wrap label {
+  margin-right: 30px;
+  margin-left: 10px;
+}
+.input_bank_wrap_add label {
+  margin-right: 30px;
+  margin-left: 10px;
+}
+
+.input_bank_wrap_one {
+  display: flex;
+  align-items: flex-end;
+  align-items: center;
+  margin-top: 15px;
+}
+.input_bank_wrap_one label {
+  margin-right: 30px;
+  margin-left: 10px;
+}
+.input_bank_wrap_one_add {
+  display: flex;
+  align-items: flex-end;
+  align-items: center;
+  margin-top: 15px;
+}
+.input_bank_wrap_one_add label {
+  margin-right: 30px;
+  margin-left: 10px;
+}
+.date_operation input {
+  color: #000;
+}
+
+#other_sum_out {
+  margin-right: 0 !important;
+  margin-right: -30px;
+}
+#other_sum_namber {
+  width: 180px;
+  height: 44px;
+  margin-left: 10px;
+}
+#other_sum_namber_out {
+  width: 180px;
+  height: 44px;
+  margin-left: 10px;
+}
+#other_sum_namber_out_other {
+  width: 180px;
+  height: 44px;
+  margin-left: 10px;
+}
+
+.previous_operation_wrap {
+  /* display: flex;
+  align-items: center;
+  gap: 10px; */
+}
+.previous_operation_title {
+  font-weight: 700;
+  font-size: 15px;
+  max-width: 430px;
+}
+.previous_operation_comment {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  max-width: 430px;
+}
+.previous_operation_del {
+  /* position: absolute; */
+}
+.bill-sorting-date {
+  display: flex;
+  gap: 20px;
+}
+
+.bill-sorting-date h3 {
+  margin-right: 40px;
+}
+.btn_sorting_month {
+  border-bottom: 1px solid transparent;
+}
+
+.btn_sorting_month:hover {
+  border-color: #000;
+  cursor: pointer;
+}
+
+.active_sorting {
+  border-color: #000;
+}
+.change_btn_bill {
+  left: 48px;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.change_btn_bill:hover {
+
+  opacity: 1;
+}
+
+.btn_bill {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.last-loop-modal-add-client {
+  margin-top: 34px;
+}
+
+.month_bill{
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.service_input_wrap h3{
+  margin-left: 10px;
+}
+
+.client_additional-contract_add, .client-contract_change{
+  width: 44px;
+    height: 44px;
+    background: #169e00;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    border: none;
+}
+
+.client_additional-contract_add:disabled, .client-contract_change:disabled{
+  
+  background: #c9c9c9;
+  
+}
+
+.suborder_out_operation_people{
+  cursor: pointer;
+}
+
+.historySuborder_item{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.previous_operation_pay{
+  border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px 19px;
+    background-color: #000000;
+    cursor:pointer;
+   
+}

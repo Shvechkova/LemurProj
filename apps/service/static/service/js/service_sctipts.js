@@ -104,39 +104,45 @@ function getStateLocalStorage() {
     if (dataI === "out" && out != null) {
       elem.setAttribute("data-shrink", out);
     }
-
   });
 }
+//новый месяц кнопка 
+const newBillMonth = document.querySelector(".new_month");
+if (newBillMonth) {
+  newBillMonth.addEventListener("click", () => {
+    console.log(window.location.origin);
 
-const newBillMonth = document.querySelector(".new_month")
-
-newBillMonth.addEventListener("click", ()=>{
-  console.log(window.location.origin)
- 
-
-  location.href= window.location.origin +"/service/new_month";
-  window.history.back ();
-})
-// установка сортировки месяца 
-const sortDate = document.querySelector(".bill-sorting-date")
-const sortMonthReload = sessionStorage.getItem("sortMonth");
+    location.href = window.location.origin + "/service/new_month";
+    window.history.back();
+  });
+}
+// установка сортировки месяца
+const sortDate = document.querySelector(".bill-sorting-date");
+if(sortDate){
+ const sortMonthReload = sessionStorage.getItem("sortMonth");
 if (sortMonthReload) {
-  sortDate.setAttribute('bill-sorting-date', sortMonthReload)
+  sortDate.setAttribute("bill-sorting-date", sortMonthReload);
 }
 
+const btnSort = document.querySelectorAll(".btn_sorting_month");
 
+btnSort.forEach((item) => {
+  console.log(item)
+  item.addEventListener("click", () => {
+    const monthDate = item.getAttribute("data-sort-month");
+    sortDate.setAttribute("data-sort-month", monthDate);
+    sessionStorage.setItem("sortMonth", monthDate);
+    document.cookie = "sortMonth=" + monthDate;
+    location.reload();
+  });
 
-const btnSort = document.querySelectorAll(".btn_sorting_month")
+  const indexBtn = sortDate.getAttribute("bill-sorting-date")
+  const monthDate = item.getAttribute("data-sort-month");
+    if (indexBtn == monthDate){
+      console.log(item)
+      item.classList.add("active_sorting")
+    }
 
-btnSort.forEach((item)=>{
-  item.addEventListener("click", ()=>{
-    const monthDate = item.getAttribute("data-sort-month")
-    sortDate.setAttribute('data-sort-month', monthDate)
-    sessionStorage.setItem('sortMonth', monthDate);
-    document.cookie = 'sortMonth=' + monthDate 
-     location.reload()
-  })
-})
-
-
-
+});
+ 
+}

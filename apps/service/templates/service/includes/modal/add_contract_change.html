@@ -1,59 +1,57 @@
-<div id="modal-add-bill" class="modal">
+<div id="modal-change-bill" class="modal">
   <div class="modal-wrapper">
     <div class="modal-items">
-      <div class="modal_close modal_close_modal-add-bill">+</div>
+      <div class="modal_close modal_close_modal-change-bill">+</div>
       <div class="modal-items-wrap">
         <form id="month_bill" class="month_bill">
           <label for="client"></label>
           <div class="service_input_wrap ">
           <h3>Клиент</h3>
-          <select
+          <input readonly
             name="client"
             required
-            id="client"
-            class="modal-client choice input-130"
+            id="client_change"
+            class="modal-client  input-130"
           >
             
-          </select></div>
+          </input></div>
           <label for="contract_main"></label>
           <div class="service_input_wrap">
           <h3>Договор</h3>
-          <select
+          <input
             name="main_contract"
             required
-            id="contract_main"
-            class="modal-client_main-contract choice empty input-130"
+            id="contract_main_change"
+            class="modal-client_main-contract input-130"
           >
-            <option selected disabled class="modal-select" value="0">
-              Договор
-            </option>
-          </select></div>
+      
+          </input></div>
           <label for="contract_sum"></label>
           <div class="service_input_wrap">
           <h3>Счёт</h3>
           <input
             required
-            id="contract_sum"
+            id="contract_sum_change"
             class="modal-contract_sum input-130"
             type="number"
             placeholder="Сумма"
             value=""
-            name="contract_sum"
+            name="contract_sum_change"
           /></div>
-          <div class="adv_all_sum_wrapper service_input_wrap">
+          <div class="adv_all_sum_wrapper_change service_input_wrap">
           <label for="adv_all_sum"></label>
           <h3>Ведение</h3>
           <input
             name="adv_all_sum"
             required
-            id="adv_all_sum"
+            id="adv_all_sum_change"
             class="modal-adv_all_sum input-130"
             type="number"
             placeholder="Сумма"
             value=""
           />
         </div>
-          <button disabled type="button" class="client_additional-contract_add">
+          <button type="button" class="client-contract_change">
             OK
           </button>
         </form>

@@ -1,11 +1,13 @@
-choiceColor();
-
 const addOperationOut = document.querySelectorAll(".suborder_out_operation");
 
 if (addOperationOut) {
   addOperationOut.forEach((element) => {
     element.addEventListener("click", () => {
+      // заполнение тайтла инфой
+      // getInfoBillOperationOperOut(element);
+      getBillInfoOutOper(element);
       document.getElementById("date-operation_out").valueAsDate = new Date();
+      // очистка старых операций
       const lastOperationWrap = document.querySelector(
         ".previous_operation_out"
       );
@@ -16,30 +18,43 @@ if (addOperationOut) {
       //   "data-bill-month-operation-entry"
       // );
 
+      // открытие модалки
       const add_operation = document.querySelector(".operation_add_out");
+      add_operation.disabled = true
       modal(elem, add_operation);
+
+      // выбор радио кнопки если вводить другое значение
       const nameElemOtherSum = "other_sum_namber_out";
       const nameRadioOtherSum = "other_sum_out";
       ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
-
-      getInfoBillOperationOperOut(element);
-
       const chekinOtherSum = document.getElementById("other_sum_namber");
       chekinOtherSum.addEventListener("input", () => {
         const chekinOtherSum = document.getElementById("other_sum");
 
         chekinOtherSum.checked = true;
       });
+      // добавление операции
       newOperationOut(element, elem);
-      const modalWindows = document.getElementById(elem);
+      // получение старых операций
 
       const endpointOperation = "/operations/api/operation/";
       addFetchOperationOut(element, endpointOperation, elem);
+
+      // валидация радиокнопок
+      const modalWindows = document.getElementById(elem);
+      modalWindows.addEventListener("input", () => {
+        validateRadio(
+          elem,
+          ".operation_add_out",
+          ".input_bank_wrap_one",
+          ".input_bank_wrap"
+        );
+      });
     });
   });
 }
-
-function getInfoBillOperationOperOut(element) {
+// заполнение инфой тайтла
+function getBillInfoOutOper(element) {
   const clientName = element.getAttribute("data-bill-month-client-name");
   const contractName = element.getAttribute("data-bill-month-name");
   const contractData = element.getAttribute("data-bill-month-data");
@@ -60,15 +75,51 @@ function getInfoBillOperationOperOut(element) {
     ".sum_operation_suborders_all"
   );
 
+
   modalClient.innerHTML = clientName;
   modalContract.innerHTML = contractName;
   modalData.innerHTML = contractData;
 
   modalNameSuborder.innerHTML = nameSumorder;
-  modalSumCtr.innerHTML = allMonthSum;
-  modalsunordrt_operation_all.innerHTML = 0;
+  modalSumCtr.innerHTML = allMonthSum + " ₽";
+  modalsunordrt_operation_all.innerHTML = 0 + " ₽";
+  if (allMonthSum != modalsunordrt_operation_all) {
+    modalSumCtr.style.color = "red";
+  }
 }
+// function getInfoBillOperationOperOut(element) {
 
+//   const clientName = element.getAttribute("data-bill-month-client-name");
+//   const contractName = element.getAttribute("data-bill-month-name");
+//   const contractData = element.getAttribute("data-bill-month-data");
+//   const allMonthSum = element.getAttribute("data-id-sub-amount");
+//   const nameSumorder = element.getAttribute("data-name-sub");
+
+//   const modalClient = document.querySelector(
+//     ".operation_entry_client-name_out"
+//   );
+//   const modalContract = document.querySelector(
+//     ".operation_entry_contract-name_out"
+//   );
+//   const modalData = document.querySelector(".operation_entry_data_out");
+
+//   const modalNameSuborder = document.querySelector(".name_suborder_modal_out");
+//   const modalSumCtr = document.querySelector(".sum_operation_suborders_outs");
+//   const modalsunordrt_operation_all = document.querySelector(
+//     ".sum_operation_suborders_all"
+//   );
+
+//   modalClient.innerHTML = clientName;
+//   modalContract.innerHTML = contractName;
+//   modalData.innerHTML = contractData;
+
+//   modalNameSuborder.innerHTML = nameSumorder;
+//   modalSumCtr.innerHTML = allMonthSum;
+//   modalsunordrt_operation_all.innerHTML = 0;
+
+// }
+
+// добавление операции
 function addFetchOperationOut(element, endpoint, elem) {
   const btnAddOperationEntry = document.querySelector(".operation_add_out");
   // const allMonthSum = element.getAttribute(
@@ -97,7 +148,7 @@ function addFetchOperationOut(element, endpoint, elem) {
     );
 
     let intMonthSum = allMonthSum.replace(/[^0-9]/g, "");
-
+    // если первое добавление операции
     if (stepCheked == "1") {
       sumElement.forEach((el) => {
         if (el.checked) {
@@ -118,6 +169,7 @@ function addFetchOperationOut(element, endpoint, elem) {
           }
         }
       });
+      // если уже есть операции
     } else if (stepCheked == "2") {
       sumElement.forEach((el) => {
         if (el.checked) {
@@ -139,6 +191,7 @@ function addFetchOperationOut(element, endpoint, elem) {
     const commentOperation = document.getElementById(
       "operation_comment_out"
     ).value;
+    console.log(commentOperation);
     const data_select = document.getElementById("date-operation_out").value;
     const form = new FormData();
     form.append("amount", sumChecked);
@@ -231,27 +284,32 @@ function newOperationOut(element, elem) {
             };
             var d = new Date(item.created_timestamp);
             const sumoperation = item.amount;
-
+            var num = +sumoperation;
+            var result = num.toLocaleString();
+            // враппер для коментария
             let dataOperation = d.toLocaleString("ru", options);
             let prevOperationItem = document.createElement("div");
             prevOperationItem.className = "previous_operation_item";
             lastOperationWrap.append(prevOperationItem);
-
-            let prevOperationDel = document.createElement("button");
+            // кнопка удалить
+            let prevOperationDel = document.createElement("div");
             prevOperationDel.className = "previous_operation_del";
-
             prevOperationItem.append(prevOperationDel);
             prevOperationDel.setAttribute("data-id-peration", item.id);
-            prevOperationDel.innerHTML = "-";
+            prevOperationDel.innerHTML = "+";
+
+            let prevOperationiNoComm = document.createElement("div");
+            prevOperationiNoComm.className = "previous_operation_wrap";
+            prevOperationItem.append(prevOperationiNoComm);
 
             let prevOperationTitle = document.createElement("div");
             prevOperationTitle.className = "previous_operation_title";
-            prevOperationItem.append(prevOperationTitle);
+            prevOperationiNoComm.append(prevOperationTitle);
             prevOperationTitle.innerHTML =
               dataOperation +
               " - оплата " +
-              sumoperation +
-              "₽ из " +
+              result +
+              " ₽ из " +
               operationAllSum +
               " ₽";
 
@@ -259,7 +317,7 @@ function newOperationOut(element, elem) {
 
             let prevOperationComm = document.createElement("div");
             prevOperationComm.className = "previous_operation_comment";
-            prevOperationItem.append(prevOperationComm);
+            prevOperationiNoComm.append(prevOperationComm);
             if (comment != "") {
               prevOperationComm.innerHTML = "Комментарий: " + comment;
             }
@@ -272,13 +330,25 @@ function newOperationOut(element, elem) {
           const sumExpected = document.querySelector(
             ".sum_operation_suborders_all"
           );
-          sumExpected.innerHTML = sum_all - sumOperationEnded;
+
+          var t = sum_all - sumOperationEnded;
+
+          if (sumOperationEnded == 0) {
+            const sumallred = document.querySelector(
+              ".sum_operation_suborders_outs"
+            );
+            sumallred.style.color = "black";
+          }
+          var num = +t;
+          var result = num.toLocaleString();
+          sumExpected.innerHTML = result + " ₽";
+
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "2");
           sumChekedWrap.innerHTML =
-            '<p>Сколько оплатили?</p><input checked type="radio" id="100_out" name="sum" value="' +
+            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap"><input checked type="radio" id="100_out" name="sum" value="' +
             sumOperationEnded +
-            '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out"></label><input placeholder="Другая сумма" data-validate="0" type="number" id="other_sum_namber_out" name="" value="" />';
+            '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" type="number" id="other_sum_namber_out" name="" value="" /> </div>';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";
@@ -287,7 +357,7 @@ function newOperationOut(element, elem) {
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "1");
           sumChekedWrap.innerHTML =
-            '<h3>Сколько оплатили?</h3><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /><label for="other_sum_out"></label><input placeholder="Другая сумма" data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" />';
+            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap"><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /></label><input placeholder="Другая сумма" data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" /></div>';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";

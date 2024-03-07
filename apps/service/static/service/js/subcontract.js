@@ -9,6 +9,7 @@ if (btnSubcontarct) {
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
       let typeSuborder = element.getAttribute("data-type-suborder");
+      
 
       const title = document.querySelector("#page_name").value;
       if (title == "1") {
@@ -21,7 +22,8 @@ if (btnSubcontarct) {
         slash.style.display = "none";
         // вставка бюджета
         let budgetInnerAll = document.querySelector(".modal_adv_budget_all");
-        budgetInnerAll.innerHTML = sumAdv;
+        
+        budgetInnerAll.innerHTML = sumAdv + "  ₽";
       }
 
       // открытие модалки
@@ -140,10 +142,6 @@ function createNextSubcontractInput(button, elem) {
 
     createInputSubcontract();
 
-    // const modalWindows = document.getElementById(elem);
-    //   modalWindows.addEventListener("input", () => {
-    //     validate(elem, ".subcontarct_add ")
-    //   });
   });
 }
 // обсчет выводимой в татле сумме распред не распред субподряда
@@ -181,7 +179,7 @@ function changeSum(element, mutationRecords) {
           var num = +sum;
           var result = num.toLocaleString();
           console.log(result);
-          useBudget.innerHTML = result;
+          useBudget.innerHTML = result + " ₽";
           useBudgetAfterUse.value = sum;
         } else {
           console.log(111);
@@ -196,7 +194,7 @@ function changeSum(element, mutationRecords) {
           var num = +sum;
           var result = num.toLocaleString();
           console.log(result);
-          useBudget.innerHTML = result;
+          useBudget.innerHTML = result + " ₽";
           useBudgetAfterUse.value = sum;
         }
       });
@@ -332,6 +330,10 @@ function addSubcontractFetch(idBill, elem) {
 }
 
 function getOldSumcintract(idBill, element) {
+  // isLoading = true
+  // isLoaded = false
+  // preloaderModal(isLoading,isLoaded)
+
   const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
   let csrfToken = getCookie("csrftoken");
   fetch(endpoint, {
@@ -344,6 +346,9 @@ function getOldSumcintract(idBill, element) {
     .then((response) => response.json())
     .then((data) => {
       if (data.length == 0) {
+        // isLoading = false
+        // isLoaded = true
+        // preloaderModal(isLoading,isLoaded)
         return;
       } else {
         let endpoint = "/service/api/subcontract-category-adv/";
@@ -436,9 +441,13 @@ function getOldSumcintract(idBill, element) {
                         prevOperationDel.innerHTML = "+";
                       }
                     });
+                    
                     DelSubcontr(element);
-                  });
+                  });isLoading = false
+              isLoaded = true
+              preloaderModal(isLoading,isLoaded)
               }
+              
             });
             DelSubcontr(element);
             const title = document.querySelector("#page_name").value;
@@ -460,11 +469,16 @@ function getOldSumcintract(idBill, element) {
               let useBudgetAfterUse =
                 document.getElementById("sum_adv_after_use");
               useBudgetAfterUse.value = sumOld;
-              useBudget.innerHTML = sumOld;
+            
+              var result = sumOld.toLocaleString();
+              console.log(result);
+              useBudget.innerHTML = result +" ₽";
+              // useBudget.innerHTML = sumOld;
               const slash = document.querySelector(
                 ".modal_adv_budget_not_use_slash"
               );
               slash.style.display = "block";
+              
             }
 
             let modal_add_subcontract = document.createElement("div");

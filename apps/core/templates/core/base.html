@@ -1,7 +1,6 @@
-{% load category_service %} 
-{% load adv_diff %} 
-{% load static %} 
-
+{% load category_service %}
+{% load adv_diff %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
   <head>
@@ -10,39 +9,37 @@
     <meta name="description" content="foo" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     {% include "core/includes/stylesheets.html" %}
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+          rel="stylesheet" />
     <title>111111</title>
   </head>
-
   <body>
     <div class="preloader">
-  <svg class="preloader__image" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-    <path fill="currentColor"
-      d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
-    </path>
-  </svg>
-</div>
+      <svg class="preloader__image"
+           version="1.1"
+           id="L9"
+           xmlns="http://www.w3.org/2000/svg"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           x="0px"
+           y="0px"
+           viewBox="0 0 100 100"
+           enable-background=" 0 0 0 0"
+           xml:space="preserve">
+        <path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
+        </path>
+      </svg>
+    </div>
     <div class="wrapper">
-
       {% include "core/includes/header_menu.html" %}
-
       <main class="main">
         {% block content %}
-      
-        
-        
-        {% endblock content %}</main>
-
-      <footer class="footer"></footer>
+        {% endblock content %}
+      </main>
+      <footer class="footer">
+      </footer>
     </div>
     {% include "core/includes/scripts.html" %}
   </body>

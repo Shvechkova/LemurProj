@@ -1,17 +1,21 @@
 <header class="header">
-  <nav>
+
     <ul class="header_nav">
       <li class="header_nav-link">
         {% url 'service:index' as the_url %} 
-        {% if request.get_full_path == the_url %}
+  
+        {% if request.get_full_path == the_url or type_url ==  "service" %}
+  
         <span class="menu-active">Услуги</span> 
         {% else %}
         <a class="" href="{% url 'service:index' %}" >Услуги</a
         >
         {% endif %} 
       </li>
+
       <li class="header_nav-link">
         {% url 'core:home' as the_url %} 
+        
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Внешние счета</span> 
         {% else %}
@@ -46,7 +50,7 @@
         >
         {% endif %} 
       </li>
-     <li class="header_nav-link">
+     {% comment %} <li class="header_nav-link">
         {% url 'core:home' as the_url %} 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Сотрудники</span> 
@@ -54,7 +58,7 @@
         <a class="" href="{% url 'core:home' %}" >Сотрудники</a
         >
         {% endif %} 
-      </li>
+      </li> {% endcomment %}
     </ul>
   </nav>
 </header>

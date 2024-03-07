@@ -7,15 +7,27 @@
     }, 100);
   }
 
-// const opetaionEntryEmpty = document.querySelectorAll(".operation_entry_bank")
 
-// if(opetaionEntryEmpty){
-//   opetaionEntryEmpty.forEach((item)=>{
-//     console.log(item.firstChild)
-//     console.log(item.childNodes(".operation_entry_bank_true"))
 
-//   })
-// }
+// прелоадер для модалки
+isLoading = false
+isLoaded = true
+function preloaderModal(isLoading,isLoaded){
+  if(isLoading == true){
+    document.body.classList.add('loaded_hiding');
+    document.body.classList.remove('loaded');
+    const preloader = document.querySelector(".preloader")
+    preloader.style.opacity = "1"
+  }
+  if(isLoaded == true){
+    document.body.classList.remove('loaded_hiding');
+    document.body.classList.add('loaded');
+    const preloader = document.querySelector(".preloader")
+    preloader.style.opacity = "0"
+  }
+
+}
+preloaderModal(isLoading,isLoaded)
 
 function modal(elem, buttonAdd) {
   
@@ -24,12 +36,16 @@ function modal(elem, buttonAdd) {
 
   const nameclose = "." + "modal_close" + "_" + elem + "";
   console.log(nameclose);
-  // let modalClose = document.querySelector(".modal_close");
-  // modalClose.addEventListener("click", (event) => {
-  //   modal_windows.classList.remove("modal-active");
-  //   return false;
-  // });
+//  закрытие по общему контейнеру
+  let modalWrapper = document.querySelector(".modal-wrapper");
+  let modalWrapperWind = document.querySelector(".modal-items");
 
+  modal_windows.addEventListener("click", (event) => {
+    if (event.target == modal_windows || !modalWrapper) {
+      modal_windows.classList.remove("modal-active");
+      modal_windows.replaceWith(modal_windows.cloneNode(true));
+    }
+  });
   let modalCloseAll = document.querySelector(nameclose);
   console.log(modalCloseAll);
   modalCloseAll.addEventListener("click", (event) => {
@@ -102,6 +118,50 @@ function validate(elem, btn) {
   if (selectYes || selectYes) {
     validateClass = true;
   }
+
+  return validateClass;
+}
+
+function validateRadio(elem, btn, wrapOne, wrapTwo) {
+  const modalWindows = document.getElementById(elem);
+  const wrapOneElem = document.querySelector(wrapOne);
+  const wrapTwoElem = document.querySelector(wrapTwo);
+  const allInputModalOne = wrapOneElem.querySelectorAll("input[type='radio']");
+  const allInputModalTwo = wrapTwoElem.querySelectorAll("input[type='radio']");
+
+  const add_contract = document.querySelector(btn);
+  let inputYes;
+ let inputYesTwo;
+  let validateClass = false;
+  allInputModalOne.forEach((elInput) => {
+ 
+    if (elInput.checked == false) {
+      
+      add_contract.disabled = true;
+        // throw false;
+   
+    } else {
+      add_contract.disabled = false;
+      inputYes = true;
+    }
+  });
+
+  allInputModalTwo.forEach((elInput) => {
+
+    if (elInput.checked == false) {
+      add_contract.disabled = true;
+       
+   
+    } else {
+      add_contract.disabled = false;
+      inputYesTwo = true;
+    }
+  });
+  if (inputYes && inputYesTwo) {
+    validateClass = true;
+    add_contract.disabled = false;
+  }
+  console.log(validateClass)
 
   return validateClass;
 }

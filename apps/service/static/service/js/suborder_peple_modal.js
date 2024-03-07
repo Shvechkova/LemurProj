@@ -6,6 +6,8 @@ if (addOperationOutPeople) {
   addOperationOutPeople.forEach((element) => {
     element.addEventListener("click", () => {
       let elem = element.getAttribute("data-name");
+      document.getElementById("date-operation_out_other").valueAsDate =
+        new Date();
 
       const add_operation = document.querySelector(".operation_add_out_other");
       modal(elem, add_operation);
@@ -30,6 +32,17 @@ if (addOperationOutPeople) {
       const nameElemOtherSum = "other_sum_namber_out_other";
       const nameRadioOtherSum = "other_sum_out_other";
       ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
+
+      // валидация радиокнопок
+      const modalWindows = document.getElementById(elem);
+      modalWindows.addEventListener("input", () => {
+        validateRadio(
+          elem,
+          ".operation_add_out_other",
+          ".input_bank_wrap_one_other",
+          ".input_bank_wrap_other"
+        );
+      });
     });
   });
 }
@@ -37,16 +50,6 @@ if (addOperationOutPeople) {
 function FetchInfosubsPeople(element, elem) {
   let idBill = element.getAttribute("data-bill-month-id");
   const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
-  //   let operationIdvalue = element.getAttribute("data-id-sub");
-  //   const idOperationrepl = operationIdvalue.replace(
-  //     /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
-  //     ""
-  //   );
-  //   let data = new FormData();
-  //   let object = {
-  //     id: idOperationrepl,
-  //   };
-  //   const dataJson = JSON.stringify(object);
 
   fetch(endpoint, {
     method: "GET",
@@ -81,6 +84,16 @@ function FetchInfosubsPeople(element, elem) {
                     nameCat = item.name;
                   }
                 });
+                const modalSumCtr = document.querySelector(
+                  ".sum_operation_suborders_outs_other"
+                );
+
+                const modalsunordrt_operation_all = document.querySelector(
+                  ".sum_operation_suborders_all_other"
+                );
+                modalSumCtr.style.display = 'none'
+                modalsunordrt_operation_all.style.display = 'none'
+                modalsunordrt_operation_all.nextElementSibling.style.display = 'none'
 
                 const historySuborderWrap =
                   document.querySelector(".history_suborder");
@@ -89,23 +102,24 @@ function FetchInfosubsPeople(element, elem) {
                 historySuborderItem.className = "historySuborder_item";
                 historySuborderWrap.append(historySuborderItem);
 
-                let historySuborderName = document.createElement("p");
+                let historySuborderBtn = document.createElement("div");
+                historySuborderBtn.className = "previous_operation_pay";
+                historySuborderItem.append(historySuborderBtn);
+
+                let historySuborderName = document.createElement("h3");
                 historySuborderName.className = "history_suborder_name";
                 historySuborderItem.append(historySuborderName);
                 historySuborderName.innerHTML = nameCat;
 
-                let historySuborderAmount = document.createElement("p");
+                let historySuborderAmount = document.createElement("h3");
                 historySuborderAmount.className = "history_suborder_amount";
                 historySuborderItem.append(historySuborderAmount);
-                historySuborderAmount.innerHTML = item.amount;
 
-                let historySuborderBtn = document.createElement("button");
-                historySuborderBtn.className = "previous_operation_del";
-                historySuborderItem.append(historySuborderBtn);
-                // idCat = item.other;
-                // idSubcontr = item.id;
-                // otherAmount = item.amount;
-                // monthBill = item.month_bill;
+                var num = +item.amount;
+                var result = num.toLocaleString();
+                console.log(item)
+                historySuborderAmount.innerHTML = result + " ₽";
+
                 historySuborderBtn.setAttribute("data-id-cat", item.other);
                 historySuborderBtn.setAttribute("data-id-subcontr", item.id);
                 historySuborderBtn.setAttribute("data-id-amount", item.amount);
@@ -118,7 +132,7 @@ function FetchInfosubsPeople(element, elem) {
               }
             });
             const btnPaySubs = document.querySelectorAll(
-              ".previous_operation_del"
+              ".previous_operation_pay"
             );
 
             btnPaySubs.forEach((item) => {
@@ -169,13 +183,16 @@ function getInfoBillOperationOperOut(element) {
   modalData.innerHTML = contractData;
 
   modalNameSuborder.innerHTML = nameSumorder;
-  modalSumCtr.innerHTML = allMonthSum;
-  modalsunordrt_operation_all.innerHTML = 0;
+  modalSumCtr.innerHTML = allMonthSum + " ₽";
+  modalsunordrt_operation_all.innerHTML = 0 + " ₽";
+  if (allMonthSum != modalsunordrt_operation_all) {
+    modalSumCtr.style.color = "red";
+  }
 }
 
 function CreateSubcontractOtherOne(data, dataCategoryPeople, element, item) {
   const historySuborderWrap = document.querySelector(".history_suborder");
-  historySuborderWrap.innerHTML = ""
+  historySuborderWrap.innerHTML = "";
   let idCat;
   let idSubcontr;
   let otherAmount;
@@ -188,7 +205,7 @@ function CreateSubcontractOtherOne(data, dataCategoryPeople, element, item) {
     monthBill = item.getAttribute("data-id-month-bill");
     nameCat = item.getAttribute("data-name-cat");
   } else {
-    console.log(2);
+ 
     data.forEach((item) => {
       if (item.other != null) {
         idCat = item.other;
@@ -287,7 +304,9 @@ function AddOperationOtherOut(element, elem) {
     const commentOperation = document.getElementById(
       "operation_comment_out_other"
     ).value;
-
+    const data_select = document.getElementById(
+      "date-operation_out_other"
+    ).value;
     const form = new FormData();
     form.append("amount", sumChecked);
     form.append("comment", commentOperation);
@@ -295,10 +314,12 @@ function AddOperationOtherOut(element, elem) {
     form.append("suborder", billId);
     form.append("monthly_bill", billMonthId);
     form.append("type_operation", "out");
+    form.append("data", data_select);
+
     let object = {};
     form.forEach((value, key) => (object[key] = value));
     const dataJson = JSON.stringify(object);
-    console.log(dataJson);
+
     let csrfToken = getCookie("csrftoken");
     const endpoint = "/operations/api/operation/";
     fetch(endpoint, {
@@ -330,6 +351,16 @@ function AddOperationOtherOut(element, elem) {
 function NewOperationOutOther(element) {
   const wrapOperOther = document.querySelector(".wrapper_oper_out_other");
   let operationAllSum = wrapOperOther.getAttribute("data-id-sub-amount-id");
+  const modalSumCtr = document.querySelector(
+    ".sum_operation_suborders_outs_other"
+  );
+
+  const modalsunordrt_operation_all = document.querySelector(
+    ".sum_operation_suborders_all_other"
+  );
+  modalSumCtr.style.display = 'block'
+  modalsunordrt_operation_all.style.display = 'block'
+  modalsunordrt_operation_all.nextElementSibling.style.display = 'block'
 
   let operationIdvalue = wrapOperOther.getAttribute("data-id-sub-other");
   let st = parseInt(operationAllSum);
@@ -369,35 +400,42 @@ function NewOperationOutOther(element) {
             };
             var d = new Date(item.created_timestamp);
             const sumoperation = item.amount;
-
+            var num = +sumoperation;
+            var result = num.toLocaleString();
+            var numAll = +operationAllSum;
+            var numAllsum = numAll.toLocaleString();
+            // враппер для коментария
             let dataOperation = d.toLocaleString("ru", options);
             let prevOperationItem = document.createElement("div");
             prevOperationItem.className = "previous_operation_item";
             lastOperationWrap.append(prevOperationItem);
-
-            let prevOperationDel = document.createElement("button");
+            // кнопка удалить
+            let prevOperationDel = document.createElement("div");
             prevOperationDel.className = "previous_operation_del";
-
             prevOperationItem.append(prevOperationDel);
             prevOperationDel.setAttribute("data-id-peration", item.id);
-            prevOperationDel.innerHTML = "-";
+            prevOperationDel.innerHTML = "+";
+
+            let prevOperationiNoComm = document.createElement("div");
+            prevOperationiNoComm.className = "previous_operation_wrap";
+            prevOperationItem.append(prevOperationiNoComm);
 
             let prevOperationTitle = document.createElement("div");
             prevOperationTitle.className = "previous_operation_title";
-            prevOperationItem.append(prevOperationTitle);
+            prevOperationiNoComm.append(prevOperationTitle);
             prevOperationTitle.innerHTML =
               dataOperation +
               " - оплата " +
-              sumoperation +
-              "₽ из " +
-              operationAllSum +
+              result +
+              " ₽ из " +
+              numAllsum +
               " ₽";
-
+        
             let comment = item.comment;
 
             let prevOperationComm = document.createElement("div");
             prevOperationComm.className = "previous_operation_comment";
-            prevOperationItem.append(prevOperationComm);
+            prevOperationiNoComm.append(prevOperationComm);
             if (comment != "") {
               prevOperationComm.innerHTML = "Комментарий: " + comment;
             }
@@ -408,15 +446,34 @@ function NewOperationOutOther(element) {
           sumOperationEnded = st;
 
           const sumExpected = document.querySelector(
-            ".sum_operation_suborders_all"
+            ".sum_operation_suborders_all_other"
           );
-          sumExpected.innerHTML = sum_all - sumOperationEnded;
+
+          var t = operationAllSum - sumOperationEnded;
+         
+            const sumallred = document.querySelector(
+              ".sum_operation_suborders_outs_other"
+            );
+          if (sumOperationEnded == 0) {
+            
+            sumallred.style.color = "black";
+          }
+          var num = +t;
+          var result = num.toLocaleString();
+
+          sumExpected.innerHTML = result + " ₽";
+          var num = +operationAllSum;
+          var result = num.toLocaleString();
+
+          sumallred.innerHTML = result + " ₽"
+
+
           const sumChekedWrap = document.getElementById("sum_cheked_out_other");
           sumChekedWrap.setAttribute("data-step", "2");
           sumChekedWrap.innerHTML =
-            '<p>Сколько оплатили?</p><input checked type="radio" id="100_out_other" name="sum" value="' +
+            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap_other"><input checked type="radio" id="100_out_other" name="sum" value="' +
             sumOperationEnded +
-            '" /><label for="100_out_other">Остаток</label><input type="radio" id="other_sum_out_other" name="sum" value="1" /><label for="other_sum_out_other">Другая сумма</label><input data-validate="0" type="number" id="other_sum_namber_out_other" name="" value="" />';
+            '" /><label for="100_out_other">Остаток</label><input type="radio" id="other_sum_out_other" name="sum" value="1" /><input data-validate="0" type="number" id="other_sum_namber_out_other" name="" value="" placeholder="Другая сумма"  /></div>';
 
           const nameElemOtherSum = "other_sum_namber_out_other";
           const nameRadioOtherSum = "other_sum_out_other";
@@ -429,7 +486,7 @@ function NewOperationOutOther(element) {
           const sumChekedWrap = document.getElementById("sum_cheked_out_other");
           sumChekedWrap.setAttribute("data-step", "1");
           sumChekedWrap.innerHTML =
-            '<p>Сколько оплатили?</p><input  type="radio" id="100_out_other" name="sum" value="100" /><label for="100_out_other">100%</label><input type="radio" id="50_out_other" name="sum" value="50" /><label for="50_out_other">50%</label><input type="radio" id="other_sum_out_other" name="sum" value="1" /><label for="other_sum_out_other">Другая сумма</label><input data-validate="0"  type="number" id="other_sum_namber_out_other" name="" value="" />';
+            '<h3>Сколько оплатили?</h3> <div class="input_bank_wrap_other"><input  type="radio" id="100_out_other" name="sum" value="100" /><label for="100_out_other">100%</label><input type="radio" id="50_out_other" name="sum" value="50" /><label for="50_out_other">50%</label><input type="radio" id="other_sum_out_other" name="sum" value="1" /><input data-validate="0"  type="number" id="other_sum_namber_out_other" name="" value="" placeholder="Другая сумма" /></div>';
 
           const nameElemOtherSum = "other_sum_namber_out_other";
           const nameRadioOtherSum = "other_sum_out_other";
@@ -446,7 +503,7 @@ function DelOperationOutOther(element) {
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
       idOperation = item.getAttribute("data-id-peration");
-      console.log(idOperation);
+  
       endpoint = "/operations/api/operation/" + idOperation + "/";
 
       item.parentElement.remove();
