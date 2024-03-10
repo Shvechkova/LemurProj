@@ -32,7 +32,7 @@ if (addOperationEntry) {
       newOperationEntry(element, elem);
 
       getInfoBillOperation(element);
-      const endpointOperation = "/operations/api/operation/";
+      const endpointOperation = "/operations/api/operation/operation_save/";
       addFetchOperationEntry(element, endpointOperation, elem);
 
       // валидация радиокнопок

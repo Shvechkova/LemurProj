@@ -23,6 +23,7 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
     serializer_class = ServicesMonthlyBillSerializer
     http_method_names = ["get", "post", "put", 'delete']
 
+    # список счетов
     @action(detail=False, methods=["post"],  url_path=r"new_month")
     def subcontract_list(self, request):
         data = request.data
@@ -31,7 +32,7 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
             service=data['service'], created_timestamp__year=data['year'], created_timestamp__month=data['month'])
 
         return Response()
-    
+
     # @action(detail=False, methods=["post", "put"], url_path=r"upd_subs")
     # def upd_contracts(
     #     self,
@@ -40,7 +41,7 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
     #     **kwargs,
     # ):
     #     data = request.data
-      
+
     #     for contracts in data:
     #         id = contracts["id"]
     #         if id == "":
@@ -58,7 +59,6 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
     #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 class SubcontractCategoryAdvView(viewsets.ModelViewSet):
     queryset = Adv.objects.all()
     serializer_class = AdvSerializer
@@ -74,6 +74,39 @@ class SubcontractMonthView(viewsets.ModelViewSet):
     serializer_class = SubcontractMonthSerializer
     http_method_names = ["get", "post", "put", 'delete']
 
+    # прееопределенный делит что бы чекинить суммы в модели
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+
+        idBill = instance.month_bill.id
+
+        billSuborders = SubcontractMonth.objects.filter(
+            month_bill=idBill)
+        bill = ServicesMonthlyBill.objects.get(id=idBill)
+  
+        if billSuborders.count() == 0:
+            bill.chekin_add_subcontr = False
+            bill.save()
+        else:
+            bill.chekin_add_subcontr = True
+            bill.save()
+            
+
+            # operation = Operation.objects.filter(
+            #     monthly_bill=idBill, type_operation='entry').aggregate(total=Sum('amount', default=0))
+
+            # if operation['total'] == billNeedSumEntry.contract_sum:
+            #     billNeedSumEntry.chekin_sum_entrees = True
+            #     billNeedSumEntry.save()
+            # else:
+            #     billNeedSumEntry.chekin_sum_entrees = False
+            #     billNeedSumEntry.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # создание субконтракта
+
     @action(detail=False, methods=["post", "put"], url_path=r"add")
     def create_subcontracts(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, many=True)
@@ -82,6 +115,7 @@ class SubcontractMonthView(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # список субкнтрактов
 
     @action(detail=False, methods=["get"], url_path=r"(?P<pk>\d+)/subcontract_li")
     def subcontract_list(self, request, pk):
@@ -89,6 +123,7 @@ class SubcontractMonthView(viewsets.ModelViewSet):
         queryset = SubcontractMonth.objects.filter(month_bill=pk)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
+    # апгрейт субконтракта
 
     @action(detail=False, methods=["post", "put"], url_path=r"upd_subs")
     def upd_contracts(
@@ -98,7 +133,7 @@ class SubcontractMonthView(viewsets.ModelViewSet):
         **kwargs,
     ):
         data = request.data
-      
+
         for contracts in data:
             id = contracts["id"]
             if id == "":

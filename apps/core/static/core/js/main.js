@@ -1,50 +1,53 @@
-
-  window.onload = function () {
-    document.body.classList.add('loaded_hiding');
-    window.setTimeout(function () {
-      document.body.classList.add('loaded');
-      document.body.classList.remove('loaded_hiding');
-    }, 100);
-  }
-
-
+window.onload = function () {
+  document.body.classList.add("loaded_hiding");
+  window.setTimeout(function () {
+    document.body.classList.add("loaded");
+    document.body.classList.remove("loaded_hiding");
+  }, 100);
+};
 
 // прелоадер для модалки
-isLoading = false
-isLoaded = true
-function preloaderModal(isLoading,isLoaded){
-  if(isLoading == true){
-    document.body.classList.add('loaded_hiding');
-    document.body.classList.remove('loaded');
-    const preloader = document.querySelector(".preloader")
-    preloader.style.opacity = "1"
+isLoading = false;
+isLoaded = true;
+function preloaderModal(isLoading, isLoaded) {
+  if (isLoading == true) {
+    document.body.classList.add("loaded_hiding");
+    document.body.classList.remove("loaded");
+    const preloader = document.querySelector(".preloader");
+    preloader.style.opacity = "1";
   }
-  if(isLoaded == true){
-    document.body.classList.remove('loaded_hiding');
-    document.body.classList.add('loaded');
-    const preloader = document.querySelector(".preloader")
-    preloader.style.opacity = "0"
+  if (isLoaded == true) {
+    document.body.classList.remove("loaded_hiding");
+    document.body.classList.add("loaded");
+    const preloader = document.querySelector(".preloader");
+    preloader.style.opacity = "0";
   }
-
 }
-preloaderModal(isLoading,isLoaded)
+preloaderModal(isLoading, isLoaded);
 
 function modal(elem, buttonAdd) {
-  
   const modal_windows = document.getElementById(elem);
   modal_windows.classList.add("modal-active");
 
   const nameclose = "." + "modal_close" + "_" + elem + "";
   console.log(nameclose);
-//  закрытие по общему контейнеру
+  //  закрытие по общему контейнеру
   let modalWrapper = document.querySelector(".modal-wrapper");
   let modalWrapperWind = document.querySelector(".modal-items");
+ 
 
   modal_windows.addEventListener("click", (event) => {
-    if (event.target == modal_windows || !modalWrapper) {
-      modal_windows.classList.remove("modal-active");
-      modal_windows.replaceWith(modal_windows.cloneNode(true));
+     let modalWrapperWind = document.querySelector(".modal-items");
+ 
+    let modalSelect = modal_windows.querySelectorAll("input[type='option']");
+    if (modalSelect){
+
     }
+      if (event.target == modal_windows || !modalWrapper || !modalSelect) {
+        console.log(event.target)
+        // modal_windows.classList.remove("modal-active");
+        // modal_windows.replaceWith(modal_windows.cloneNode(true));
+      }
   });
   let modalCloseAll = document.querySelector(nameclose);
   console.log(modalCloseAll);
@@ -55,7 +58,7 @@ function modal(elem, buttonAdd) {
   });
 }
 
-// }
+// функции завершения модального окна
 function alertSuccess(element) {
   element.querySelector(".modal-items-wrap").innerHTML = "Успех";
 }
@@ -63,6 +66,7 @@ function alertError(element) {
   element.querySelector(".modal-items-wrap").innerHTML = "Неудача, повторите";
 }
 
+// получение куки с срфс токен
 function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
@@ -74,6 +78,7 @@ function getCookie(name) {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+// валидация без радио кнопок
 function validate(elem, btn) {
   const modalWindows = document.getElementById(elem);
   const allInputModal = modalWindows.querySelectorAll("input");
@@ -103,7 +108,6 @@ function validate(elem, btn) {
   });
 
   allSelectModal.forEach((elSelect) => {
-    
     const elSelectChecked = elSelect.options[elSelect.selectedIndex].value;
     // console.log(elSelectChecked)
     if (elSelectChecked == 0 || elSelectChecked == "") {
@@ -122,6 +126,7 @@ function validate(elem, btn) {
   return validateClass;
 }
 
+// валидация если есть радио кнопок
 function validateRadio(elem, btn, wrapOne, wrapTwo) {
   const modalWindows = document.getElementById(elem);
   const wrapOneElem = document.querySelector(wrapOne);
@@ -131,15 +136,11 @@ function validateRadio(elem, btn, wrapOne, wrapTwo) {
 
   const add_contract = document.querySelector(btn);
   let inputYes;
- let inputYesTwo;
+  let inputYesTwo;
   let validateClass = false;
   allInputModalOne.forEach((elInput) => {
- 
     if (elInput.checked == false) {
-      
       add_contract.disabled = true;
-        // throw false;
-   
     } else {
       add_contract.disabled = false;
       inputYes = true;
@@ -147,11 +148,8 @@ function validateRadio(elem, btn, wrapOne, wrapTwo) {
   });
 
   allInputModalTwo.forEach((elInput) => {
-
     if (elInput.checked == false) {
       add_contract.disabled = true;
-       
-   
     } else {
       add_contract.disabled = false;
       inputYesTwo = true;
@@ -161,41 +159,10 @@ function validateRadio(elem, btn, wrapOne, wrapTwo) {
     validateClass = true;
     add_contract.disabled = false;
   }
-  console.log(validateClass)
-
   return validateClass;
 }
 
-// function openLoginModal() {
-//   // открытие модалки
-//   const modalLogin = document.getElementById("modal-login");
-//   const modalBack = document.querySelector(".modal-section");
-//   modalBack.classList.add("modal-section--active");
-//   document.body.style.overflow = "hidden";
-//   const timerId = setTimeout(() => {
-//     modalLogin.classList.add("modal--active");
-//   }, 200);
-//   // закрытие модалки
-//   let modalCloseLogin = document.querySelector(".modal-content__close__login");
-//   modalCloseLogin.addEventListener("click", (event) => {
-//     modalLogin.classList.remove("modal--active");
-//     modalBack.classList.remove("modal-section--active");
-//     document.body.style.overflow = "";
-//   });
-//   //закрытие по общему контейнеру
-//   let modalWrapperLogin = document.querySelector(".modal-wrapper-login");
-//   let modalContentWrapperLogin = document.querySelector(
-//     ".modal-content-wrap-login"
-//   );
-//   let modalContentLogin = document.querySelector(".modal-content-login");
-//   modalWrapperLogin.addEventListener("click", (event) => {
-//     if (event.target == modalContentLogin || !modalContentWrapperLogin) {
-//       modalLogin.classList.remove("modal--active");
-//       modalBack.classList.remove("modal-section--active");
-//       document.body.style.overflow = "";
-//     }
-//   });
-// }
+
 
 // класс конструктор инпутов
 class Input {

@@ -9,11 +9,10 @@
   {% include "service/includes/modal/operation.html" %}
   {% include "service/includes/modal/operation_out.html" %}
   {% include "service/includes/modal/add_contract_change.html" %}
-
-
   <input type="hidden" id="page_name" value="{{ title }}" />
-  {% comment %} <button class="button new_month" data-cat-service="{{ title }}" data-month="{{ now|date:'m' }}" data-year="{{ now|date:'Y' }}">копировать месяц</button>
-  <div class="open-modal btn_month_bill"
+  <input type="hidden" id="page_name_abc" value="{{ title_name }}" />
+<button class="button new_month" data-cat-service="{{ title }}" data-month="{{ now|date:'m' }}" data-year="{{ now|date:'Y' }}">копировать месяц</button>
+    {% comment %} <div class="open-modal btn_month_bill"
        data-name="modal-add-bill"
        data-cat-service="{{ title }}">+</div>  {% endcomment %}
   <div class="bill-sorting-date" data-sort-month="1" bill-sorting-date="1">
@@ -23,6 +22,13 @@
     <div class = "btn_sorting_month" data-sort-month="3">3 месяца</div>
     <div class = "btn_sorting_month" data-sort-month="12">Год</div>
     <div class = "btn_sorting_month" data-sort-month="999">Все время</div>
+  </div>
+  <div class="bill-sorting-operation"
+       data-sort-operation="0"
+       bill-sorting-oper="0">
+    <h3>Сортирoвка</h3>
+    <div class = "btn_sorting_operation" data-sort-operation="1">долги</div>
+    <div class = "btn_sorting_operation" data-sort-operation="2">неоплаченные субподряды</div>
   </div>
   {% comment %} {% regroup ordered_bill by created_timestamp|date:"M Y" as ordered_bill_list %}
      <ul>
@@ -49,12 +55,12 @@
                 </div>
                 <div class="bill_w-120">
                   <h3>Счёт</h3>
-                
-                  {% if bill.created_timestamp|date:'M Y' == now|date:'M Y'  %} <button class="open-modal btn_month_bill"
-                  data-name="modal-add-bill"
-                  data-month="0"
-                  data-cat-service="{{ title }}">+</button>{% endif %}
-                 
+                  {% if bill.created_timestamp|date:'M Y' == now|date:'M Y' %}
+                    <button class="open-modal btn_month_bill"
+                            data-name="modal-add-bill"
+                            data-month="0"
+                            data-cat-service="{{ title }}">+</button>
+                  {% endif %}
                 </div>
                 {% if title == 1 %}
                   <div class="bill_w-120">
@@ -202,20 +208,16 @@
                   <button class=" btn_month_bill btn_month_bill-del "
                           data-name=""
                           data-id-bill="{{ bill.id }}"
-                          
                           data-month="0"
                           data-cat-service="{{ title }}">+</button>
                 </div>
                 <div data-name="modal-change-bill"
-             
-                      data-id-bill="{{ bill.id }}"
-                      
-                      data-cat-service="{{ title }}"
-                      data-bill-month-client-name="{{ bill.client.client_name }}"
-                      data-bill-month-name="{{ bill.contract_number }}"
-                      data-bill-month-sum="{{ bill.contract_sum }}"
-                      data-bill-month-sum-adv="{{ bill.adv_all_sum }}"
-                  
+                     data-id-bill="{{ bill.id }}"
+                     data-cat-service="{{ title }}"
+                     data-bill-month-client-name="{{ bill.client.client_name }}"
+                     data-bill-month-name="{{ bill.contract_number }}"
+                     data-bill-month-sum="{{ bill.contract_sum }}"
+                     data-bill-month-sum-adv="{{ bill.adv_all_sum }}"
                      class="change_btn change_btn_bill  {% if forloop.last %}last-loop-modal-add-client{% endif %}">
                   <svg width="16"
                        height="16"
@@ -226,9 +228,10 @@
                     <path d="M6.98755 10.222H5.79512V8.88838M5.39236 9.2873L10.4677 4.2604C10.8182 3.9132 11.3865 3.9132 11.7371 4.2604C12.0876 4.6076 12.0876 5.17052 11.7371 5.51772L6.58694 10.6188C6.34635 10.8571 6.22606 10.9762 6.09289 11.0786C5.9746 11.1696 5.84886 11.2507 5.71696 11.321C5.56848 11.4001 5.40978 11.4608 5.09238 11.5822L4 12L4.35147 10.9555C4.47142 10.5991 4.5314 10.4208 4.61482 10.2544C4.68891 10.1066 4.77668 9.96592 4.87701 9.83416C4.98999 9.68583 5.12411 9.553 5.39236 9.2873Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </div>
-              </div> 
+              </div>
               <div class="bill-month-client-counter{% if forloop.last %} last-loop-btn {% endif %}">
-                {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}.
+                {% if forloop.counter < 10 %}0{% endif %}
+                {{ forloop.counter }}.
               </div>
               <div class="bill-month-client-name bill_w-120">{{ bill.client.client_name }}</div>
               <div class="bill-month-client-contract bill_w-120">{{ bill.contract_number }}</div>
@@ -330,39 +333,27 @@
                       {% for name_sabs in suborders_name_no_adv %}
                         {% if name_sabs.month|date:'M Y' == created_timestamp.grouper %}
                           {% if name_sabs.other_id__name  == other_tot.name %}
-                          {% if other_tot.id_amount == 0 %}
-                          <div class="bill_w-80 mr_p_oper ">
-                            <div class="fsz15 "
-                                
-                                 data-id-sub-amount="{{ other_tot.id_amount }}">{{ other_tot.id_amount }} ₽</div>
-                          </div>
-                          {% else %}
-                          <div class="bill_w-80 mr_p_oper ">
-                            <div class="suborder_out_operation fsz15 "
-                                 data-sub-type="1"
-                                 data-name="modal-suborder_out_operation"
-                                 data-bill-month-id="{{ bill.id }}"
-                                 data-bill-month-adv="{{ bill.diff_sum }}"
-                                 data-bill-month-client-name="{{ bill.client.client_name }}"
-                                 data-bill-month-name="{{ bill.contract_number }}"
-                                 data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}"
-                                 data-name-sub=" {{ other_tot.name }}"
-                                 data-id-sub="{{ other_tot.id_other }}"
-                                 data-id-sub-amount="{{ other_tot.id_amount }}">{{ other_tot.id_amount }} ₽</div>
-                          </div>
-                          {% endif %}
+                            {% if other_tot.id_amount == 0 %}
+                              <div class="bill_w-80 mr_p_oper ">
+                                <div class="fsz15 "  data-id-sub-amount="{{ other_tot.id_amount }}">{{ other_tot.id_amount }} ₽</div>
+                              </div>
+                            {% else %}
+                              <div class="bill_w-80 mr_p_oper ">
+                                <div class="suborder_out_operation fsz15 "
+                                     data-sub-type="1"
+                                     data-name="modal-suborder_out_operation"
+                                     data-bill-month-id="{{ bill.id }}"
+                                     data-bill-month-adv="{{ bill.diff_sum }}"
+                                     data-bill-month-client-name="{{ bill.client.client_name }}"
+                                     data-bill-month-name="{{ bill.contract_number }}"
+                                     data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}"
+                                     data-name-sub=" {{ other_tot.name }}"
+                                     data-id-sub="{{ other_tot.id_other }}"
+                                     data-id-sub-amount="{{ other_tot.id_amount }}">{{ other_tot.id_amount }} ₽</div>
+                              </div>
+                            {% endif %}
                             {% comment %} <div class="bill_w-80 mr_p_oper ">
-                              <div class="suborder_out_operation fsz15 "
-                                   data-sub-type="1"
-                                   data-name="modal-suborder_out_operation"
-                                   data-bill-month-id="{{ bill.id }}"
-                                   data-bill-month-adv="{{ bill.diff_sum }}"
-                                   data-bill-month-client-name="{{ bill.client.client_name }}"
-                                   data-bill-month-name="{{ bill.contract_number }}"
-                                   data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}"
-                                   data-name-sub=" {{ other_tot.name }}"
-                                   data-id-sub="{{ other_tot.id_other }}"
-                                   data-id-sub-amount="{{ other_tot.id_amount }}">{{ other_tot.id_amount }} ₽</div>
+                              <div class="suborder_out_operation fsz15 " data-sub-type="1" data-name="modal-suborder_out_operation" data-bill-month-id="{{ bill.id }}" data-bill-month-adv="{{ bill.diff_sum }}" data-bill-month-client-name="{{ bill.client.client_name }}" data-bill-month-name="{{ bill.contract_number }}" data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}" data-name-sub=" {{ other_tot.name }}" data-id-sub="{{ other_tot.id_other }}" data-id-sub-amount="{{ other_tot.id_amount }}">{{ other_tot.id_amount }} ₽</div>
                             </div> {% endcomment %}
                           {% endif %}
                         {% endif %}
@@ -553,7 +544,7 @@
                   </div>
                   <div class="suborder_title-bg-result">
                     <div class="bill_w-120-result bill_w-120-result-upd">
-                 <!-- ведение-->
+                      <!-- ведение-->
                       <h3>{{ total_months.diff_sum }} ₽</h3>
                       <div class="elem16"></div>
                     </div>
@@ -572,16 +563,14 @@
                       {% endfor %}
                       {% for obj_suborder_others in obj_suborder_other %}
                         {% for suborder_other in obj_suborder_others %}
-               
                           {% if suborder_other.month|date:'M Y' == created_timestamp.grouper %}
                             <div class="title-bill_w-80-result fsz15 ">
                               <h4>{{ suborder_other.total_amount }} ₽</h4>
-                          
                             </div>
                           {% else %}
                             <div class="title-bill_w-80-result fsz15 ">
                               <h4>0 ₽</h4>
-                            </div> 
+                            </div>
                           {% endif %}
                         {% empty %}
                           <div class="title-bill_w-80-result fsz15 ">

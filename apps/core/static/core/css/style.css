@@ -660,7 +660,7 @@ input[type="date"]:before {
   margin-left: -20px;
 }
 
-.btn_month_bill  {
+.btn_month_bill {
   margin-left: 5px;
   width: 16px;
   height: 16px;
@@ -674,7 +674,7 @@ input[type="date"]:before {
   font-size: 25px;
   font-weight: 500;
 }
-.btn_month_bill-del{
+.btn_month_bill-del {
   background: #ff0404;
 }
 
@@ -1157,10 +1157,16 @@ input[type="radio"]:checked {
 .bill-sorting-date {
   display: flex;
   gap: 20px;
+  margin-top: 66px;
+}
+.bill-sorting-operation {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .bill-sorting-date h3 {
-  margin-right: 40px;
+  margin-right: 83px;
 }
 .btn_sorting_month {
   border-bottom: 1px solid transparent;
@@ -1174,6 +1180,23 @@ input[type="radio"]:checked {
 .active_sorting {
   border-color: #000;
 }
+
+.bill-sorting-operation h3 {
+  margin-right: 40px;
+}
+.btn_sorting_operation {
+  border-bottom: 1px solid transparent;
+}
+
+.btn_sorting_operation:hover {
+  border-color: #000;
+  cursor: pointer;
+}
+
+.active_sorting_oper {
+  border-color: #000;
+}
+
 .change_btn_bill {
   left: 48px;
   opacity: 0;
@@ -1181,7 +1204,6 @@ input[type="radio"]:checked {
 }
 
 .change_btn_bill:hover {
-
   opacity: 1;
 }
 
@@ -1195,49 +1217,48 @@ input[type="radio"]:checked {
   margin-top: 34px;
 }
 
-.month_bill{
+.month_bill {
   display: flex;
   gap: 10px;
   align-items: flex-end;
 }
-.service_input_wrap h3{
+.service_input_wrap h3 {
   margin-left: 10px;
 }
 
-.client_additional-contract_add, .client-contract_change{
+.client_additional-contract_add,
+.client-contract_change {
   width: 44px;
-    height: 44px;
-    background: #169e00;
-    border-radius: 5px;
-    font-weight: 700;
-    font-size: 20px;
-    color: #fff;
-    border: none;
+  height: 44px;
+  background: #169e00;
+  border-radius: 5px;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  border: none;
 }
 
-.client_additional-contract_add:disabled, .client-contract_change:disabled{
-  
+.client_additional-contract_add:disabled,
+.client-contract_change:disabled {
   background: #c9c9c9;
-  
 }
 
-.suborder_out_operation_people{
+.suborder_out_operation_people {
   cursor: pointer;
 }
 
-.historySuborder_item{
+.historySuborder_item {
   display: flex;
   gap: 20px;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.previous_operation_pay{
+.previous_operation_pay {
   border: none;
-    border-radius: 5px;
-    color: #fff;
-    padding: 10px 19px;
-    background-color: #000000;
-    cursor:pointer;
-   
+  border-radius: 5px;
+  color: #fff;
+  padding: 10px 19px;
+  background-color: #000000;
+  cursor: pointer;
 }

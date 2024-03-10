@@ -37,7 +37,7 @@ if (addOperationOut) {
       newOperationOut(element, elem);
       // получение старых операций
 
-      const endpointOperation = "/operations/api/operation/";
+      const endpointOperation = "/operations/api/operation/operation_out/";
       addFetchOperationOut(element, endpointOperation, elem);
 
       // валидация радиокнопок

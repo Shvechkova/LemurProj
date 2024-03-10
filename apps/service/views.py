@@ -32,6 +32,8 @@ from rest_framework import status
 
 from apps.service.serializers import ServiceSerializer
 
+# страница сервис главная
+
 
 def index(request):
     title = "Услуги"
@@ -40,8 +42,11 @@ def index(request):
     }
     return render(request, "service/service.html", context)
 
+# страница одного сервиса
+
 
 def service_one(request, slug):
+    # общая функция кешировани
     def loc_mem_cache(key, function, timeout=300):
         cache_data = cache.get(key)
         if not cache_data:
@@ -49,6 +54,7 @@ def service_one(request, slug):
             cache.set(key, cache_data, timeout)
         return cache_data
 
+    # все сервисы
     def service_cache():
         def cache_function():
             service = Service.objects.all()
@@ -65,8 +71,20 @@ def service_one(request, slug):
     else:
         month = '1'
 
+    # куки для установки сортировки operation
+    sort_operation = "id"
+
+    if request.COOKIES.get('sortOper'):
+        sort_operation_op = request.COOKIES["sortOper"]
+        if sort_operation_op == '1':
+            sort_operation = 'chekin_sum_entrees'
+
+        if sort_operation_op == '2':
+            sort_operation = "chekin_sum_adv"
+
     category_service = Service.objects.get(name=slug)
     now = datetime.datetime.now()
+    print(now)
     year = now.year
 
     # выбор периода сортировки
@@ -93,40 +111,30 @@ def service_one(request, slug):
     elif month == '999':
         old_month = 1
         year = 1990
-
-    # bill_now_mohth = (
-    #     ServicesMonthlyBill.objects.filter(service=category_service)
-    #     .annotate(month=TruncMonth("created_timestamp"))
-    #     .filter(created_timestamp__year__gte=year, created_timestamp__month__gte=old_month)
-    #     .select_related("client").order_by("-month"))
-
-    def bill_month_cache():
-        def cache_function():
-            bill_now_mohth11 = (ServicesMonthlyBill.objects.filter(service=category_service).annotate(month=TruncMonth("created_timestamp")).filter(
-                created_timestamp__year__gte=year, created_timestamp__month__gte=old_month).select_related("client").order_by("-month"))
-            return bill_now_mohth11
-
-        return loc_mem_cache('bill_now_mohth', cache_function, 2)
-    bill_now_mohth = bill_month_cache()
+    # все счета
+    bill_now_mohth = (
+        ServicesMonthlyBill.objects.filter(service=category_service)
+        .annotate(month=TruncMonth("created_timestamp"))
+        .filter(created_timestamp__year__gte=year, created_timestamp__month__gte=old_month)
+        .select_related("client").order_by("-month", sort_operation))
+    # навзнаия всех типов субподрядов адв
 
     def suborders_name_cache():
         def cache_function():
             suborders_name = Adv.objects.all()
-
             return suborders_name
 
         return loc_mem_cache('suborders_name', cache_function, 200)
     suborders_name = suborders_name_cache()
-    # suborders_name = Adv.objects.all()
 
+    # навзнаия всех типов субподрядов НЕ АДВ
     suborders_name_no_adv = SubcontractMonth.objects.filter(
         month_bill__service=category_service,
         created_timestamp__year__gte=year,
         created_timestamp__month__gte=old_month, other__isnull=False
     ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total=Sum('amount', default=0)).values("other_id__name", "other_id__id", "month", 'total').order_by("other").distinct()
 
-    
-    
+    # тотал суммы запланированные
     total_month = ServicesMonthlyBill.objects.filter(
         service=category_service,
     ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(contract_sum=(
@@ -138,6 +146,7 @@ def service_one(request, slug):
     )
     )
 
+    # все операции с филтром по банкам
     operation = Operation.objects.filter(
         monthly_bill__service=category_service,
         data__year__gte=year,
@@ -150,24 +159,8 @@ def service_one(request, slug):
         Sum('amount', filter=Q(bank=3), default=0)
     )
     )
-    # def oper_total():
-    #     def cache_function_total():
-    #         total_month = ServicesMonthlyBill.objects.filter(
-    #     service=category_service,
-    # ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(contract_sum=(
-    #     Sum('contract_sum', default=0)
-    # ), adv_all_sum=(
-    #     Sum('adv_all_sum', default=0)
-    # ), diff_sum=(
-    #     Sum('diff_sum', default=0)
-    # )
-    # )
 
-    #         return total_month
-
-    #     return loc_mem_cache('operation', cache_function_total, 2)
-    # total_month = oper_total()
-
+    # массив со всеми операциями и разницами сумм
     diff_sum_oper = []
     for x in range(len(total_month)):
         obj = {}
@@ -203,11 +196,7 @@ def service_one(request, slug):
     obj_suborder_adv = []
     obj_suborder_other = []
 
-    # if slug == 'ADV':
-    #     suborders_name_item = suborders_name
-    # else:
-    #     suborders_name_item = suborders_name_no_adv
-
+    # тотал для субордера  адв
     if slug == 'ADV':
         suborder_total_other = SubcontractMonth.objects.filter(
             month_bill__service=category_service,
@@ -227,6 +216,7 @@ def service_one(request, slug):
 
             obj_suborder_adv.append(suborder_total)
 
+    # тотал для субордера не адв
     else:
         suborder_total_other = SubcontractMonth.objects.filter(
             month_bill__service=category_service,
@@ -248,8 +238,6 @@ def service_one(request, slug):
 
         for subs_item in suborders_name_no_adv:
             name = {
-                # "name_adv": subs_item['other_id__name'],
-                # "id_adv": subs_item['other_id__id'],
             }
             suborder_total = SubcontractMonth.objects.filter(
                 month_bill__service=category_service,
@@ -257,24 +245,21 @@ def service_one(request, slug):
                     'other_id__id']
             ).annotate(month=TruncMonth('created_timestamp')).values('month', "amount").values("other_id__name", "other_id__id", "month", 'amount').aggregate(total_amount=Sum('amount'))
 
-            # name['total_amount'] = suborder_total['total_amount']
-            # name['month'] = suborder_total['month']
-            # name['other_id__name'] = suborder_total['other_id__name']
-            # obj_suborder_adv.append(name)
-            # print(subs_item)
+    # для отображения активно дизайна на категории
     type_url = "service"
     title = category_service.id
+    title_name = category_service.name
+
+    # контекст на страницу
     context = {
         "title": title,
+        "title_name": title_name,
         "type_url": type_url,
         "category_service": category_service,
-
         "bills": bill_now_mohth,
         "now": now,
         "suborders_name": suborders_name,
-
         "obj_suborder_adv": obj_suborder_adv,
-        # "suborder_total_other": suborder_total_other,
         "suborders_name_no_adv": suborders_name_no_adv,
         "operation": operation,
         "total_month": total_month,
@@ -283,7 +268,10 @@ def service_one(request, slug):
         "service": service
 
     }
+
     return render(request, "service/one_service.html", context)
+
+# функция копирования в новый месяц
 
 
 def new_month(request):
@@ -301,9 +289,19 @@ def new_month(request):
 
     for old_bill in bill_now_old:
         subcontr_old = SubcontractMonth.objects.filter(month_bill=old_bill.id)
+        
 
         new_bill = old_bill
         new_bill.pk = None
+        old_bill_name = old_bill.contract_number
+        new_bill.chekin_sum_entrees = False
+        new_bill.chekin_sum_adv = False
+        # name_bill = old_bill_name.split('/')
+        # print(name_bill[0])
+        new_name_bill = old_bill.service.name + \
+            "/" + str(now.year)+"-" + str(now.month)
+        new_bill.contract_number = new_name_bill
+
         new_bill.save()
         if subcontr_old.exists():
             for subs_old in subcontr_old:
@@ -324,6 +322,7 @@ def new_month(request):
     return render(request, "service/service.html", context)
 
 
+# юрина функция кеша
 # from django.core.cache import cache
 
 # def loc_mem_cache(key, function, timeout=300):
@@ -334,8 +333,8 @@ def new_month(request):
 #     return cache_data
 
 
-def favorite_list(self):
-    def cache_function():
-        return Favorite.objects.filter(user=self)
+# def favorite_list(self):
+#     def cache_function():
+#         return Favorite.objects.filter(user=self)
 
-    return loc_mem_cache('user_favorite_list_' + str(self.id), cache_function, 2)
+#     return loc_mem_cache('user_favorite_list_' + str(self.id), cache_function, 2)
