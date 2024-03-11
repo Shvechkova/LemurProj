@@ -1,4 +1,3 @@
-
 // // установка скрытия раскрытия блока в зависмости от даты клика кнопки
 // const shrinkItem = document.querySelectorAll(".btn_month_bill-shrink");
 // if (shrinkItem) {
@@ -85,11 +84,11 @@
 //   });
 // }
 
-
 // установка скрытия раскрытия блока в зависмости от даты клика кнопки
 const shrinkItem = document.querySelectorAll(".btn_month_bill-shrink");
 if (shrinkItem) {
-  shrinkItem.forEach((element, i) => {
+  shrinkItem.forEach((element, i) => { 
+    let shrink = [];
     element.addEventListener("click", () => {
       const itemShrinkName = element.getAttribute("data-created-btn");
       const itemShrink = document.querySelectorAll(
@@ -97,81 +96,122 @@ if (shrinkItem) {
       );
       const dataShrinkType = element.getAttribute("data-btn-type-shrink");
 
-      itemShrink.forEach((elem) => {
+      const dateShrinkElem = {
+       
+      };
+     
+      itemShrink.forEach((elem ) => {
+        const dataCreatedShrink = elem.getAttribute("data-created");
         const dataShrink = elem.getAttribute("data-shrink");
         const dataShrinkItemType = elem.getAttribute("data-type-shrink");
 
-        if (dataShrinkType == dataShrinkItemType) {
+        if (
+          dataShrinkType == dataShrinkItemType &&
+          dataCreatedShrink == itemShrinkName
+        ) {
+         
           if (dataShrink === "none") {
             elem.setAttribute("data-shrink", "block");
             element.setAttribute("data-btn-deg", "0");
             element.setAttribute(`data-btn-deg-${dataShrinkItemType}`, "0");
+            let btndeg = 'data-btn-deg-'+ dataShrinkItemType;
+  
+   
+            const shrinkElemToDate = {
+              "date": dataShrinkItemType,
+              "type": dataShrinkItemType,
+              "data-shrink": "block",
+              btndeg: 0,
+            };
+     
+            dateShrinkElem[dataCreatedShrink] = shrinkElemToDate
+            
+            
+            // sessionStorage.getItem("shrink")
+            // localStorage.setItem("shrink", JSON.stringify(shrink));
 
-            sessionStorage.setItem(dataShrinkItemType, "block");
-            sessionStorage.setItem("stateShrink", "block");
-            sessionStorage.setItem("elemShrink", itemShrinkName);
-            sessionStorage.setItem(`data-btn-deg-${dataShrinkItemType}`, "0");
+            // sessionStorage.setItem(dataShrinkItemType, "block");
+            // sessionStorage.setItem("stateShrink", "block");
+            // sessionStorage.setItem("elemShrink", itemShrinkName);
+            // sessionStorage.setItem(`data-btn-deg-${dataShrinkItemType}`, "0");
           } else {
             elem.setAttribute("data-shrink", "none");
             element.setAttribute(`data-btn-deg-${dataShrinkItemType}`, "180");
 
-            sessionStorage.setItem(dataShrinkItemType, "none");
-            sessionStorage.setItem("stateShrink", "none");
-            sessionStorage.setItem("elemShrink", itemShrinkName);
-            sessionStorage.setItem(`data-btn-deg-${dataShrinkItemType}`, "180");
+            let btndeg = 'data-btn-deg-'+ dataShrinkItemType;
+        
+            const shrinkElemToDate = {
+              "data-shrink": "none",
+              btndeg: 180,
+            };
+     
+            dateShrinkElem['value'] = shrinkElemToDate
+            
+
+            // sessionStorage.setItem(dataShrinkItemType, "none");
+            // sessionStorage.setItem("stateShrink", "none");
+            // sessionStorage.setItem("elemShrink", itemShrinkName);
+            // sessionStorage.setItem(`data-btn-deg-${dataShrinkItemType}`, "180");
           }
         }
       });
+
+      // let index = shrink.indexOf(dataShrinkType)
+      // shrink[index] = dateShrinkElem
+      
+      console.log(JSON.stringify(shrink))
+      shrink.forEach(function (value, key) {
+        console.log(value)
+      })
+      shrink.push(dateShrinkElem)
+      let key = 'shronks'
+      localStorage.shrinks = JSON.stringify(shrink);
+      // localStorage.setItem("shrink", JSON.stringify(shrink));
     });
+
   });
 }
 
 // установка значений скрытия раскрытия из локалсторадж
 getStateLocalStorage();
 function getStateLocalStorage() {
-  var datastateShrink = sessionStorage.getItem("stateShrink");
-  var dataelemShrink = sessionStorage.getItem("elemShrink");
-  var dataBtnsuborder = sessionStorage.getItem("data-btn-deg-suborder");
-  var databtndegentry = sessionStorage.getItem("data-btn-deg-entry");
-  var databtndegout = sessionStorage.getItem("data-btn-deg-out");
-  var entry = sessionStorage.getItem("entry");
-  var suborder = sessionStorage.getItem("suborder");
-  var out = sessionStorage.getItem("out");
-
-  const itemShrink = document.querySelectorAll(
-    `[data-created='${dataelemShrink}']`
-  );
-
-  const btnType = document.querySelectorAll(".btn_month_bill-shrink");
-  btnType.forEach((element) => {
-    const btnTypeEntry = element.getAttribute("data-btn-type-shrink");
-
-    if (btnTypeEntry === "entry" && databtndegentry != null) {
-      element.setAttribute("data-btn-deg-entry", databtndegentry);
-    }
-    if (btnTypeEntry === "suborder" && dataBtnsuborder != null) {
-      element.setAttribute("data-btn-deg-suborder", dataBtnsuborder);
-    }
-    if (btnTypeEntry === "out" && databtndegout != null) {
-      element.setAttribute("data-btn-deg-out", databtndegout);
-    }
-  });
-
-  itemShrink.forEach((elem) => {
-    const dataI = elem.getAttribute("data-type-shrink");
-
-    if (dataI === "entry" && entry != null) {
-      elem.setAttribute("data-shrink", entry);
-    }
-    if (dataI === "suborder" && suborder != null) {
-      elem.setAttribute("data-shrink", suborder);
-    }
-    if (dataI === "out" && out != null) {
-      elem.setAttribute("data-shrink", out);
-    }
-  });
+  // var datastateShrink = sessionStorage.getItem("stateShrink");
+  // var dataelemShrink = sessionStorage.getItem("elemShrink");
+  // var dataBtnsuborder = sessionStorage.getItem("data-btn-deg-suborder");
+  // var databtndegentry = sessionStorage.getItem("data-btn-deg-entry");
+  // var databtndegout = sessionStorage.getItem("data-btn-deg-out");
+  // var entry = sessionStorage.getItem("entry");
+  // var suborder = sessionStorage.getItem("suborder");
+  // var out = sessionStorage.getItem("out");
+  // const itemShrink = document.querySelectorAll(
+  //   `[data-created='${dataelemShrink}']`
+  // );
+  // const btnType = document.querySelectorAll(".btn_month_bill-shrink");
+  // btnType.forEach((element) => {
+  //   const btnTypeEntry = element.getAttribute("data-btn-type-shrink");
+  //   if (btnTypeEntry === "entry" && databtndegentry != null) {
+  //     element.setAttribute("data-btn-deg-entry", databtndegentry);
+  //   }
+  //   if (btnTypeEntry === "suborder" && dataBtnsuborder != null) {
+  //     element.setAttribute("data-btn-deg-suborder", dataBtnsuborder);
+  //   }
+  //   if (btnTypeEntry === "out" && databtndegout != null) {
+  //     element.setAttribute("data-btn-deg-out", databtndegout);
+  //   }
+  // });
+  // itemShrink.forEach((elem) => {
+  //   const dataI = elem.getAttribute("data-type-shrink");
+  //   if (dataI === "entry" && entry != null) {
+  //     elem.setAttribute("data-shrink", entry);
+  //   }
+  //   if (dataI === "suborder" && suborder != null) {
+  //     elem.setAttribute("data-shrink", suborder);
+  //   }
+  //   if (dataI === "out" && out != null) {
+  //     elem.setAttribute("data-shrink", out);
+  //   }
+  // });
 }
-
 
 //новый месяц кнопка
 const newBillMonth = document.querySelector(".new_month");

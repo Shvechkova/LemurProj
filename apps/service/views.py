@@ -84,7 +84,7 @@ def service_one(request, slug):
 
     category_service = Service.objects.get(name=slug)
     now = datetime.datetime.now()
-    print(now)
+
     year = now.year
 
     # выбор периода сортировки
@@ -117,6 +117,7 @@ def service_one(request, slug):
         .annotate(month=TruncMonth("created_timestamp"))
         .filter(created_timestamp__year__gte=year, created_timestamp__month__gte=old_month)
         .select_related("client").order_by("-month", sort_operation))
+
     # навзнаия всех типов субподрядов адв
 
     def suborders_name_cache():
@@ -196,15 +197,33 @@ def service_one(request, slug):
     obj_suborder_adv = []
     obj_suborder_other = []
 
+    bill_now_mohth_name = ServicesMonthlyBill.objects.filter(
+        service=category_service, created_timestamp__year__gte=year, created_timestamp__month__gte=old_month).annotate(month=TruncMonth('created_timestamp')).values('month')
+
     # тотал для субордера  адв
     if slug == 'ADV':
-        suborder_total_other = SubcontractMonth.objects.filter(
+
+        obj_suborder = SubcontractMonth.objects.filter(
             month_bill__service=category_service,
             created_timestamp__year__gte=year, created_timestamp__month__gte=old_month, other__isnull=False
         ).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=(
             Sum('amount', default=0)))
 
-        obj_suborder_other.append(suborder_total_other)
+        for x in range(len(bill_now_mohth_name)):
+            bill_now_mohth_name[x]['total_amount_other'] = 0
+            for y in range(len(obj_suborder)):
+
+                if bill_now_mohth_name[x]['month'] == obj_suborder[y]['month']:
+                    bill_now_mohth_name[x]['total_amount_other'] = obj_suborder[y]['total_amount']
+
+        bill_month = ServicesMonthlyBill.objects.filter(
+            service=category_service, created_timestamp__year__gte=year, created_timestamp__month__gte=old_month).annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=(
+                Sum('diff_sum', default=0)))
+
+        for bill_mon in bill_month:
+            bill_mon["sumorders"] = {}
+            for subs_item in suborders_name:
+                bill_mon["sumorders"].update({subs_item.name: 0})
 
         for subs_item in suborders_name:
             suborder_total = SubcontractMonth.objects.filter(
@@ -213,6 +232,12 @@ def service_one(request, slug):
                 created_timestamp__month__gte=old_month, adv=subs_item.id
             ).annotate(month=TruncMonth('created_timestamp')).values('month', 'adv__name').annotate(total_amount=(
                 Sum('amount', default=0)))
+
+            for x in range(len(bill_month)):
+                for y in range(len(suborder_total)):
+                    if bill_month[x]['month'] == suborder_total[y]['month']:
+                        bill_month[x]['sumorders'][suborder_total[y]
+                                                   ['adv__name']] = suborder_total[y]['total_amount']
 
             obj_suborder_adv.append(suborder_total)
 
@@ -245,6 +270,7 @@ def service_one(request, slug):
                     'other_id__id']
             ).annotate(month=TruncMonth('created_timestamp')).values('month', "amount").values("other_id__name", "other_id__id", "month", 'amount').aggregate(total_amount=Sum('amount'))
 
+
     # для отображения активно дизайна на категории
     type_url = "service"
     title = category_service.id
@@ -265,7 +291,9 @@ def service_one(request, slug):
         "total_month": total_month,
         "diff_sum_oper": diff_sum_oper,
         "obj_suborder_other": obj_suborder_other,
-        "service": service
+        "service": service,
+        "bill_now_mohth_name": bill_now_mohth_name,
+        "bill_month": bill_month
 
     }
 
@@ -289,7 +317,6 @@ def new_month(request):
 
     for old_bill in bill_now_old:
         subcontr_old = SubcontractMonth.objects.filter(month_bill=old_bill.id)
-        
 
         new_bill = old_bill
         new_bill.pk = None

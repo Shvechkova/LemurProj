@@ -4,6 +4,8 @@ django-environ
 pymysql
 djlint
 djangorestframework==3.13.1
+celery
+redis
 
 # django-phonenumber-field[phonenumbers]==7.0
 # django-static-precompiler==2.1

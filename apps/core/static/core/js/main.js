@@ -37,16 +37,19 @@ function modal(elem, buttonAdd) {
  
 
   modal_windows.addEventListener("click", (event) => {
+   
+
      let modalWrapperWind = document.querySelector(".modal-items");
  
-    let modalSelect = modal_windows.querySelectorAll("input[type='option']");
-    if (modalSelect){
+    let modalSelect = modal_windows.querySelectorAll(".modal-select");
+    let modalSelectWrap = modal_windows.querySelector("#modal-select");
+    console.log(event)
+ 
 
-    }
-      if (event.target == modal_windows || !modalWrapper || !modalSelect) {
-        console.log(event.target)
-        // modal_windows.classList.remove("modal-active");
-        // modal_windows.replaceWith(modal_windows.cloneNode(true));
+      if (event.target == modal_windows && event.target != modalWrapper && event.isTrusted == true  ) {
+
+        modal_windows.classList.remove("modal-active");
+        modal_windows.replaceWith(modal_windows.cloneNode(true));
       }
   });
   let modalCloseAll = document.querySelector(nameclose);
@@ -60,6 +63,8 @@ function modal(elem, buttonAdd) {
 
 // функции завершения модального окна
 function alertSuccess(element) {
+  const wrap = element.querySelector(".modal-items")
+  wrap.style.padding = "100px"
   element.querySelector(".modal-items-wrap").innerHTML = "Успех";
 }
 function alertError(element) {

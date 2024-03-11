@@ -11,8 +11,8 @@
   {% include "service/includes/modal/add_contract_change.html" %}
   <input type="hidden" id="page_name" value="{{ title }}" />
   <input type="hidden" id="page_name_abc" value="{{ title_name }}" />
-<button class="button new_month" data-cat-service="{{ title }}" data-month="{{ now|date:'m' }}" data-year="{{ now|date:'Y' }}">копировать месяц</button>
-    {% comment %} <div class="open-modal btn_month_bill"
+ {% comment %}<button class="button new_month" data-cat-service="{{ title }}" data-month="{{ now|date:'m' }}" data-year="{{ now|date:'Y' }}">копировать месяц</button>
+    <div class="open-modal btn_month_bill"
        data-name="modal-add-bill"
        data-cat-service="{{ title }}">+</div>  {% endcomment %}
   <div class="bill-sorting-date" data-sort-month="1" bill-sorting-date="1">
@@ -552,31 +552,58 @@
                          data-shrink="none"
                          data-type-shrink="suborder"
                          data-created="{{ bill.created_timestamp|date:'m.Y' }}">
-                      {% for total_adv in obj_suborder_adv %}
+              
+             
+                    {% for subs_adv in  bill_month %}
+                    {% if subs_adv.month|date:'M Y' == created_timestamp.grouper %}
+                   {% for  key, value in subs_adv.sumorders.items %} 
+                  
+                   <div class="title-bill_w-80-result fsz15 ">
+                    <h4> {{value}} ₽</h4>
+                  </div>
+                 
+                   {% endfor %}
+                   {% endif %}
+                    
+                    {% endfor %}
+                    
+                 
+                       
+                      {% comment %} {% for total_adv in obj_suborder_adv %}
                         {% for total_advs in total_adv %}
                           {% if total_advs.month|date:'M Y' == created_timestamp.grouper %}
                             <div class="title-bill_w-80-result fsz15 ">
                               <h4>{{ total_advs.total_amount }} ₽</h4>
                             </div>
+                            {% else %}
                           {% endif %}
-                        {% endfor %}
-                      {% endfor %}
-                      {% for obj_suborder_others in obj_suborder_other %}
-                        {% for suborder_other in obj_suborder_others %}
-                          {% if suborder_other.month|date:'M Y' == created_timestamp.grouper %}
-                            <div class="title-bill_w-80-result fsz15 ">
-                              <h4>{{ suborder_other.total_amount }} ₽</h4>
-                            </div>
-                          {% else %}
-                            <div class="title-bill_w-80-result fsz15 ">
+                        {% endfor %} 
+                      {% endfor %}  {% endcomment %}
+        
+
+
+                     {% for obj_suborder_oth in bill_now_mohth_name %}
+             
+                    
+                     {% if obj_suborder_oth.month|date:'M Y' == created_timestamp.grouper  %}
+                     {% ifchanged  %} <div class="title-bill_w-80-result fsz15 ">
+                              <h4>{{ obj_suborder_oth.total_amount_other}} ₽</h4>
+                            </div> {% endifchanged %}
+                           
+                      {% else %}
+                      
+                          {% endif %}
+                       
+                  
+                 
+                      
+                          
+                         
+                         {% comment %} <div class="title-bill_w-80-result fsz15 ">
                               <h4>0 ₽</h4>
-                            </div>
-                          {% endif %}
-                        {% empty %}
-                          <div class="title-bill_w-80-result fsz15 ">
-                            <h4>0 ₽</h4>
-                          </div>
-                        {% endfor %}
+                            </div> 
+                             {% endcomment %}
+                          
                       {% endfor %}
                     </div>
                   </div>
