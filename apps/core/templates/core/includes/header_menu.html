@@ -14,30 +14,30 @@
       </li>
 
       <li class="header_nav-link">
-        {% url 'core:home' as the_url %} 
+        {% url 'operations:operation' as the_url %} 
         
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Внешние счета</span> 
         {% else %}
-        <a class="" href="{% url 'core:home' %}" >Внешние счета</a
+        <a class="" href="{% url 'operation:operation_outside' %}" >Внешние счета</a
         >
         {% endif %} 
       </li>
       <li class="header_nav-link">
-        {% url 'core:home' as the_url %} 
+        {% url 'operations:operation' as the_url %} 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Внутренние счета</span> 
         {% else %}
-        <a class="" href="{% url 'core:home' %}" >Внутренние счета</a
+        <a class="" href="{% url 'operation:operation_inside' %}" >Внутренние счета</a
         >
         {% endif %} 
       </li>
       <li class="header_nav-link">
-        {% url 'core:home' as the_url %} 
+        {% url 'operations:operation' as the_url %} 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Хранилище</span> 
         {% else %}
-        <a class="" href="{% url 'core:home' %}" >Хранилище</a
+        <a class="" href="operation_storage" >Хранилище</a
         >
         {% endif %} 
       </li>

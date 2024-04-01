@@ -196,6 +196,7 @@ def service_one(request, slug):
 
     obj_suborder_adv = []
     obj_suborder_other = []
+    bill_month = " "
 
     bill_now_mohth_name = ServicesMonthlyBill.objects.filter(
         service=category_service, created_timestamp__year__gte=year, created_timestamp__month__gte=old_month).annotate(month=TruncMonth('created_timestamp')).values('month')

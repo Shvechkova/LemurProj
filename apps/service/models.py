@@ -91,32 +91,64 @@ class ServicesMonthlyBill(models.Model):
     def get_operation(self):
         from apps.operation.models import Operation
         operation = Operation.objects.filter(monthly_bill=self.id).select_related(
-            "bank"
+            "bank","suborder"
         )
-
+      
         sum_all_operation_entry = 0
         sum_operation_entry_bank1 = 0
         sum_operation_entry_bank2 = 0
         sum_operation_entry_bank3 = 0
+        comment_operation_entry_bank1 = []
+        comment_operation_entry_bank2 = []
+        comment_operation_entry_bank3 = []
         id_operation_entry = ""
 
-        for oper in operation:
+        for oper in operation:  
+           
             if oper.type_operation == "entry":
                 sum_all_operation_entry += oper.amount
                 id_operation_entry = id_operation_entry + str(oper.id) + "-"
 
                 if oper.bank.id == 1:
                     sum_operation_entry_bank1 += oper.amount
+                    if oper.comment:
+                        comment = {
+                            "data": oper.data,
+                            "sum":oper.amount,
+                            "comment":oper.comment,
+                            # "name":oper_out.suborder.other.name,
+                        }
+                        comment_operation_entry_bank1.append(comment)
 
                 elif oper.bank.id == 2:
                     sum_operation_entry_bank2 += oper.amount
+                    if oper.comment:
+                        comment = {
+                            "data": oper.data,
+                            "sum":oper.amount,
+                            "comment":oper.comment,
+                            # "name":oper_out.suborder.other.name,
+                        }
+                        comment_operation_entry_bank2.append(comment)
+                    
                 elif oper.bank.id == 3:
                     sum_operation_entry_bank3 += oper.amount
+                    if oper.comment:
+                        comment = {
+                            "data": oper.data,
+                            "sum":oper.amount,
+                            "comment":oper.comment,
+                            # "name":oper_out.suborder.other.name,
+                        }
+                        comment_operation_entry_bank3.append(comment)
 
         sum_all_operation_out = 0
         sum_operation_out_bank1 = 0
         sum_operation_out_bank2 = 0
         sum_operation_out_bank3 = 0
+        comment_operation_out_bank1 = []
+        comment_operation_out_bank2 = []
+        comment_operation_out_bank3 = []
         id_operation_out = ""
 
         for oper_out in operation:
@@ -125,11 +157,35 @@ class ServicesMonthlyBill(models.Model):
                 id_operation_out = id_operation_out + str(oper_out.id) + "-"
                 if oper_out.bank.id == 1:
                     sum_operation_out_bank1 += oper_out.amount
+                    if oper_out.comment:
+                        comment = {
+                            "data": oper_out.data,
+                            "sum":oper_out.amount,
+                            "comment":oper_out.comment,
+                            # "name":oper_out.suborder.other.name,
+                        }
+                        comment_operation_out_bank1.append(comment)
 
                 elif oper_out.bank.id == 2:
                     sum_operation_out_bank2 += oper_out.amount
+                    if oper_out.comment:
+                        comment = {
+                            "data": oper_out.data,
+                            "sum":oper_out.amount,
+                            "comment":oper_out.comment,
+                            # "name":oper_out.suborder.other.name,
+                        }
+                        comment_operation_out_bank2.append(comment)
                 elif oper_out.bank.id == 3:
                     sum_operation_out_bank3 += oper_out.amount
+                    if oper_out.comment:
+                        comment = {
+                            "data": oper_out.data,
+                            "sum":oper_out.amount,
+                            "comment":oper_out.comment,
+                            # "name":oper_out.suborder.other.name,
+                        }
+                        comment_operation_out_bank3.append(comment)
 
         diff_operation_entry = self.contract_sum - sum_all_operation_entry
 
@@ -151,15 +207,21 @@ class ServicesMonthlyBill(models.Model):
                 "operation_entry_bank1": sum_operation_entry_bank1,
                 "operation_entry_bank2": sum_operation_entry_bank2,
                 "operation_entry_bank3": sum_operation_entry_bank3,
+                "comment_entry_bank1": comment_operation_entry_bank1,
+                "comment_entry_bank2": comment_operation_entry_bank2,
+                "comment_entry_bank3": comment_operation_entry_bank3,
                 "operation_out_all": sum_all_operation_out,
                 "diff_operation_out": diff_operation_out,
                 "id_operation_out": id_operation_out,
                 "operation_out_bank1": sum_operation_out_bank1,
                 "operation_out_bank2": sum_operation_out_bank2,
                 "operation_out_bank3": sum_operation_out_bank3,
+                "comment_out_bank1": comment_operation_out_bank1,
+                "comment_out_bank2": comment_operation_out_bank2,
+                "comment_out_bank3": comment_operation_out_bank3,
             }
         ]
-
+        print(obj)
         return obj
    
     # субподряды адв
@@ -239,7 +301,7 @@ class ServicesMonthlyBill(models.Model):
         suborders_name = SubcontractOther.objects.all()
 
         obj = []
-
+        print()
         for subs_item in suborders_name:
             name = {
                 "name": subs_item.name,
@@ -280,7 +342,7 @@ class ServicesMonthlyBill(models.Model):
             "id_subs": id_subs,
         }
         obj.insert(0, total)
-
+        print(obj)
         return (obj)
 
     # def suborders_other_no_adv_total(self):

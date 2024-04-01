@@ -174,15 +174,15 @@ function changeSum(element, mutationRecords) {
             intEl = parseInt(el.value);
           }
           let useBudgetAfterUseInit = parseInt(useBudgetAfterUseIn);
-          console.log(useBudgetAfterUseInit);
+        
           sum = useBudgetAfterUseInit - intEl;
           var num = +sum;
           var result = num.toLocaleString();
-          console.log(result);
+  
           useBudget.innerHTML = result + " ₽";
           useBudgetAfterUse.value = sum;
         } else {
-          console.log(111);
+         
           let intEl;
           if (el.value == "") {
             intEl = 0;
@@ -193,7 +193,7 @@ function changeSum(element, mutationRecords) {
 
           var num = +sum;
           var result = num.toLocaleString();
-          console.log(result);
+       
           useBudget.innerHTML = result + " ₽";
           useBudgetAfterUse.value = sum;
         }
@@ -330,9 +330,9 @@ function addSubcontractFetch(idBill, elem) {
 }
 
 function getOldSumcintract(idBill, element) {
-  // isLoading = true
-  // isLoaded = false
-  // preloaderModal(isLoading,isLoaded)
+  isLoading = true
+  isLoaded = false
+  preloaderModal(isLoading,isLoaded)
 
   const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
   let csrfToken = getCookie("csrftoken");
@@ -346,11 +346,12 @@ function getOldSumcintract(idBill, element) {
     .then((response) => response.json())
     .then((data) => {
       if (data.length == 0) {
-        // isLoading = false
-        // isLoaded = true
-        // preloaderModal(isLoading,isLoaded)
+        isLoading = false
+        isLoaded = true
+        preloaderModal(isLoading,isLoaded)
         return;
       } else {
+       
         let endpoint = "/service/api/subcontract-category-adv/";
         fetch(endpoint, {
           method: "get",
@@ -364,7 +365,9 @@ function getOldSumcintract(idBill, element) {
               modal_add_subcontract.className =
                 "modal_add_contract modal_add-subcontract";
               c.append(modal_add_subcontract);
-
+              isLoading = false
+              isLoaded = true
+              preloaderModal(isLoading,isLoaded)
               if (value.adv != null) {
                 modal_add_subcontract.innerHTML =
                   '<input type="text" readonly class="modal-subcontracts input-130" placeholder="adv" value="площадка" data-adv="adv">';
@@ -471,7 +474,7 @@ function getOldSumcintract(idBill, element) {
               useBudgetAfterUse.value = sumOld;
             
               var result = sumOld.toLocaleString();
-              console.log(result);
+        
               useBudget.innerHTML = result +" ₽";
               // useBudget.innerHTML = sumOld;
               const slash = document.querySelector(
@@ -540,7 +543,7 @@ function DelSubcontr(element) {
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
       idOperation = item.getAttribute("data-id-peration");
-      console.log(idOperation);
+     
       endpoint = "/service/api/subcontract/" + idOperation + "/";
 
       item.parentElement.remove();

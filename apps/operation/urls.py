@@ -14,10 +14,13 @@ router = routers.DefaultRouter()
 router.register(r"api/operation", view_sets.OperationViews)
 
 
-
 urlpatterns = [
-    # path("", views.clients, name="client"),
+  
     path("", include(router.urls)),
+    path("", views.index, name="index"),
+    path("operation_inside", views.operation_inside, name="operation_inside"),
+    path("operation_outside", views.operation_outside, name="operation_outside"),
+    path("operation_storage", views.operation_storage, name="operation_storage"),
     # path("api/v1/clientlist/", ClientIpiView.as_view()),
     # path("", views.ClientView.as_view(), name="index"),
     # path("<int:client_id>", views.client, name="client"),

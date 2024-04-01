@@ -12,7 +12,7 @@ if (modal_add_client) {
     const add_contract = document.querySelector(".client_contract_add");
     add_contract.disabled = true;
     modal(elem, add_contract);
-    
+
     addManager();
     const contractWrapper = document.getElementById("modal_contract_wrapper");
     contractWrapper.innerHTML = "";
@@ -23,10 +23,10 @@ if (modal_add_client) {
     choiceColor();
 
     const modalWindows = document.getElementById(elem);
-    modalWindows.addEventListener("input", () => {console.log(modalWindows)
+    modalWindows.addEventListener("input", () => {
       validate(elem, ".client_contract_add");
+      validate(elem, ".modal_add_contract_btn");
     });
-
 
     const endpointClient = "/clients/api/client/";
     const endpointContact = "/clients/api/contract/";
@@ -45,35 +45,97 @@ if (modal_add_client) {
 function clickModal() {}
 
 // менеджеры из базы
-function addManager(selected) {
+function addManager(selected, boss, divWrapper) {
   const endpoint = "/clients/api/client/manager_list/";
-  const select = document.querySelector(".modal-manager_client");
-  select.innerHTML = "";
-  new selectOption(
-    "modal-select empty",
-    "0",
-    "0",
-    "Менеджер",
-    "0",
-    true
-  ).appendTo(select);
+  let select;
+  if (boss) {
+    let select = document.createElement("select");
+    if (selected > 0) {
+      select.className = "modal-boss_client";
+    } else {
+      select.className = "modal-boss_client choice empty";
+    }
 
-  fetch(endpoint, {
-    method: "get",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.forEach(function (value, key) {
-        new selectOption(
-          "modal-select",
-          value.last_name,
-          value.id,
-          value.last_name,
-          selected
-        ).appendTo(select);
+    divWrapper.append(select);
+
+    new selectOption(
+      "modal-select empty",
+      "0",
+      "0",
+      "Ответственный",
+      "0",
+      true
+    ).appendTo(select);
+    fetch(endpoint, {
+      method: "get",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach(function (value, key) {
+          new selectOption(
+            "modal-select",
+            value.last_name,
+            value.id,
+            value.last_name,
+            selected
+          ).appendTo(select);
+        });
+        return;
       });
-      return;
-    });
+  } else {
+    console.log(selected);
+    select = document.querySelector(".modal-manager_client");
+    if (selected > 0) {
+      select.className = "";
+      select.classList.add("modal-manager_client");
+    }
+    select.innerHTML = "";
+
+    new selectOption(
+      "modal-select empty",
+      "0",
+      "0",
+      "Менеджер",
+      "0",
+      true
+    ).appendTo(select);
+
+    fetch(endpoint, {
+      method: "get",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach(function (value, key) {
+          new selectOption(
+            "modal-select",
+            value.last_name,
+            value.id,
+            value.last_name,
+            selected
+          ).appendTo(select);
+        });
+        return;
+      });
+  }
+
+  //  console.log(select)
+
+  //   fetch(endpoint, {
+  //     method: "get",
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       data.forEach(function (value, key) {
+  //         new selectOption(
+  //           "modal-select",
+  //           value.last_name,
+  //           value.id,
+  //           value.last_name,
+  //           selected
+  //         ).appendTo(select);
+  //       });
+  //       return;
+  //     });
 }
 // сервисы из базы
 function addService(selectInput, selected, instans) {
@@ -119,7 +181,7 @@ function createInputContract() {
   ).appendTo(divWrapper);
   new Input(
     "date",
-    "modal-client_contract-input input-130",
+    "modal-client_contract-input input-130 choice empty",
     "",
     "Подписан"
   ).appendTo(divWrapper);
@@ -131,9 +193,11 @@ function createInputContract() {
   ).appendTo(divWrapper);
   new Input("hidden", " 1", "0").appendTo(divWrapper);
 
+  addManager("selected", "boss", divWrapper);
   let button = document.createElement("button");
   button.className = "modal_add_contract_btn";
   button.innerHTML = "OK";
+  button.disabled = true;
   divWrapper.append(button);
   choiceColor();
 
@@ -162,11 +226,12 @@ function addNewClient(
 
     let clientObj = {
       client_name: clientName,
+      manager: managerProject,
     };
     if (clientId != undefined) {
       clientObj["id"] = clientId;
     }
-    console.log(clientId);
+
     data = JSON.stringify(clientObj);
 
     function getCookie(name) {
@@ -212,20 +277,27 @@ function addNewClient(
             const data = contractChild[2].value;
             const contractSum = contractChild[3].value;
 
+            const bossContractInp = contractChild[5];
+            var bossContr =
+              bossContractInp.options[
+                bossContractInp.selectedIndex
+              ].getAttribute("data-id");
+
             const contractObj = {
               client: clientId,
               contract_number: contractName,
               date_start: data,
               service: servise,
-              manager: managerProject,
+              // manager: managerProject,
               contract_sum: contractSum,
+              manager: bossContr,
             };
 
             if (contractChild[4].value != "0") {
               contractId = contractChild[4].value;
               contractObj["id"] = contractId;
             } else {
-              contractId = ""
+              contractId = "";
               contractObj["id"] = contractId;
             }
 
@@ -239,7 +311,6 @@ function addNewClient(
           endpointTwo = endpointContractAll;
           data = JSON.stringify(arrContractAll);
         } else {
-          console.log(contractId);
           if (contractId) {
             endpointTwo = endpointContact + contractId + "/";
           } else {
@@ -286,13 +357,23 @@ updInfo.forEach((element) => {
     modal(elem);
     const contractWrapper = document.getElementById("modal_contract_wrapper");
     contractWrapper.innerHTML = "";
+
     updClientContract(element, clientName);
-const modalWindows = document.getElementById(elem);
-modalWindows.addEventListener("input", () => {
-  validate(elem, ".client_contract_add");
-});
+
+    // валидация
+    const modalWindows = document.getElementById(elem);
+    // modalWindows.addEventListener("input", () => {
+    //   validate(elem, ".client_contract_add");
+    // });
+    // const wrapLAst = document.getElementById("modal_contract_wrapper").childNodes
+    // const lastCount = wrapLAst.length
+    // console.log(wrapLAst)
+
+    modalWindows.addEventListener("input", () => {
+      validateBtn(elem, ".modal_add_contract_btn");
+    });
     const idClient = element.getAttribute("data-client-id");
-    console.log(idClient);
+
     const endpointClient = "/clients/api/client/" + idClient + "/";
     const endpointContact = "/clients/api/contract/";
     //  + contractId + "/"
@@ -309,6 +390,7 @@ modalWindows.addEventListener("input", () => {
     );
   });
 });
+
 //забрать имя клиента
 function updClientContract(element, clientName) {
   const titleModal = document.querySelector(".modal-client_title");
@@ -321,6 +403,18 @@ function updClientContract(element, clientName) {
 
 //получить контракты по имени клиента
 function getContracts(idClient) {
+  fetch("/clients/api/client/" + idClient + "/manager_li/", {
+    method: "get",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((el) => {
+        // запись менеджера
+        manager = el.manager;
+        addManager(manager);
+      });
+    });
+
   const endpoint = "/clients/api/contract/" + idClient + "/contract_li/";
   fetch(endpoint, {
     method: "get",
@@ -330,9 +424,9 @@ function getContracts(idClient) {
       const contractWrapper = document.getElementById("modal_contract_wrapper");
 
       data.forEach((el) => {
-        // запись менеджера
-        manager = el.manager;
-        addManager(manager);
+        // // запись менеджера
+        // manager = el.manager;
+        // addManager(manager);
 
         let divWrapper = document.createElement("div");
         divWrapper.className = "modal_add_contract";
@@ -350,12 +444,14 @@ function getContracts(idClient) {
           el.contract_number,
           "Номер договора"
         ).appendTo(divWrapper);
+
         new Input(
           "date",
-          "modal-client_contract-input input-130",
+          "modal-client_contract-input input-130 choice empty",
           el.date_start,
           "Подписан"
         ).appendTo(divWrapper);
+
         new Input(
           "number",
           "modal-client_contract-input input-130",
@@ -363,10 +459,42 @@ function getContracts(idClient) {
           "Сумма"
         ).appendTo(divWrapper);
         new Input("hidden", " ", el.id, "").appendTo(divWrapper);
+
+        // let selectBoss = document.createElement("select");
+        // selectBoss.className = "modal-boss_client";
+        // divWrapper.append(selectBoss);
+        manager = el.manager;
+        addManager(manager, "boss", divWrapper);
       });
+
+      // addService(select, el.service);
 
       createInputContract();
     });
 }
 
-// валидация
+//сортировка по категориям
+sortingClient();
+function sortingClient() {
+  const btnClientSort = document.querySelectorAll(".btn_client_sort");
+  const sortClient = sessionStorage.getItem("sortClient");
+
+  btnClientSort.forEach((elem) => {
+    if (sortClient == elem.getAttribute("data-sort-client")){
+      elem.style.borderColor = "#000";
+    }
+    elem.addEventListener("click", () => {
+      const setItem = elem.getAttribute("data-sort-client");
+      const oldSortClient = sessionStorage.getItem("sortClient");
+      if (oldSortClient == setItem) {
+         sessionStorage.removeItem("sortClient");
+        document.cookie = "sortClient= client";
+      } else {
+        const sortClient = sessionStorage.setItem("sortClient", setItem);
+        document.cookie = "sortClient=" + setItem;
+        
+      }
+      location.reload();
+    });
+  });
+}

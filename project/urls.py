@@ -27,11 +27,11 @@ urlpatterns = [
      path('__debug__/', include('debug_toolbar.urls')),
     path("admin/", admin.site.urls),
     
-    path("", include("apps.core.urls", namespace="main")),
+    path("", include("apps.core.urls", namespace="core")),
     path("service/", include("apps.service.urls", namespace="service")),
     path("clients/", include("apps.client.urls", namespace="clients")),
-    path("employee/", include("apps.employee.urls", namespace="operation")),
-    path("operations/", include("apps.operation.urls", namespace="employee")),
+    # path("employee/", include("apps.employee.urls", namespace="operation")),
+    path("operations/", include("apps.operation.urls", namespace="operation")),
     path('api/', include('rest_framework.urls'))
 ]
 

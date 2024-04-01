@@ -8,6 +8,7 @@ from apps.employee.models import Employee
 from apps.service.models import Service, ServiceClient
 from apps.service.serializers import ServiceSerializer
 from .models import Client, Contract
+from django.db.models import F, Q
 
 # from rest_framework
 from rest_framework import routers, serializers, viewsets, mixins
@@ -18,14 +19,27 @@ from rest_framework.response import Response
 
 
 def clients(request):
-    clients = Client.objects.all()
-    contracts = Contract.objects.all().order_by("client")
+    print(request.COOKIES.get('sortClient'))
+    if request.COOKIES.get('sortClient') != "client":
+        sortClient = request.COOKIES["sortClient"]
+        contracts = Contract.objects.filter(
+        Q(service__name=sortClient)).order_by("service")
+    else:
+        sortClient = 'client'
+        contracts = Contract.objects.all().select_related("client","service",'manager').order_by("client")
+        # .order_by("client")
+        
 
+    # clients = Client.objects.all()
+    
+    servise = Service.objects.all()
+    
     title = "Клиенты"
     context = {
-        "clients": clients,
+        # "clients": clients,
         "contracts": contracts,
         "title": title,
+        "servise":servise,
     }
     return render(request, "client/index.html", context)
 

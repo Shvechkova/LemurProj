@@ -12,7 +12,14 @@ from apps.employee.models import Employee
 
 class Client(models.Model):
     client_name = models.CharField(max_length=200)
-    
+    manager = models.ForeignKey(
+        Employee,
+        on_delete=models.PROTECT,
+        verbose_name="Менеджер",
+        blank=True,
+        null=True,
+    )
+     
     # class Meta:
     #     verbose_name = "Клиент"
     #     verbose_name_plural = "Клиенты"

@@ -17,6 +17,14 @@ from apps.employee.models import Employee
 class AddClient(viewsets.ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+    http_method_names = ["get", "post", "put"]
+    
+    @action(detail=False, methods=["get"], url_path=r"(?P<pk>\d+)/manager_li")
+    def client_manager_list(self, request, pk):
+        pk = self.kwargs["pk"]
+        queryset = Client.objects.filter(id=pk)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=["get"], url_path=r"manager_list")
     def manager_list(
@@ -68,7 +76,7 @@ class ContractView(viewsets.ModelViewSet):
         **kwargs,
     ):
         data = request.data
-        print(data)
+
         for contracts in data:
             contract_id = contracts["id"]
             if contract_id == "":
@@ -82,8 +90,9 @@ class ContractView(viewsets.ModelViewSet):
                 )
                 if serializer.is_valid():
                     serializer.save()
-
-        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+                    return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=["get"], url_path=r"contract_filter_list")
     def contract_filter_list(

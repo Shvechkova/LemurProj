@@ -11,6 +11,13 @@ isLoading = false;
 isLoaded = true;
 function preloaderModal(isLoading, isLoaded) {
   if (isLoading == true) {
+    // window.setTimeout(function () {
+    //   document.body.classList.add("loaded_hiding");
+    // document.body.classList.remove("loaded");
+    // const preloader = document.querySelector(".preloader");
+    // preloader.style.opacity = "1";
+    // }, 500);
+
     document.body.classList.add("loaded_hiding");
     document.body.classList.remove("loaded");
     const preloader = document.querySelector(".preloader");
@@ -30,7 +37,7 @@ function modal(elem, buttonAdd) {
   modal_windows.classList.add("modal-active");
 
   const nameclose = "." + "modal_close" + "_" + elem + "";
-  console.log(nameclose);
+ 
   //  закрытие по общему контейнеру
   let modalWrapper = document.querySelector(".modal-wrapper");
   let modalWrapperWind = document.querySelector(".modal-items");
@@ -43,7 +50,7 @@ function modal(elem, buttonAdd) {
  
     let modalSelect = modal_windows.querySelectorAll(".modal-select");
     let modalSelectWrap = modal_windows.querySelector("#modal-select");
-    console.log(event)
+  
  
 
       if (event.target == modal_windows && event.target != modalWrapper && event.isTrusted == true  ) {
@@ -53,7 +60,7 @@ function modal(elem, buttonAdd) {
       }
   });
   let modalCloseAll = document.querySelector(nameclose);
-  console.log(modalCloseAll);
+
   modalCloseAll.addEventListener("click", (event) => {
     modal_windows.classList.remove("modal-active");
 
@@ -88,14 +95,13 @@ function validate(elem, btn) {
   const modalWindows = document.getElementById(elem);
   const allInputModal = modalWindows.querySelectorAll("input");
   const allSelectModal = modalWindows.querySelectorAll("select");
-  //  console.log(allInputModal)
-  //  console.log(allSelectModal)
+  
   const add_contract = document.querySelector(btn);
   let inputYes;
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
-    // console.log(elInput.value)
+  
     if (elInput.value == "") {
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
@@ -114,7 +120,57 @@ function validate(elem, btn) {
 
   allSelectModal.forEach((elSelect) => {
     const elSelectChecked = elSelect.options[elSelect.selectedIndex].value;
-    // console.log(elSelectChecked)
+   
+    if (elSelectChecked == 0 || elSelectChecked == "") {
+      add_contract.disabled = true;
+      throw false;
+    } else {
+      add_contract.disabled = false;
+      selectYes = true;
+    }
+  });
+
+  if (selectYes || selectYes) {
+    validateClass = true;
+  }
+
+  return validateClass;
+}
+
+// валидация без радио кнопок для кнопки ок дающаяя сохранить форму
+function validateBtn(elem, btn) {
+  const modalWindows = document.getElementById(elem);
+ 
+  const add_contract = document.querySelector(btn);
+  const elemParent = add_contract.parentElement
+
+  const allInputModal = elemParent.querySelectorAll("input");
+  const allSelectModal = elemParent.querySelectorAll("select");
+
+  let inputYes;
+  let selectYes;
+  let validateClass = false;
+  allInputModal.forEach((elInput) => {
+
+    if (elInput.value == "") {
+      const c = elInput.getAttribute("data-validate");
+      if (c == 0) {
+        add_contract.disabled = false;
+        inputYes = true;
+      } else {
+        add_contract.disabled = true;
+
+        throw false;
+      }
+    } else {
+      add_contract.disabled = false;
+      inputYes = true;
+    }
+  });
+
+  allSelectModal.forEach((elSelect) => {
+    const elSelectChecked = elSelect.options[elSelect.selectedIndex].value;
+
     if (elSelectChecked == 0 || elSelectChecked == "") {
       add_contract.disabled = true;
       throw false;
@@ -213,6 +269,7 @@ function choiceColor() {
     if (element.value == 0) {
       element.classList.add("empty");
     } else element.classList.remove("empty");
+
     element.addEventListener("change", (event) => {
       if (element.value == 0) {
         element.classList.add("empty");
