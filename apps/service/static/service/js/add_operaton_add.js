@@ -112,7 +112,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
             return;
           } else {
             const otherSumCheck = document.querySelector("#other_sum_namber");
-            sumChecked = +otherSumCheck.value;
+            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
             return;
           }
         }
@@ -126,7 +126,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
             return;
           } else {
             const otherSumCheck = document.querySelector("#other_sum_namber");
-            sumChecked = +otherSumCheck.value;
+            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
             return;
           }
         }
@@ -288,12 +288,12 @@ function newOperationEntry(element, elem) {
         sumChekedWrap.innerHTML =
           '<h3>Сколько оплатили?</h3><div class="input_bank_wrap_add"><input checked type="radio" id="100" name="sum" value="' +
           sumOperationEnded +
-          '" /><label for="100">Остаток</label><input type="radio" id="other_sum" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" type="number" id="other_sum_namber" name="" value="" /></div>';
+          '" /><label for="100">Остаток</label><input type="radio" id="other_sum" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" class = "pyb " type="text" id="other_sum_namber" name="" value="" /></div>';
 
         const chekinOtherSum = document.getElementById("other_sum_namber");
         chekinOtherSum.addEventListener("input", () => {
           const chekinOtherSum = document.getElementById("other_sum");
-
+          replaceNam ()
           chekinOtherSum.checked = true;
           return;
         });
@@ -302,12 +302,12 @@ function newOperationEntry(element, elem) {
     const sumChekedWrap = document.getElementById("sum_cheked");
     sumChekedWrap.setAttribute("data-step", "1");
     sumChekedWrap.innerHTML =
-      ' <h3>Сколько оплатили?</h3><div class="input_bank_wrap_add"><input  type="radio" id="100" name="sum" value="100" /><label for="100">100%</label><input type="radio" id="50" name="sum" value="50" /><label for="50">50%</label><input type="radio" id="other_sum" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0"  type="number" id="other_sum_namber" name="" value="" /></div>';
+      ' <h3>Сколько оплатили?</h3><div class="input_bank_wrap_add"><input  type="radio" id="100" name="sum" value="100" /><label for="100">100%</label><input type="radio" id="50" name="sum" value="50" /><label for="50">50%</label><input type="radio" id="other_sum" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0"  class = "pyb " type="text"  id="other_sum_namber" name="" value="" /></div>';
 
     const chekinOtherSum = document.getElementById("other_sum_namber");
     chekinOtherSum.addEventListener("input", () => {
       const chekinOtherSum = document.getElementById("other_sum");
-
+      replaceNam ()
       chekinOtherSum.checked = true;
     });
   }

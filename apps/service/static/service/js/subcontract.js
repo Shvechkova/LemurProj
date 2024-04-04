@@ -5,6 +5,7 @@ const btnSubcontarct = document.querySelectorAll(".add_sabcontactor");
 if (btnSubcontarct) {
   btnSubcontarct.forEach((element) => {
     element.addEventListener("click", () => {
+      console.log(1111)
       let elem = element.getAttribute("data-name");
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
@@ -51,8 +52,14 @@ if (btnSubcontarct) {
       // валидация
       const modalWindows = document.getElementById(elem);
       modalWindows.addEventListener("input", () => {
+        
+      
         validate(elem, ".subcontarct_add ");
-        validate(elem, ".modal_add_subcontract ");
+      });
+      modalWindows.addEventListener("input", () => {
+        
+        validateBtn(elem, ".modal_add_subcontract ");
+     
       });
     });
   });
@@ -104,8 +111,8 @@ function createInputSubcontract(element, elem) {
             ).appendTo(select);
           });
           new Input(
-            "number",
-            "modal-subcontract-input_sum input-200 num_budet",
+            "text",
+            "modal-subcontract-input_sum input-200 num_budet pyb",
             "",
             "сумма"
           ).afterTo(select);
@@ -119,13 +126,20 @@ function createInputSubcontract(element, elem) {
           new Input("hidden", "subcontract_id", "0").afterTo(select);
           const buttonAdd = document.querySelector(".subcontarct_add");
           buttonAdd.disabled = true;
+          button.innerHTML = "OK";
+
+          // let hhh = document.createElement("span");
+          // hhh.className = "spn";
+          // hhh.innerHTML = "₽";
+          // button.after(hhh);
 
           createNextSubcontractInput(button, elem);
-
+          replaceNam ()
           return;
         });
     });
   });
+ 
 }
 // добавление инпутов после клика по ок
 function createNextSubcontractInput(button, elem) {
@@ -168,12 +182,13 @@ function changeSum(element, mutationRecords) {
 
         slash.style.display = "block";
         if (useBudgetAfterUseIn >= 0 && useBudgetAfterUseIn != "") {
-          if (el.value == "") {
+          if (el.value == "" || el.value == " ₽" ) {
+            console.log(el.value)
             intEl = 0;
           } else {
-            intEl = parseInt(el.value);
+            intEl = parseInt(el.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1'))
           }
-          let useBudgetAfterUseInit = parseInt(useBudgetAfterUseIn);
+          let useBudgetAfterUseInit = parseInt(useBudgetAfterUseIn.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1'));
         
           sum = useBudgetAfterUseInit - intEl;
           var num = +sum;
@@ -181,13 +196,14 @@ function changeSum(element, mutationRecords) {
   
           useBudget.innerHTML = result + " ₽";
           useBudgetAfterUse.value = sum;
+          
         } else {
          
           let intEl;
           if (el.value == "") {
             intEl = 0;
           } else {
-            intEl = parseInt(el.value);
+            intEl = parseInt(el.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1'));
           }
           sum = sumAdvReplace - intEl;
 
@@ -202,6 +218,7 @@ function changeSum(element, mutationRecords) {
   }
 }
 
+// обсервер отслеживатель
 function observerChangeCreateInput(element) {
   const wrapSubcontractors = document.querySelector(
     ".modal_add_subcontract_wrapper"
@@ -243,7 +260,7 @@ function addSubcontractFetch(idBill, elem) {
             subcontractOther = choseNameSubcontract;
             subcontractAdv = null;
           }
-          let amount = contractChild[2].value;
+          let amount = contractChild[2]
           const contractObj = {
             id: idelemOld.value,
             month_bill: idBill,
@@ -266,7 +283,7 @@ function addSubcontractFetch(idBill, elem) {
             subcontractOther = choseNameSubcontract;
             subcontractAdv = null;
           }
-          let amount = contractChild[3].value;
+          let amount = contractChild[3].value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
           const contractObj = {
             id: "",
             month_bill: idBill,
@@ -328,7 +345,7 @@ function addSubcontractFetch(idBill, elem) {
       });
   });
 }
-
+// получение страых субконтрактов отрисовка на фронте
 function getOldSumcintract(idBill, element) {
   isLoading = true
   isLoaded = false
@@ -375,7 +392,7 @@ function getOldSumcintract(idBill, element) {
                   if (item.id == value.adv) {
                     new Input(
                       "text",
-                      "modal-subcontracts   input-130 subs-old",
+                      "modal-subcontracts   input-130 subs-old ",
                       item.name,
                       "сумма",
                       true,
@@ -384,7 +401,7 @@ function getOldSumcintract(idBill, element) {
 
                     new Input(
                       "text",
-                      "modal-subcontracs input-200 num_budet",
+                      "modal-subcontracs input-200 num_budet pyb",
                       value.amount,
                       "сумма"
                     ).appendTo(modal_add_subcontract);
@@ -400,6 +417,7 @@ function getOldSumcintract(idBill, element) {
                     prevOperationDel.innerHTML = "+";
                   }
                 });
+                replaceNam ()
               } else {
                 // старые субконтракты для категории другое
                 let endpoint = "/service/api/subcontract-category-other/";
@@ -422,7 +440,7 @@ function getOldSumcintract(idBill, element) {
                         ).appendTo(modal_add_subcontract);
                         new Input(
                           "text",
-                          "modal-subcontracs input-200",
+                          "modal-subcontracs input-200 pyb",
                           value.amount,
                           "сумма"
                         ).appendTo(modal_add_subcontract);
@@ -444,7 +462,7 @@ function getOldSumcintract(idBill, element) {
                         prevOperationDel.innerHTML = "+";
                       }
                     });
-                    
+                    replaceNam ()
                     DelSubcontr(element);
                   });isLoading = false
               isLoaded = true
@@ -463,7 +481,7 @@ function getOldSumcintract(idBill, element) {
 
               if (numBudetAll) {
                 numBudetAll.forEach((el) => {
-                  sumOld -= +el.value;
+                  sumOld -= +el.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
                 });
               }
               let useBudget = document.querySelector(
@@ -570,3 +588,4 @@ function DelSubcontr(element) {
     });
   });
 }
+

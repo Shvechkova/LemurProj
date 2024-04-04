@@ -18,7 +18,7 @@ from operator import itemgetter
 from itertools import groupby
 
 
-from apps.client.models import AdditionalContract, Client
+from apps.client.models import Client
 
 from apps.operation.models import Operation, OperationEntry
 from apps.service.forms import OperationEntryForm
@@ -270,7 +270,6 @@ def service_one(request, slug):
                 created_timestamp__year__gte=year, created_timestamp__month__gte=old_month, other=subs_item[
                     'other_id__id']
             ).annotate(month=TruncMonth('created_timestamp')).values('month', "amount").values("other_id__name", "other_id__id", "month", 'amount').aggregate(total_amount=Sum('amount'))
-
 
     # для отображения активно дизайна на категории
     type_url = "service"

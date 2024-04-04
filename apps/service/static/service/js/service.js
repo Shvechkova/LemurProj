@@ -35,6 +35,7 @@ if (addBill) {
       );
 
       modal(elem, battonAdd);
+     
       getClientFilterCategory(pageName, dataBill, elem);
       addMonthBill(dataBill, elem);
 
@@ -108,6 +109,7 @@ function getClientFilterCategory(pageName, dataBill, elem) {
               choiceColor();
               const contractSum = document.querySelector(".modal-contract_sum");
               contractSum.value = value.contract_sum;
+              replaceNam ()
             });
           modalWindows.click();
             // иммитация лика для валидации не адв
@@ -131,8 +133,8 @@ function addMonthBill(dataBill, elem) {
     const service_name = document.getElementById("page_name").value;
     const contractId = document.getElementById("contract_main").value;
 
-    const contract_sum = document.getElementById("contract_sum").value;
-    const adv_sum = document.getElementById("adv_all_sum").value;
+    const contract_sum = document.getElementById("contract_sum").value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
+    const adv_sum = document.getElementById("adv_all_sum").value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
     const diff_sum = contract_sum - adv_sum;
 
     const clientId = document.querySelector(".modal-client");
@@ -200,6 +202,7 @@ if (changeBill) {
       advWrap.style.display = "none";
     }
     el.addEventListener("click", () => {
+  
       let elem = el.getAttribute("data-name");
       let idBill = el.getAttribute("data-id-bill");
       let idBillName = el.getAttribute("data-bill-month-client-name");
@@ -222,12 +225,14 @@ if (changeBill) {
       nameClientBillModal.value = nameClientBill;
       sumBillModal.value = +sumBillStr;
       sumAdvBillModal.value = +sumAdvBillStr;
+     
       updBillChange(idBill, service_name, elem);
     });
   });
 }
 // изменение счета функции
 function updBillChange(idBill, service_name, elem) {
+  replaceNam ()
   const battonAddchange = document.querySelector(".client-contract_change");
   battonAddchange.addEventListener("click", () => {
     const endpoint = "/service/api/month_bill/" + idBill + "/";
@@ -236,8 +241,8 @@ function updBillChange(idBill, service_name, elem) {
     let nameClientBillModal = document.querySelector(
       "#contract_main_change"
     ).value;
-    let sumBillModal = document.querySelector("#contract_sum_change").value;
-    let sumAdvBillModal = document.querySelector("#adv_all_sum_change").value;
+    let sumBillModal = document.querySelector("#contract_sum_change").value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
+    let sumAdvBillModal = document.querySelector("#adv_all_sum_change").value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
 
     const diff_sum = sumBillModal - sumAdvBillModal;
 

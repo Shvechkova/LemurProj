@@ -7,7 +7,6 @@ from apps.service.models import ServicesMonthlyBill, SubcontractMonth
 class CategoryOperation(models.Model):
     name = models.CharField(max_length=200)
 
-
 class MetaCategoryOperation(models.Model):
     name = models.CharField(max_length=200)
 
@@ -18,6 +17,7 @@ class NameOperation(models.Model):
 
 class BankOperation(models.Model):
     name = models.CharField(max_length=200)
+    slugish = models.CharField(max_length=200, blank=True, null=True)
 
 
 class OperationEntry(models.Model):
@@ -95,13 +95,17 @@ class Operation(models.Model):
     comment = models.TextField("Комментарий", blank=True, null=True)
     
     bank = models.ForeignKey(
-        BankOperation, on_delete=models.PROTECT, blank=True, null=True
+        BankOperation, on_delete=models.PROTECT, verbose_name="банк конечный назначения операции", blank=True, null=True
     )
+    
+    # bank_first = models.ForeignKey(
+    #     BankOperation, on_delete=models.PROTECT, related_name='bank_first',verbose_name="банк начальный отправки операции", blank=True, null=True
+    # )
     
     suborder = models.ForeignKey(
         SubcontractMonth,
         on_delete=models.PROTECT,
-        verbose_name="Субподряд",
+        verbose_name="Субподряд для оплат",
         blank=True,
         null=True,
     )
@@ -129,7 +133,7 @@ class Operation(models.Model):
     )
     
     monthly_bill = models.ForeignKey(
-        ServicesMonthlyBill, on_delete=models.PROTECT, blank=True, null=True
+        ServicesMonthlyBill, on_delete=models.PROTECT,verbose_name="месячный счет для приходов и оплат", blank=True, null=True
     )
     
     TYPE_OPERATION = [
@@ -140,6 +144,44 @@ class Operation(models.Model):
     type_operation = models.CharField(
         max_length=5, choices=TYPE_OPERATION, default="out"
     )
+    
+    
+    
+class OperAccounts(models.Model):  
+    created_timestamp = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата добавления"
+    )
+      # Запланированные траты
+    amount = models.PositiveIntegerField("сумма оплаты по оперсчету", default="0")
+      
+      
+class OperAccountsName(models.Model):  
+    name = models.CharField("название типа расхода по оперсчету",
+                            max_length=200, blank=True, null=True)
+    meta_category = models.ForeignKey(
+        MetaCategoryOperation,
+        on_delete=models.PROTECT,
+        verbose_name="Главная категория операции",
+        blank=True,
+        null=True,
+    )    
+    
+class OperAccountsNameSubcategory(models.Model):  
+    name = models.CharField("название типа субкатегории расхода по оперсчету",
+                            max_length=200, blank=True, null=True)
+    
+    oper_accounts_name = models.ForeignKey(
+        OperAccountsName,
+        on_delete=models.PROTECT,
+        verbose_name="название типа расхода по оперсчету",
+        blank=True,
+        null=True,
+    )    
+     
+      
+    
+    
+    
     
   
 

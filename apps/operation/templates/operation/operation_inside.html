@@ -2,4 +2,6 @@
 {% comment %} {% load category_service %} {% endcomment %}
 {% block content %}
 <input type="hidden" id="page_name" value="{{ title }}" />
+{{operation}}
+{% include "operation/includes/category_operation_inside.html" %} 
 {% endblock content %}

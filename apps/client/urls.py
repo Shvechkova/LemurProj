@@ -11,7 +11,7 @@ app_name = "client"
 router = routers.DefaultRouter()
 router.register(r"api/client", view_sets.AddClient)
 router.register(r"api/contract", view_sets.ContractView)
-router.register(r"api/additional_contract", view_sets.AdditionalContractView)
+# router.register(r"api/additional_contract", view_sets.AdditionalContractView)
 
 
 urlpatterns = [

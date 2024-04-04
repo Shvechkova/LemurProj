@@ -8,11 +8,9 @@ register = template.Library()
 # def categorys():
 #     return Service.objects.all()
 
+
 @register.inclusion_tag('service/includes/service_menu.html')
 def get_category_service():
     service = Service.objects.all()
-    
-    
-    return {"service": service,
-           
-            }
+
+    return {"service": service}

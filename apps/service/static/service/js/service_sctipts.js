@@ -151,7 +151,7 @@ if (shrinkItem) {
             oldSheinkPars[i] = shrinkElemToDate;
           } else {
             if (e === lenghtold) {
-              oldSheinkPars.push(shrinkElemToDate);
+                 oldSheinkPars.push(shrinkElemToDate);
             }
           }
         });
@@ -171,7 +171,6 @@ function getStateLocalStorage() {
   var dataShrink = localStorage.getItem("shrinks");
 
   if (dataShrink) {
-
     const typeItemShrink = document.querySelectorAll("[data-type-shrink]");
     const oldSheinkPars = JSON.parse(dataShrink);
     oldSheinkPars.forEach((elem, i) => {
@@ -191,22 +190,18 @@ function getStateLocalStorage() {
       btnShrink.forEach((el) => {
         const elemAttrTupe = el.getAttribute("data-btn-type-shrink");
         if (elemAttrTupe == elem.type) {
-          el.setAttribute("data-btn-deg-suborder", elem.btndeg);
+          // el.setAttribute("data-btn-deg-suborder", elem.btndeg);
+          el.setAttribute(`data-btn-deg-${elem.type}`, elem.btndeg);
         }
       });
-
-     
     });
   }
- 
 }
 
 //новый месяц кнопка
 const newBillMonth = document.querySelector(".new_month");
 if (newBillMonth) {
   newBillMonth.addEventListener("click", () => {
-   
-
     location.href = window.location.origin + "/service/new_month";
     window.history.back();
   });
@@ -223,7 +218,6 @@ if (sortDate) {
   const btnSort = document.querySelectorAll(".btn_sorting_month");
 
   btnSort.forEach((item) => {
-    
     item.addEventListener("click", () => {
       const monthDate = item.getAttribute("data-sort-month");
       sortDate.setAttribute("data-sort-month", monthDate);
@@ -235,7 +229,6 @@ if (sortDate) {
     const indexBtn = sortDate.getAttribute("bill-sorting-date");
     const monthDate = item.getAttribute("data-sort-month");
     if (indexBtn == monthDate) {
-     
       item.classList.add("active_sorting");
     }
   });
@@ -261,18 +254,17 @@ if (sortOper) {
     item.addEventListener("click", () => {
       const setItem = item.getAttribute("data-sort-operation");
       const oldSortClient = sessionStorage.getItem("sortOper");
-      if(oldSortClient == setItem){
-        sessionStorage.setItem("sortOper" , "0");
-       document.cookie = "sortOper= 0";
-     }else{
-       const operDate = item.getAttribute("data-sort-operation");
-      sortOper.setAttribute("data-sort-operation", operDate);
+      if (oldSortClient == setItem) {
+        sessionStorage.setItem("sortOper", "0");
+        document.cookie = "sortOper= 0";
+      } else {
+        const operDate = item.getAttribute("data-sort-operation");
+        sortOper.setAttribute("data-sort-operation", operDate);
 
-      sessionStorage.setItem("sortOper", operDate);
-      document.cookie = "sortOper=" + operDate;
-     }
-     
-     
+        sessionStorage.setItem("sortOper", operDate);
+        document.cookie = "sortOper=" + operDate;
+      }
+
       location.reload();
     });
 
@@ -283,3 +275,12 @@ if (sortOper) {
     }
   });
 }
+
+
+// function replaceNam (){
+//  const sel = document.querySelector(".num_budet")
+// sel.addEventListener('input',()=>{
+//   sel.value = sel.value.replace(/\d $/, '').replace(/\D/g, '').replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ') + ' ₽';
+// })
+// }
+

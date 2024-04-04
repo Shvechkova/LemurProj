@@ -11,27 +11,30 @@ if (modal_add_client) {
     let elem = modal_add_client.getAttribute("data-name");
     const add_contract = document.querySelector(".client_contract_add");
     add_contract.disabled = true;
-    modal(elem, add_contract);
 
+    modal(elem, add_contract);
     addManager();
+    // очистка полей
     const contractWrapper = document.getElementById("modal_contract_wrapper");
     contractWrapper.innerHTML = "";
     const clientNameInput = document.querySelector(".modal-client_name");
     clientNameInput.innerHTML = "";
+    clientNameInput.value = "";
+
     createInputContract();
-
     choiceColor();
-
+    // валидация
     const modalWindows = document.getElementById(elem);
     modalWindows.addEventListener("input", () => {
       validate(elem, ".client_contract_add");
       validate(elem, ".modal_add_contract_btn");
     });
-
+    // добавление изменение клиента контракта
     const endpointClient = "/clients/api/client/";
     const endpointContact = "/clients/api/contract/";
     const endpointContractAll = "/clients/api/contract/create_contracts/";
     const optionsMethod = "POST";
+
     addNewClient(
       elem,
       endpointClient,
@@ -42,7 +45,7 @@ if (modal_add_client) {
   });
 }
 
-function clickModal() {}
+
 
 // менеджеры из базы
 function addManager(selected, boss, divWrapper) {
@@ -186,8 +189,8 @@ function createInputContract() {
     "Подписан"
   ).appendTo(divWrapper);
   new Input(
-    "number",
-    "modal-client_contract-input input-130",
+    "text",
+    "modal-client_contract-input input-130 pyb",
     "",
     "Сумма"
   ).appendTo(divWrapper);
@@ -199,6 +202,8 @@ function createInputContract() {
   button.innerHTML = "OK";
   button.disabled = true;
   divWrapper.append(button);
+
+  replaceNam();
   choiceColor();
 
   button.addEventListener("click", () => {
@@ -275,7 +280,9 @@ function addNewClient(
                 "data-id"
               );
             const data = contractChild[2].value;
-            const contractSum = contractChild[3].value;
+            const contractSum = contractChild[3].value
+              .replace(/[^+\d]/g, "")
+              .replace(/(\d)\++/g, "$1");
 
             const bossContractInp = contractChild[5];
             var bossContr =
@@ -453,8 +460,8 @@ function getContracts(idClient) {
         ).appendTo(divWrapper);
 
         new Input(
-          "number",
-          "modal-client_contract-input input-130",
+          "text",
+          "modal-client_contract-input input-130 pyb",
           el.contract_sum,
           "Сумма"
         ).appendTo(divWrapper);
@@ -465,6 +472,7 @@ function getContracts(idClient) {
         // divWrapper.append(selectBoss);
         manager = el.manager;
         addManager(manager, "boss", divWrapper);
+        replaceNam();
       });
 
       // addService(select, el.service);
@@ -480,19 +488,18 @@ function sortingClient() {
   const sortClient = sessionStorage.getItem("sortClient");
 
   btnClientSort.forEach((elem) => {
-    if (sortClient == elem.getAttribute("data-sort-client")){
+    if (sortClient == elem.getAttribute("data-sort-client")) {
       elem.style.borderColor = "#000";
     }
     elem.addEventListener("click", () => {
       const setItem = elem.getAttribute("data-sort-client");
       const oldSortClient = sessionStorage.getItem("sortClient");
       if (oldSortClient == setItem) {
-         sessionStorage.removeItem("sortClient");
+        sessionStorage.removeItem("sortClient");
         document.cookie = "sortClient= client";
       } else {
         const sortClient = sessionStorage.setItem("sortClient", setItem);
         document.cookie = "sortClient=" + setItem;
-        
       }
       location.reload();
     });

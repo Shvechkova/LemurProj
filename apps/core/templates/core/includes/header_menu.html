@@ -3,9 +3,9 @@
     <ul class="header_nav">
       <li class="header_nav-link">
         {% url 'service:index' as the_url %} 
-  
+       
         {% if request.get_full_path == the_url or type_url ==  "service" %}
-  
+    
         <span class="menu-active">Услуги</span> 
         {% else %}
         <a class="" href="{% url 'service:index' %}" >Услуги</a
@@ -14,8 +14,8 @@
       </li>
 
       <li class="header_nav-link">
-        {% url 'operations:operation' as the_url %} 
-        
+        {% url 'operation:operation_outside' as the_url %} 
+ 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Внешние счета</span> 
         {% else %}
@@ -24,7 +24,7 @@
         {% endif %} 
       </li>
       <li class="header_nav-link">
-        {% url 'operations:operation' as the_url %} 
+        {% url 'operation:operation_inside' as the_url %} 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Внутренние счета</span> 
         {% else %}
@@ -33,7 +33,7 @@
         {% endif %} 
       </li>
       <li class="header_nav-link">
-        {% url 'operations:operation' as the_url %} 
+        {% url 'operation:operation_storage' as the_url %} 
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Хранилище</span> 
         {% else %}
@@ -59,6 +59,16 @@
         >
         {% endif %} 
       </li> {% endcomment %}
+      {% comment %} <li class="header_nav-link">
+        {% url 'core:home' as the_url %} 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active"></span> 
+        {% else %}
+        <a class="" href="{% url 'core:home' %}" >Сотрудники</a
+        >
+        {% endif %} 
+      </li>  {% endcomment %}
     </ul>
   </nav>
+
 </header>

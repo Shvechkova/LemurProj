@@ -3,6 +3,7 @@ const addOperationOut = document.querySelectorAll(".suborder_out_operation");
 if (addOperationOut) {
   addOperationOut.forEach((element) => {
     element.addEventListener("click", () => {
+      console.log(2222)
       // заполнение тайтла инфой
       // getInfoBillOperationOperOut(element);
       getBillInfoOutOper(element);
@@ -87,37 +88,6 @@ function getBillInfoOutOper(element) {
     modalSumCtr.style.color = "red";
   }
 }
-// function getInfoBillOperationOperOut(element) {
-
-//   const clientName = element.getAttribute("data-bill-month-client-name");
-//   const contractName = element.getAttribute("data-bill-month-name");
-//   const contractData = element.getAttribute("data-bill-month-data");
-//   const allMonthSum = element.getAttribute("data-id-sub-amount");
-//   const nameSumorder = element.getAttribute("data-name-sub");
-
-//   const modalClient = document.querySelector(
-//     ".operation_entry_client-name_out"
-//   );
-//   const modalContract = document.querySelector(
-//     ".operation_entry_contract-name_out"
-//   );
-//   const modalData = document.querySelector(".operation_entry_data_out");
-
-//   const modalNameSuborder = document.querySelector(".name_suborder_modal_out");
-//   const modalSumCtr = document.querySelector(".sum_operation_suborders_outs");
-//   const modalsunordrt_operation_all = document.querySelector(
-//     ".sum_operation_suborders_all"
-//   );
-
-//   modalClient.innerHTML = clientName;
-//   modalContract.innerHTML = contractName;
-//   modalData.innerHTML = contractData;
-
-//   modalNameSuborder.innerHTML = nameSumorder;
-//   modalSumCtr.innerHTML = allMonthSum;
-//   modalsunordrt_operation_all.innerHTML = 0;
-
-// }
 
 // добавление операции
 function addFetchOperationOut(element, endpoint, elem) {
@@ -164,7 +134,7 @@ function addFetchOperationOut(element, endpoint, elem) {
             const otherSumCheck = document.querySelector(
               "#other_sum_namber_out"
             );
-            sumChecked = +otherSumCheck.value;
+            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
 
             return;
           }
@@ -182,7 +152,7 @@ function addFetchOperationOut(element, endpoint, elem) {
             const otherSumCheck = document.querySelector(
               "#other_sum_namber_out"
             );
-            sumChecked = +otherSumCheck.value;
+            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
             return;
           }
         }
@@ -349,22 +319,24 @@ function newOperationOut(element, elem) {
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "2");
           sumChekedWrap.innerHTML =
-            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap"><input checked type="radio" id="100_out" name="sum" value="' +
+            '<h3>Сколько оплатили444?</h3><div class="input_bank_wrap"><input checked type="radio" id="100_out" name="sum" value="' +
             sumOperationEnded +
-            '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" type="number" id="other_sum_namber_out" name="" value="" /> </div>';
+            '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" type="text" class ="pyb" id="other_sum_namber_out" name="" value="" /> </div>';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";
+          replaceNam ()
           ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
         } else {
           preloaderModal(isLoading = false, isLoaded = true)
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "1");
           sumChekedWrap.innerHTML =
-            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap"><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /></label><input placeholder="Другая сумма" data-validate="0"  type="number" id="other_sum_namber_out" name="" value="" /></div>';
+            '<h3>Сколько оплатили5555?</h3><div class="input_bank_wrap"><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /></label><input placeholder="Другая сумма" data-validate="0"  type="text" class="pyb" id="other_sum_namber_out" name="" value="" /></div>';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";
+          replaceNam ()
           ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
         }
 

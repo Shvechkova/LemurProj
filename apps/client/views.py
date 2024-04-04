@@ -4,10 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from apps.employee.models import Employee
-from apps.service.models import Service, ServiceClient
-from apps.service.serializers import ServiceSerializer
-from .models import Client, Contract
+
+from apps.service.models import Service
+
+from .models import Contract
 from django.db.models import F, Q
 
 # from rest_framework
@@ -15,31 +15,27 @@ from rest_framework import routers, serializers, viewsets, mixins
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-# from .serializers import ClientSerializer, ContractSerializer, ManagerSerializer
 
 
 def clients(request):
-    print(request.COOKIES.get('sortClient'))
-    if request.COOKIES.get('sortClient') != "client":
-        sortClient = request.COOKIES["sortClient"]
+    # куки для сортировки
+    if request.COOKIES.get('sortClient') and request.COOKIES.get('sortClient') != "client":
+        sort_сlient = request.COOKIES["sortClient"]
         contracts = Contract.objects.filter(
-        Q(service__name=sortClient)).order_by("service")
+            Q(service__name=sort_сlient)).order_by("service")
     else:
-        sortClient = 'client'
-        contracts = Contract.objects.all().select_related("client","service",'manager').order_by("client")
-        # .order_by("client")
-        
+        sort_сlient = 'client'
+        contracts = Contract.objects.all().select_related(
+            "client", "service", 'manager').order_by("client")
 
-    # clients = Client.objects.all()
-    
     servise = Service.objects.all()
-    
+
     title = "Клиенты"
     context = {
-        # "clients": clients,
+      
         "contracts": contracts,
         "title": title,
-        "servise":servise,
+        "servise": servise,
     }
     return render(request, "client/index.html", context)
 

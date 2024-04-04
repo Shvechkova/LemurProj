@@ -11,7 +11,7 @@ from apps.employee.models import Employee
 
 
 class Client(models.Model):
-    client_name = models.CharField(max_length=200)
+    client_name = models.CharField("имя клиента", max_length=200)
     manager = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
@@ -20,9 +20,9 @@ class Client(models.Model):
         null=True,
     )
      
-    # class Meta:
-    #     verbose_name = "Клиент"
-    #     verbose_name_plural = "Клиенты"
+    class Meta:
+        verbose_name = "Клиент"
+        verbose_name_plural = "Клиенты"
 
     # def __str__(self):
     #     return self.client_name
@@ -51,51 +51,51 @@ class Contract(models.Model):
     manager = models.ForeignKey(
         Employee,
         on_delete=models.PROTECT,
-        verbose_name="Менеджер",
+        verbose_name="ответсвенный контракта",
         blank=True,
         null=True,
     )
     
-    def get_contracts_client(self,client_id):
-        contract_in_client = self.objects.filter(client=client_id)
-        return contract_in_client
-    # class Meta:
-    #     verbose_name = "Контракт главный"
-    #     verbose_name_plural = "Контракты главные"
+    # def get_contracts_client(self,client_id):
+    #     contract_in_client = self.objects.filter(client=client_id)
+    #     return contract_in_client
+    class Meta:
+        verbose_name = "Контракт главный"
+        verbose_name_plural = "Контракты главные"
 
     # def __str__(self):
     #     return self.contract_number
 
 
 
-# дополнительный контракт(к основному)
-class AdditionalContract(models.Model):
-    contract_number = models.CharField("название номер контракта", max_length=200)
-    client = models.ForeignKey(
-        Client, on_delete=models.PROTECT, verbose_name="Клиент", blank=True, null=True
-    )
-    # services = models.ForeignKey(
-    #      Service, on_delete=models.PROTECT,  verbose_name="Конкретная услуга клиента",blank=True, null=True
-    # )
-    service = models.ForeignKey(
-        "service.Service",
-        on_delete=models.PROTECT,
-        verbose_name="Конкретная услуга клиента",
-        blank=True,
-        null=True,
-    )
-    main_contract = models.ForeignKey(
-        Contract,
-        on_delete=models.SET_NULL,
-        verbose_name="главный контракт",
-        blank=True,
-        null=True,
-    )
-    contract_sum = models.PositiveIntegerField("сумма контракта", default="0")
-    diff_sum = models.PositiveIntegerField("сумма контракта", default="0")
-    created_timestamp = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата добавления"
-    )
-    adv_all_sum = models.PositiveIntegerField("", default="0")
+# # дополнительный контракт(к основному)
+# class AdditionalContract(models.Model):
+#     contract_number = models.CharField("название номер контракта", max_length=200)
+#     client = models.ForeignKey(
+#         Client, on_delete=models.PROTECT, verbose_name="Клиент", blank=True, null=True
+#     )
+#     # services = models.ForeignKey(
+#     #      Service, on_delete=models.PROTECT,  verbose_name="Конкретная услуга клиента",blank=True, null=True
+#     # )
+#     service = models.ForeignKey(
+#         "service.Service",
+#         on_delete=models.PROTECT,
+#         verbose_name="Конкретная услуга клиента",
+#         blank=True,
+#         null=True,
+#     )
+#     main_contract = models.ForeignKey(
+#         Contract,
+#         on_delete=models.SET_NULL,
+#         verbose_name="главный контракт",
+#         blank=True,
+#         null=True,
+#     )
+#     contract_sum = models.PositiveIntegerField("сумма контракта", default="0")
+#     diff_sum = models.PositiveIntegerField("сумма контракта", default="0")
+#     created_timestamp = models.DateTimeField(
+#         auto_now_add=True, verbose_name="Дата добавления"
+#     )
+#     adv_all_sum = models.PositiveIntegerField("", default="0")
 
 

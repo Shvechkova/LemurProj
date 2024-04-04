@@ -1,0 +1,17 @@
+
+<ul class="header_nav">
+
+      {% for c in category_operation %}
+    
+            <li class="header_nav-link">
+             {% url 'operation:operation_inside_categ' c.tag as the_url %} 
+                  {% if request.path == the_url %}
+                
+                        <span class="menu-active menu-active_service">{{ c.name }}</span>
+                  {% else %}
+                        <a class="menu_service"
+                           href="{% url 'operation:operation_inside_categ' c.tag %}">{{ c.name }}</a>
+                  {% endif %}
+            </li>
+      {% endfor %}
+</ul>

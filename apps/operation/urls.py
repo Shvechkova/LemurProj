@@ -15,12 +15,19 @@ router.register(r"api/operation", view_sets.OperationViews)
 
 
 urlpatterns = [
-  
+
     path("", include(router.urls)),
     path("", views.index, name="index"),
     path("operation_inside", views.operation_inside, name="operation_inside"),
     path("operation_outside", views.operation_outside, name="operation_outside"),
     path("operation_storage", views.operation_storage, name="operation_storage"),
+
+    path("operation_outside/<slug:slug>", (views.operation_outside_categ),
+         name="operation_outside_categ"),
+    path("operation_inside/<slug:slug>", (views.operation_inside_categ),
+         name="operation_inside_categ"),
+
+
     # path("api/v1/clientlist/", ClientIpiView.as_view()),
     # path("", views.ClientView.as_view(), name="index"),
     # path("<int:client_id>", views.client, name="client"),

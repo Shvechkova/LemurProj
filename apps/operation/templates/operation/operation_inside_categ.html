@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<input type="hidden" id="page_name" value="{{ title }}" />
+{% include "operation/includes/category_operation_inside.html" %}
+<div class="categore_operation">
+    {% comment %} {% regroup total_month_entry by created_timestamp|date:"M Y" as total_month_entry_list %}
+    {% for created_timestamp in total_month_entry_list %}
+        {{ created_timestamp.grouper }}
+        <p>{{ created_timestamp|date:"M Y" }}</p>
+        <div class="operation_table">
+        
+            {% for operation in created_timestamp.list %}
+           
+           
+            <p>{{ operation }}{{ operation.type_operation }}{{ operation.amount }}</p>
+            {% endfor %}
+        </div>
+        //
+    {% endfor %} {% endcomment %}
+
+    {% for total_month in  total_month_entry%}
+        {{total_month.month|date:"M Y" }}
+       
+        {% if  forloop.first %} 
+        {% for cat in cat_oper %}
+        {{cat}} <br>
+        {% endfor %}{% endif %}
+    
+    {% endfor %}
+</div>
+{% endblock content %}

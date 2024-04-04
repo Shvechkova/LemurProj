@@ -4,8 +4,8 @@ from project.celery import app
 
 @app.task
 def creat_new_bill_month():
-  print(123)
-    
+ 
+    print(123)
     # now = datetime.datetime.now()
 
     # old_month = now.month - 1

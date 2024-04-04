@@ -11,13 +11,6 @@ isLoading = false;
 isLoaded = true;
 function preloaderModal(isLoading, isLoaded) {
   if (isLoading == true) {
-    // window.setTimeout(function () {
-    //   document.body.classList.add("loaded_hiding");
-    // document.body.classList.remove("loaded");
-    // const preloader = document.querySelector(".preloader");
-    // preloader.style.opacity = "1";
-    // }, 500);
-
     document.body.classList.add("loaded_hiding");
     document.body.classList.remove("loaded");
     const preloader = document.querySelector(".preloader");
@@ -30,6 +23,7 @@ function preloaderModal(isLoading, isLoaded) {
     preloader.style.opacity = "0";
   }
 }
+
 preloaderModal(isLoading, isLoaded);
 
 function modal(elem, buttonAdd) {
@@ -37,27 +31,25 @@ function modal(elem, buttonAdd) {
   modal_windows.classList.add("modal-active");
 
   const nameclose = "." + "modal_close" + "_" + elem + "";
- 
+
   //  закрытие по общему контейнеру
   let modalWrapper = document.querySelector(".modal-wrapper");
   let modalWrapperWind = document.querySelector(".modal-items");
- 
 
   modal_windows.addEventListener("click", (event) => {
-   
+    let modalWrapperWind = document.querySelector(".modal-items");
 
-     let modalWrapperWind = document.querySelector(".modal-items");
- 
     let modalSelect = modal_windows.querySelectorAll(".modal-select");
     let modalSelectWrap = modal_windows.querySelector("#modal-select");
-  
- 
 
-      if (event.target == modal_windows && event.target != modalWrapper && event.isTrusted == true  ) {
-
-        modal_windows.classList.remove("modal-active");
-        modal_windows.replaceWith(modal_windows.cloneNode(true));
-      }
+    if (
+      event.target == modal_windows &&
+      event.target != modalWrapper &&
+      event.isTrusted == true
+    ) {
+      modal_windows.classList.remove("modal-active");
+      modal_windows.replaceWith(modal_windows.cloneNode(true));
+    }
   });
   let modalCloseAll = document.querySelector(nameclose);
 
@@ -70,8 +62,8 @@ function modal(elem, buttonAdd) {
 
 // функции завершения модального окна
 function alertSuccess(element) {
-  const wrap = element.querySelector(".modal-items")
-  wrap.style.padding = "100px"
+  const wrap = element.querySelector(".modal-items");
+  wrap.style.padding = "100px";
   element.querySelector(".modal-items-wrap").innerHTML = "Успех";
 }
 function alertError(element) {
@@ -95,13 +87,12 @@ function validate(elem, btn) {
   const modalWindows = document.getElementById(elem);
   const allInputModal = modalWindows.querySelectorAll("input");
   const allSelectModal = modalWindows.querySelectorAll("select");
-  
+
   const add_contract = document.querySelector(btn);
   let inputYes;
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
-  
     if (elInput.value == "") {
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
@@ -120,7 +111,7 @@ function validate(elem, btn) {
 
   allSelectModal.forEach((elSelect) => {
     const elSelectChecked = elSelect.options[elSelect.selectedIndex].value;
-   
+
     if (elSelectChecked == 0 || elSelectChecked == "") {
       add_contract.disabled = true;
       throw false;
@@ -132,6 +123,8 @@ function validate(elem, btn) {
 
   if (selectYes || selectYes) {
     validateClass = true;
+  } else {
+    validateClass = false;
   }
 
   return validateClass;
@@ -140,18 +133,19 @@ function validate(elem, btn) {
 // валидация без радио кнопок для кнопки ок дающаяя сохранить форму
 function validateBtn(elem, btn) {
   const modalWindows = document.getElementById(elem);
- 
+
   const add_contract = document.querySelector(btn);
-  const elemParent = add_contract.parentElement
+  const elemParent = document.querySelector(btn).parentNode;
 
   const allInputModal = elemParent.querySelectorAll("input");
+
   const allSelectModal = elemParent.querySelectorAll("select");
 
   let inputYes;
   let selectYes;
   let validateClass = false;
-  allInputModal.forEach((elInput) => {
 
+  allInputModal.forEach((elInput) => {
     if (elInput.value == "") {
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
@@ -182,6 +176,8 @@ function validateBtn(elem, btn) {
 
   if (selectYes || selectYes) {
     validateClass = true;
+  } else {
+    validateClass = false;
   }
 
   return validateClass;
@@ -196,6 +192,7 @@ function validateRadio(elem, btn, wrapOne, wrapTwo) {
   const allInputModalTwo = wrapTwoElem.querySelectorAll("input[type='radio']");
 
   const add_contract = document.querySelector(btn);
+  console.log(add_contract);
   let inputYes;
   let inputYesTwo;
   let validateClass = false;
@@ -219,11 +216,13 @@ function validateRadio(elem, btn, wrapOne, wrapTwo) {
   if (inputYes && inputYesTwo) {
     validateClass = true;
     add_contract.disabled = false;
+  } else {
+    validateClass = false;
+    add_contract.disabled = true;
   }
+  console.log(validateClass);
   return validateClass;
 }
-
-
 
 // класс конструктор инпутов
 class Input {
@@ -278,12 +277,38 @@ function choiceColor() {
   });
 }
 
-// чекин окна другой сумы НЕ РАБОТАЕТ
+// чекин окна другой сумы
 
 function ChekinOtherSum(inputOtherSum, radioOtherSum) {
   const chekinOtherSum = document.getElementById(inputOtherSum);
   chekinOtherSum.addEventListener("input", () => {
     const chekinOtherSum = document.getElementById(radioOtherSum);
     chekinOtherSum.checked = true;
+  });
+}
+
+// добавление знаков рубля в инпуты с суммами
+function replaceNam() {
+  const sel = document.querySelectorAll(".pyb");
+  sel.forEach((elem) => {
+    if (elem.value != "") {
+      elem.value =
+        elem.value
+          .replace(/\d $/, "")
+          .replace(/\D/g, "")
+          .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
+    }
+
+    elem.addEventListener("input", () => {
+      elem.value =
+        elem.value
+          .replace(/\d $/, "")
+          .replace(/\D/g, "")
+          .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
+
+      if (elem.value == " ₽") {
+        elem.value = "";
+      }
+    });
   });
 }

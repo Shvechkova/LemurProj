@@ -2,7 +2,7 @@ from typing import Self
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from apps.client.models import AdditionalContract
+
 from apps.service.models import Service, ServicesMonthlyBill
 
 

@@ -84,14 +84,13 @@ class SubcontractMonthView(viewsets.ModelViewSet):
         billSuborders = SubcontractMonth.objects.filter(
             month_bill=idBill)
         bill = ServicesMonthlyBill.objects.get(id=idBill)
-  
+
         if billSuborders.count() == 0:
             bill.chekin_add_subcontr = False
             bill.save()
         else:
             bill.chekin_add_subcontr = True
             bill.save()
-            
 
             # operation = Operation.objects.filter(
             #     monthly_bill=idBill, type_operation='entry').aggregate(total=Sum('amount', default=0))

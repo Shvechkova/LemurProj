@@ -1,5 +1,5 @@
 from django.db import models
-from apps.client.models import AdditionalContract, Client, Contract
+from apps.client.models import  Client, Contract
 from django.utils import timezone
 from apps.employee.models import Employee
 from django.db.models import Count, Sum
@@ -50,9 +50,9 @@ class ServicesMonthlyBill(models.Model):
     contract = models.ForeignKey(
         Contract, on_delete=models.PROTECT, blank=True, null=True
     )
-    additional_contract = models.ForeignKey(
-        AdditionalContract, on_delete=models.PROTECT, blank=True, null=True
-    )
+    # additional_contract = models.ForeignKey(
+    #     AdditionalContract, on_delete=models.PROTECT, blank=True, null=True
+    # )
 
     subcontract = models.ForeignKey(
         "SubcontractMonth", on_delete=models.SET_NULL, blank=True, null=True

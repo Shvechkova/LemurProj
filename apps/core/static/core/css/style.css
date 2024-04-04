@@ -268,7 +268,7 @@ button {
 }
 
 input[type="date"] {
- width: 155px;
+  width: 155px;
   /* color: #c8c8c8; */
 }
 
@@ -317,11 +317,11 @@ input[type="date"]:before {
 }
 
 .modal-manager_client {
-  width: 295px!important;
+  width: 295px !important;
   margin-left: 10px;
 }
-.modal-boss_client{
-  width: 203px!important;
+.modal-boss_client {
+  width: 203px !important;
 }
 .modal-client_top {
   display: flex;
@@ -372,7 +372,6 @@ input[type="date"]:before {
   padding: 10px 19px;
   background-color: #000;
   margin-left: 20%;
-  
 }
 
 .button_black:disabled {
@@ -403,12 +402,11 @@ input[type="date"]:before {
   overflow: hidden;
   white-space: nowrap;
   margin-right: 42px;
- 
 }
-.client_client_meneger_client-name_count{
+.client_client_meneger_client-name_count {
   margin-right: 24px;
 }
-.client_client_meneger_client-name_count-title{
+.client_client_meneger_client-name_count-title {
   margin-right: 48px;
 }
 .change_btn {
@@ -419,9 +417,7 @@ input[type="date"]:before {
   transition: 0.2s;
 }
 .change_btn:hover {
-
   opacity: 1;
- 
 }
 
 .client_client_meneger_manager {
@@ -434,11 +430,10 @@ input[type="date"]:before {
   width: 80px;
   margin-right: 72px;
 }
-.client_contract_fx{
+.client_contract_fx {
   display: flex;
   flex-direction: column;
-  gap:30px;
-
+  gap: 30px;
 }
 
 .client_contract_contract_name {
@@ -463,10 +458,8 @@ input[type="date"]:before {
 
 .modal-add-client {
   position: relative;
- 
 }
-.client_contract_sum_ot{
-
+.client_contract_sum_ot {
 }
 
 .clients {
@@ -818,6 +811,10 @@ input[type="date"]:before {
 
 .result_not {
 }
+.result_not_before {
+  overflow: visible !important;
+  white-space: nowrap;
+}
 
 .result_not_after {
   position: absolute;
@@ -1099,7 +1096,25 @@ input[type="date"]:before {
 #date-operation_out {
   color: #000;
 }
-
+.num_budet::before {
+  z-index: 2000;
+  content: "!!!!!!!!!!!";
+  color: #333;
+  background-color: #fc0;
+  font-size: 120px;
+  padding: 2px;
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+}
+.spn {
+}
+.num_budet:active,
+:hover,
+:focus {
+}
 input[type="radio"] {
   border: 2px solid #c9c9c9;
   border-radius: 13px;
@@ -1259,9 +1274,8 @@ input[type="radio"]:checked {
   gap: 20px;
   margin-top: 20px;
   align-items: center;
-
 }
-.client_sorting{
+.client_sorting {
   gap: 50px;
 }
 
@@ -1287,17 +1301,17 @@ input[type="radio"]:checked {
 .btn_sorting_operation {
   border-bottom: 1px solid transparent;
 }
-.btn_client_sort{
-opacity: 1;
-cursor: pointer;
-border-bottom: 1px solid transparent;
+.btn_client_sort {
+  opacity: 1;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
 }
 .btn_client_sort:hover {
   border-color: #000;
   cursor: pointer;
-  }
+}
 
-.client_sorting h3{
+.client_sorting h3 {
   opacity: 1;
 }
 
@@ -1389,7 +1403,7 @@ border-bottom: 1px solid transparent;
   justify-content: center;
   position: absolute;
   cursor: pointer;
-  left:  80%;
+  left: 80%;
   top: -50%;
   /* transform: rotate(180deg); */
 }
@@ -1412,4 +1426,8 @@ border-bottom: 1px solid transparent;
 
 .comment_operation:hover + .comment_operation_hidden_wrap {
   display: block;
+}
+
+.categore_operation {
+  display: flex;
 }
