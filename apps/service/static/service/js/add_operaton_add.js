@@ -1,35 +1,33 @@
 choiceColor();
 
 const addOperationEntry = document.querySelectorAll(".add-operation-entry");
-
 if (addOperationEntry) {
   addOperationEntry.forEach((element) => {
     element.addEventListener("click", () => {
+preloaderModal((isLoading = true), (isLoaded = false));
       document.getElementById("date-operation").valueAsDate = new Date();
+      // очистка окна при повторном открытии
       const lastOperationWrap = document.querySelector(".previous_operation");
-      lastOperationWrap.innerHTML = "";
-
+      lastOperationWrap.innerHTML = ""
       let elem = element.getAttribute("data-name");
-      let operationIdvalue = element.getAttribute(
-        "data-bill-month-operation-entry"
-      );
+      // let operationIdvalue = element.getAttribute(
+      //   "data-bill-month-operation-entry"
+      // );
 
       const add_operation = document.querySelector(".operation_add");
-      add_operation.disabled = true
+      add_operation.disabled = true;
       modal(elem, add_operation);
 
-
       const sumChek = document.querySelector("#sum_cheked");
-      console.log(sumChek);
       sumChek.setAttribute("data-step", "1");
-
+      // учли уже ечть операции
       const chekinOtherSum = document.getElementById("other_sum_namber");
       chekinOtherSum.addEventListener("input", () => {
         const chekinOtherSum = document.getElementById("other_sum");
 
         chekinOtherSum.checked = true;
       });
-      newOperationEntry(element, elem);
+      getOldOperation(element, elem);
 
       getInfoBillOperation(element);
       const endpointOperation = "/operations/api/operation/operation_save/";
@@ -49,6 +47,7 @@ if (addOperationEntry) {
   });
 }
 
+// заполнение тайтла инфой
 function getInfoBillOperation(element) {
   const clientName = element.getAttribute("data-bill-month-client-name");
   const contractName = element.getAttribute("data-bill-month-name");
@@ -68,14 +67,14 @@ function getInfoBillOperation(element) {
   modalContract.innerHTML = contractName;
   modalData.innerHTML = contractData;
   modalSumcontract.innerHTML = allMonthSum + " ₽";
-  modalSumcontract.style.color = "red"
+  modalSumcontract.style.color = "red";
 }
-
+// отправка операций 
 function addFetchOperationEntry(element, endpoint, elem) {
   const btnAddOperationEntry = document.querySelector(".operation_add");
-  const allMonthSum = element.getAttribute(
-    "data-bill-month-sum-dont-operation"
-  );
+  // const allMonthSum = element.getAttribute(
+  //   "data-bill-month-sum-dont-operation"
+  // );
   const billId = element.getAttribute("data-bill-month-id");
 
   btnAddOperationEntry.addEventListener("click", () => {
@@ -112,7 +111,9 @@ function addFetchOperationEntry(element, endpoint, elem) {
             return;
           } else {
             const otherSumCheck = document.querySelector("#other_sum_namber");
-            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
+            sumChecked = +otherSumCheck.value
+              .replace(/[^+\d]/g, "")
+              .replace(/(\d)\++/g, "$1");
             return;
           }
         }
@@ -126,7 +127,9 @@ function addFetchOperationEntry(element, endpoint, elem) {
             return;
           } else {
             const otherSumCheck = document.querySelector("#other_sum_namber");
-            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
+            sumChecked = +otherSumCheck.value
+              .replace(/[^+\d]/g, "")
+              .replace(/(\d)\++/g, "$1");
             return;
           }
         }
@@ -174,8 +177,8 @@ function addFetchOperationEntry(element, endpoint, elem) {
     });
   });
 }
-
-function newOperationEntry(element, elem) {
+// получение старых операций
+function getOldOperation(element, elem) {
   let operationIdvalue = element.getAttribute(
     "data-bill-month-operation-entry"
   );
@@ -189,10 +192,8 @@ function newOperationEntry(element, elem) {
   );
 
   const idOperation = idOperationrepl.split("-");
-  console.log(idOperationrepl);
 
   if (idOperationrepl !== "") {
-    console.log(idOperationrepl);
     const sumcheked = document.querySelector(".sum_cheked");
 
     let data = new FormData();
@@ -234,7 +235,7 @@ function newOperationEntry(element, elem) {
           let dataOperation = d.toLocaleString("ru", options);
           var num = +sumoperation;
           var result = num.toLocaleString();
-            // враппер для коментария
+          // враппер для коментария
           let prevOperationItem = document.createElement("div");
           prevOperationItem.className = "previous_operation_item";
           lastOperationWrap.append(prevOperationItem);
@@ -246,8 +247,8 @@ function newOperationEntry(element, elem) {
           prevOperationDel.innerHTML = "+";
 
           let prevOperationiNoComm = document.createElement("div");
-            prevOperationiNoComm.className = "previous_operation_wrap";
-            prevOperationItem.append(prevOperationiNoComm);
+          prevOperationiNoComm.className = "previous_operation_wrap";
+          prevOperationItem.append(prevOperationiNoComm);
 
           let prevOperationTitle = document.createElement("div");
           prevOperationTitle.className = "previous_operation_title";
@@ -271,17 +272,17 @@ function newOperationEntry(element, elem) {
           st -= +sumoperation;
         });
         DelOperation(element);
-        // заполнение тайтла с результатом старых операций 
+
+        // заполнение тайтла с результатом старых операций
         sumOperationEnded = st;
         var num = +st;
         var result = num.toLocaleString();
 
         const sumExpected = document.querySelector(".operation_entry_sum_all");
         sumExpected.innerHTML = result + " ₽";
-        if (result == 0){
-          sumExpected.style.color = "black"
+        if (result == 0) {
+          sumExpected.style.color = "black";
         }
-
 
         const sumChekedWrap = document.getElementById("sum_cheked");
         sumChekedWrap.setAttribute("data-step", "2");
@@ -290,15 +291,19 @@ function newOperationEntry(element, elem) {
           sumOperationEnded +
           '" /><label for="100">Остаток</label><input type="radio" id="other_sum" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" class = "pyb " type="text" id="other_sum_namber" name="" value="" /></div>';
 
+          preloaderModal((isLoading = false), (isLoaded = true));
+          // чекин другая сумма
         const chekinOtherSum = document.getElementById("other_sum_namber");
         chekinOtherSum.addEventListener("input", () => {
           const chekinOtherSum = document.getElementById("other_sum");
-          replaceNam ()
+          replaceNam();
           chekinOtherSum.checked = true;
           return;
         });
       });
   } else {
+    // если нет старых операций
+    preloaderModal((isLoading = false), (isLoaded = true));
     const sumChekedWrap = document.getElementById("sum_cheked");
     sumChekedWrap.setAttribute("data-step", "1");
     sumChekedWrap.innerHTML =
@@ -307,36 +312,30 @@ function newOperationEntry(element, elem) {
     const chekinOtherSum = document.getElementById("other_sum_namber");
     chekinOtherSum.addEventListener("input", () => {
       const chekinOtherSum = document.getElementById("other_sum");
-      replaceNam ()
+      replaceNam();
       chekinOtherSum.checked = true;
     });
   }
 
   return idOperationrepl;
 }
-
+// удаление операции
 function DelOperation(element) {
   const delButton = document.querySelectorAll(".previous_operation_del");
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
+      preloaderModal((isLoading = true), (isLoaded = false));
       idOperation = item.getAttribute("data-id-peration");
-      console.log(idOperation);
       endpoint = "/operations/api/operation/" + idOperation + "/";
-
       item.parentElement.remove();
 
       fetch(endpoint, {
         method: "DELETE",
-        // body: dataJson,
         headers: {
           "Content-Type": "application/json",
-          // "X-CSRFToken": csrfToken,
         },
       }).then((response) => {
         if (response.ok) {
-          // location.reload();
-          console.log(element);
-          //  element.click()
           let operationIdvalue = element.getAttribute(
             "data-bill-month-operation-entry"
           );
@@ -347,7 +346,7 @@ function DelOperation(element) {
           );
 
           const idOperat = idOperationrepl.split("-");
-          console.log(idOperation);
+
           let newidoper = "";
           idOperat.forEach((item) => {
             if (item != idOperation) {
@@ -356,12 +355,11 @@ function DelOperation(element) {
           });
 
           element.setAttribute("data-bill-month-operation-entry", newidoper);
-          console.log("pppp");
-          console.log(element.getAttribute("data-bill-month-operation-entry"));
           const add_operation = document.querySelector(".operation_add");
           add_operation.replaceWith(add_operation.cloneNode(true));
-          element.click();
 
+          element.click();
+       
           return;
         }
       });

@@ -221,7 +221,7 @@ class ServicesMonthlyBill(models.Model):
                 "comment_out_bank3": comment_operation_out_bank3,
             }
         ]
-        print(obj)
+       
         return obj
    
     # субподряды адв
@@ -301,7 +301,7 @@ class ServicesMonthlyBill(models.Model):
         suborders_name = SubcontractOther.objects.all()
 
         obj = []
-        print()
+    
         for subs_item in suborders_name:
             name = {
                 "name": subs_item.name,
@@ -342,7 +342,7 @@ class ServicesMonthlyBill(models.Model):
             "id_subs": id_subs,
         }
         obj.insert(0, total)
-        print(obj)
+        
         return (obj)
 
     # def suborders_other_no_adv_total(self):

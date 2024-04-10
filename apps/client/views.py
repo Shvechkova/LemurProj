@@ -22,7 +22,8 @@ def clients(request):
     if request.COOKIES.get('sortClient') and request.COOKIES.get('sortClient') != "client":
         sort_сlient = request.COOKIES["sortClient"]
         contracts = Contract.objects.filter(
-            Q(service__name=sort_сlient)).order_by("service")
+            Q(service__name=sort_сlient)).select_related(
+            "client", "service", 'manager').order_by("service")
     else:
         sort_сlient = 'client'
         contracts = Contract.objects.all().select_related(

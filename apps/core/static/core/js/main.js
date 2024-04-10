@@ -9,7 +9,8 @@ window.onload = function () {
 // прелоадер для модалки
 isLoading = false;
 isLoaded = true;
-function preloaderModal(isLoading, isLoaded) {
+function preloaderModal(isLoading, isLoaded, setTime) {
+  
   if (isLoading == true) {
     document.body.classList.add("loaded_hiding");
     document.body.classList.remove("loaded");
@@ -24,9 +25,14 @@ function preloaderModal(isLoading, isLoaded) {
   }
 }
 
-preloaderModal(isLoading, isLoaded);
+function preloaderModalSetTime( setTime){
+setTimeout(preloaderModal, setTime);
+}
+
+preloaderModal(isLoading, isLoaded, );
 
 function modal(elem, buttonAdd) {
+  
   const modal_windows = document.getElementById(elem);
   modal_windows.classList.add("modal-active");
 
@@ -63,11 +69,49 @@ function modal(elem, buttonAdd) {
 // функции завершения модального окна
 function alertSuccess(element) {
   const wrap = element.querySelector(".modal-items");
-  wrap.style.padding = "100px";
-  element.querySelector(".modal-items-wrap").innerHTML = "Успех";
+  // wrap.style.padding = "100px";
+  // element.querySelector(".modal-items-wrap").innerHTML = "Успех";
+  const wrapper = element.querySelector(".modal-items-wrap");
+  wrapper.style.opacity = 0
+  const successItem = document.createElement("div");
+  successItem.className = "alert";
+  successItem.innerHTML =
+    "<strong>Успешно</strong>";
+    successItem.style.opacity = 0
+     wrap.append(successItem);
+     successItem.style.opacity = 1;
 }
 function alertError(element) {
-  element.querySelector(".modal-items-wrap").innerHTML = "Неудача, повторите";
+  // element.querySelector(".modal-items-wrap").innerHTML = "Неудача, повторите";
+  const wrap = element.querySelector(".modal-items");
+  // wrap.style.padding = "100px";
+  // element.querySelector(".modal-items-wrap").innerHTML = "Успех";
+  const wrapper = element.querySelector(".modal-items-wrap");
+  wrapper.style.opacity = 0;
+  const successItem = document.createElement("div");
+  successItem.className = "alert";
+  successItem.innerHTML = "<strong>Неудача, повторите</strong>";
+  successItem.style.opacity = 0;
+  wrap.append(successItem);
+  successItem.style.opacity = 1;
+}
+
+// предупреждение что нельзя удалить
+function DontDelite(element) {
+  const wrap = element.querySelector(".modal-items");
+  const wrapper = element.querySelector(".modal-items-wrap");
+  wrapper.style.opacity = 0;
+  const successItem = document.createElement("div");
+  successItem.className = "alert";
+  successItem.innerHTML = "<strong>нельзя удалить</strong>";
+  successItem.style.opacity = 0;
+  wrap.append(successItem);
+  successItem.style.opacity = 1;
+
+  const timerId = setTimeout(() => {
+    successItem.remove();
+    wrapper.style.opacity = 1;
+  }, 1000);
 }
 
 // получение куки с срфс токен

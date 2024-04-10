@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
 {% block content %}
   {% include "client/includes/modal_client_contract.html" %}
+
   <section class="clients">
     <div>
       <div class="bill-sorting-operation client_sorting"
@@ -76,7 +77,7 @@
                 <div class="client_contract">
                   <div class="client_contract_service">{{ contract.service.name }}</div>
                   <div class="client_contract_contract_name">{{ contract.contract_number }}</div>
-                  <div class="client_contract_data">{{ contract.date_start|date:"d M Y" }}</div>
+                  <div class="client_contract_data">{{ contract.date_start|date:"d E Y" }}</div>
                   <div class="client_contract_sum">{{ contract.contract_sum }} ₽</div>
                   {% comment %} <div class="client_contract_sum">  {% ifchanged contract.manager.last_name %} {{ contract.manager.last_name }} {% endifchanged %}
                   </div>  {% endcomment %}

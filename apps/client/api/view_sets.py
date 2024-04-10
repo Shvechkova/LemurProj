@@ -38,16 +38,18 @@ class AddClient(viewsets.ModelViewSet):
         manager = Employee.objects.filter(category_id=1)
         serializer = ManagerSerializer(manager, many=True)
         return Response(serializer.data)
-
-    # @action(detail=False, methods=["get"], url_path=r"client_filter_list")
-    # def client_filter_list(
-    #     self,
-    #     request,
-    # ):
-    #     category = request.query_params.get("service")
-    #     queryset = Client.objects.filter(contract__service=category)
-    #     serializer = self.serializer_class(queryset, many=True)
-    #     return Response(serializer.data)
+    
+    
+    # кленты по сервисам для страниц service
+    @action(detail=False, methods=["get"], url_path=r"client_filter_list")
+    def client_filter_list(
+        self,
+        request,
+    ):
+        category = request.query_params.get("service")
+        queryset = Client.objects.filter(contract__service=category)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 # контракт
@@ -83,15 +85,20 @@ class ContractView(viewsets.ModelViewSet):
         **kwargs,
     ):
         data = request.data
-        print(data)
+        
         for contracts in data:
             contract_id = contracts["id"]
             if contract_id == "":
                 serializer = self.serializer_class(data=contracts)
-                print(serializer)
+              
                 if serializer.is_valid():
                     serializer.save()
                     return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+                
 
             else:
                 contract = Contract.objects.get(pk=contract_id)
@@ -100,22 +107,24 @@ class ContractView(viewsets.ModelViewSet):
                 )
                 if serializer.is_valid():
                     serializer.save()
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+    # конракты для клиентов по сервисам для страницы Service
+    @action(detail=False, methods=["get"], url_path=r"contract_filter_list")
+    def contract_filter_list(
+        self,
+        request,
+    ):
 
-    # @action(detail=False, methods=["get"], url_path=r"contract_filter_list")
-    # def contract_filter_list(
-    #     self,
-    #     request,
-    # ):
+        client = request.query_params.get("client")
 
-    #     client = request.query_params.get("client")
+        category = request.query_params.get("service")
+        queryset = Contract.objects.filter(client=client,service=category)
+        serializer = self.serializer_class(queryset, many=True)
 
-    #     category = request.query_params.get("service")
-    #     queryset = Contract.objects.filter(client=client,service=category)
-    #     serializer = self.serializer_class(queryset, many=True)
-
-    #     return Response(serializer.data)
+        return Response(serializer.data)
 
 
 # class AdditionalContractView(viewsets.ModelViewSet):

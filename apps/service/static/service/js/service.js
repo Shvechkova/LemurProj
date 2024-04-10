@@ -154,10 +154,10 @@ function addMonthBill(dataBill, elem) {
     data.append("diff_sum", diff_sum);
     // суммы адв для категорий
     if (service_name == "1") {
-      console.log(1);
+
       data.append("adv_all_sum", adv_sum);
     } else {
-      console.log(2);
+     
       data.append("adv_all_sum", 0);
     }
 
@@ -178,14 +178,14 @@ function addMonthBill(dataBill, elem) {
         const windowContent = document.getElementById(elem);
         alertSuccess(windowContent);
         const timerId = setTimeout(() => {
-          location.reload();
+           location.reload();
         }, 200);
       } else {
         const windowContent = document.getElementById(elem);
         console.log(windowContent);
         alertError(windowContent);
         const timerId = setTimeout(() => {
-          location.reload();
+           location.reload();
         }, 200);
       }
     });

@@ -293,6 +293,10 @@ input[type="date"]:before {
 
 .modal-items-wrap--610 {
   width: 610px;
+  /* transition: 0.6s; */
+}
+.modal-items-wrap{
+  transition: 0.1s;
 }
 
 .modal-client_name {
@@ -371,7 +375,7 @@ input[type="date"]:before {
   color: #fff;
   padding: 10px 19px;
   background-color: #000;
-  margin-left: 20%;
+  margin-left: 23%;
 }
 
 .button_black:disabled {
@@ -398,9 +402,9 @@ input[type="date"]:before {
 }
 
 .client_client_meneger_client-name {
-  width: 170px;
+  width: 178px;
   overflow: hidden;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   margin-right: 42px;
 }
 .client_client_meneger_client-name_count {
@@ -437,16 +441,17 @@ input[type="date"]:before {
 }
 
 .client_contract_contract_name {
-  width: 180px;
+  width: 150px;
   overflow: hidden;
   margin-right: 42px;
   white-space: nowrap;
 }
 
 .client_contract_data {
-  width: 150px;
+  width: 178px;
   overflow: hidden;
   margin-right: 42px;
+      white-space: nowrap;
 }
 
 .client_contract_sum {
@@ -591,6 +596,16 @@ input[type="date"]:before {
 
 .bill-month-client-counter {
   width: 50px;
+}
+.bill-month-client-name{
+      white-space: normal;
+    height: 24px;
+    display: flex;
+    align-items: flex-start;
+    overflow: visible!important;
+}
+.bill-month-client-contract{
+  overflow: visible;
 }
 
 .bill-month-client-del {
@@ -1430,4 +1445,12 @@ input[type="radio"]:checked {
 
 .categore_operation {
   display: flex;
+}
+.alert{
+
+  position: absolute;
+  top:50%;
+left:50%;
+transform:translate(-50%, -50%);
+transition: 0.2s;
 }

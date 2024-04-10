@@ -229,9 +229,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="bill-month-client-counter{% if forloop.last %} last-loop-btn {% endif %}">
-                {% if forloop.counter < 10 %}0{% endif %}
-                {{ forloop.counter }}.
+              <div class="bill-month-client-counter{% if forloop.last %} last-loop-btn {% endif %}">{% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}.
               </div>
               <div class="bill-month-client-name bill_w-120">{{ bill.client.client_name }}</div>
               <div class="bill-month-client-contract bill_w-120">{{ bill.contract_number }}</div>

@@ -14,6 +14,7 @@ if (modal_add_client) {
 
     modal(elem, add_contract);
     addManager();
+    addmanagerContract();
     // очистка полей
     const contractWrapper = document.getElementById("modal_contract_wrapper");
     contractWrapper.innerHTML = "";
@@ -45,12 +46,12 @@ if (modal_add_client) {
   });
 }
 
-
-
 // менеджеры из базы
 function addManager(selected, boss, divWrapper) {
   const endpoint = "/clients/api/client/manager_list/";
   let select;
+  
+
   if (boss) {
     let select = document.createElement("select");
     if (selected > 0) {
@@ -69,12 +70,15 @@ function addManager(selected, boss, divWrapper) {
       "0",
       true
     ).appendTo(select);
+
     fetch(endpoint, {
       method: "get",
     })
       .then((response) => response.json())
       .then((data) => {
-        data.forEach(function (value, key) {
+        const lengthData = data.length;
+
+        data.forEach(function (value, index) {
           new selectOption(
             "modal-select",
             value.last_name,
@@ -83,62 +87,88 @@ function addManager(selected, boss, divWrapper) {
             selected
           ).appendTo(select);
         });
+       
+        return;
+      })
+      .then(() => {
         return;
       });
   } else {
-    console.log(selected);
-    select = document.querySelector(".modal-manager_client");
-    if (selected > 0) {
-      select.className = "";
-      select.classList.add("modal-manager_client");
-    }
-    select.innerHTML = "";
-
-    new selectOption(
-      "modal-select empty",
-      "0",
-      "0",
-      "Менеджер",
-      "0",
-      true
-    ).appendTo(select);
-
-    fetch(endpoint, {
-      method: "get",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        data.forEach(function (value, key) {
-          new selectOption(
-            "modal-select",
-            value.last_name,
-            value.id,
-            value.last_name,
-            selected
-          ).appendTo(select);
-        });
-        return;
-      });
+    // select = document.querySelector(".modal-manager_client");
+    // if (selected > 0) {
+    //   select.className = "";
+    //   select.classList.add("modal-manager_client");
+    // }
+    // select.innerHTML = "";
+    // new selectOption(
+    //   "modal-select empty",
+    //   "0",
+    //   "0",
+    //   "Менеджер",
+    //   "0",
+    //   true
+    // ).appendTo(select);
+    // fetch(endpoint, {
+    //   method: "get",
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     i = 0;
+    //     data.forEach(function (value, key) {
+    //       i++;
+    //       new selectOption(
+    //         "modal-select",
+    //         value.last_name,
+    //         value.id,
+    //         value.last_name,
+    //         selected
+    //       ).appendTo(select);
+    //     });
+    //     console.log(222);
+    //     return;
+    //   });
   }
+}
 
-  //  console.log(select)
+function addmanagerContract(selected, boss, divWrapper) {
+  console.log(1221212);
+  const endpoint = "/clients/api/client/manager_list/";
+  let select;
+  select = document.querySelector(".modal-manager_client");
+  if (selected > 0) {
+    select.className = "";
+    select.classList.add("modal-manager_client");
+  }
+  select.innerHTML = "";
 
-  //   fetch(endpoint, {
-  //     method: "get",
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       data.forEach(function (value, key) {
-  //         new selectOption(
-  //           "modal-select",
-  //           value.last_name,
-  //           value.id,
-  //           value.last_name,
-  //           selected
-  //         ).appendTo(select);
-  //       });
-  //       return;
-  //     });
+  new selectOption(
+    "modal-select empty",
+    "0",
+    "0",
+    "Менеджер",
+    "0",
+    true
+  ).appendTo(select);
+
+  fetch(endpoint, {
+    method: "get",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      i = 0;
+      data.forEach(function (value, key) {
+        i++;
+        new selectOption(
+          "modal-select",
+          value.last_name,
+          value.id,
+          value.last_name,
+          selected
+        ).appendTo(select);
+      });
+      preloaderModal((isLoading = false), (isLoaded = true));
+      return;
+    });
 }
 // сервисы из базы
 function addService(selectInput, selected, instans) {
@@ -160,6 +190,7 @@ function addService(selectInput, selected, instans) {
           selected
         ).appendTo(select);
       });
+
       return;
     });
 }
@@ -197,6 +228,7 @@ function createInputContract() {
   new Input("hidden", " 1", "0").appendTo(divWrapper);
 
   addManager("selected", "boss", divWrapper);
+
   let button = document.createElement("button");
   button.className = "modal_add_contract_btn";
   button.innerHTML = "OK";
@@ -206,6 +238,7 @@ function createInputContract() {
   replaceNam();
   choiceColor();
 
+  // preloaderModal((isLoading = false), (isLoaded = true));
   button.addEventListener("click", () => {
     button.remove();
     createInputContract();
@@ -328,6 +361,7 @@ function addNewClient(
           objContractAll = arrContractAll[0];
           data = JSON.stringify(objContractAll);
         }
+        console.log()
         fetch(endpointTwo, {
           method: optionsMethod,
           body: data,
@@ -336,6 +370,7 @@ function addNewClient(
             "X-CSRFToken": csrfToken,
           },
         }).then((response) => {
+       
           if (response.ok) {
             const windowContent = document.getElementById(elem);
             alertSuccess(windowContent);
@@ -357,6 +392,7 @@ function addNewClient(
 const updInfo = document.querySelectorAll(".upd_info");
 updInfo.forEach((element) => {
   element.addEventListener("click", () => {
+    preloaderModal((isLoading = true), (isLoaded = false));
     // const modalWindows = document.querySelector(".modal");
     let elem = element.getAttribute("data-name");
     let clientName = element.getAttribute("data-client-name");
@@ -365,7 +401,7 @@ updInfo.forEach((element) => {
     const contractWrapper = document.getElementById("modal_contract_wrapper");
     contractWrapper.innerHTML = "";
 
-    updClientContract(element, clientName);
+    updClientContract(element, clientName, elem);
 
     // валидация
     const modalWindows = document.getElementById(elem);
@@ -374,7 +410,6 @@ updInfo.forEach((element) => {
     // });
     // const wrapLAst = document.getElementById("modal_contract_wrapper").childNodes
     // const lastCount = wrapLAst.length
-    // console.log(wrapLAst)
 
     modalWindows.addEventListener("input", () => {
       validateBtn(elem, ".modal_add_contract_btn");
@@ -399,29 +434,21 @@ updInfo.forEach((element) => {
 });
 
 //забрать имя клиента
-function updClientContract(element, clientName) {
+function updClientContract(element, clientName, elem) {
   const titleModal = document.querySelector(".modal-client_title");
   titleModal.innerHTML = "изменить клиента";
   const idClient = element.getAttribute("data-client-id");
-  getContracts(idClient);
+  getContracts(idClient, elem);
+
   const clientNameInput = document.querySelector(".modal-client_name");
   clientNameInput.value = clientName;
 }
 
 //получить контракты по имени клиента
-function getContracts(idClient) {
-  fetch("/clients/api/client/" + idClient + "/manager_li/", {
-    method: "get",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.forEach((el) => {
-        // запись менеджера
-        manager = el.manager;
-        addManager(manager);
-      });
-    });
+function getContracts(idClient, elem) {
+  //  preloaderModal(isLoading = true,isLoaded = false);
 
+  // сами контраты получение
   const endpoint = "/clients/api/contract/" + idClient + "/contract_li/";
   fetch(endpoint, {
     method: "get",
@@ -429,7 +456,7 @@ function getContracts(idClient) {
     .then((response) => response.json())
     .then((data) => {
       const contractWrapper = document.getElementById("modal_contract_wrapper");
-
+      i = 0;
       data.forEach((el) => {
         // // запись менеджера
         // manager = el.manager;
@@ -472,13 +499,37 @@ function getContracts(idClient) {
         // divWrapper.append(selectBoss);
         manager = el.manager;
         addManager(manager, "boss", divWrapper);
+
         replaceNam();
       });
-
-      // addService(select, el.service);
-
       createInputContract();
+    })
+    .then((data) => {
+      
+      fetch("/clients/api/client/" + idClient + "/manager_li/", {
+        method: "get",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          data.forEach((el) => {
+            // запись менеджера
+            manager = el.manager;
+            addmanagerContract(manager);
+          });
+        });
     });
+
+  //   fetch("/clients/api/client/" + idClient + "/manager_li/", {
+  //     method: "get",
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       data.forEach((el) => {
+  //         // запись менеджера
+  //         manager = el.manager;
+  //         addmanagerContract(manager);
+  //       });
+  //     });
 }
 
 //сортировка по категориям
