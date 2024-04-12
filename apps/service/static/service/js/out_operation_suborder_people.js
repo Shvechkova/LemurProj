@@ -1,3 +1,4 @@
+// субордер оплата премии для ADV
 const addOperationOutPeople = document.querySelectorAll(
   ".suborder_out_operation_people"
 );
@@ -5,18 +6,20 @@ const addOperationOutPeople = document.querySelectorAll(
 if (addOperationOutPeople) {
   addOperationOutPeople.forEach((element) => {
     element.addEventListener("click", () => {
+      preloaderModal((isLoading = true), (isLoaded = false));
       let elem = element.getAttribute("data-name");
       document.getElementById("date-operation_out_other").valueAsDate =
         new Date();
 
       const add_operation = document.querySelector(".operation_add_out_other");
       modal(elem, add_operation);
+
+      // очистка окна от прошлых открытий
       const historySuborder = document.querySelector(".history_suborder");
       historySuborder.innerHTML = "";
       const operPrev = document.querySelector(".previous_operation_out_other");
       operPrev.innerHTML = "";
       const wrapOperOther = document.querySelector(".wrapper_oper_out_other");
-
       wrapOperOther.style.display = "none";
 
       FetchInfosubsPeople(element, elem);
@@ -46,20 +49,20 @@ if (addOperationOutPeople) {
     });
   });
 }
-
+// если есть несколько сбконтрактов
 function FetchInfosubsPeople(element, elem) {
   let idBill = element.getAttribute("data-bill-month-id");
   const endpoint = "/service/api/subcontract/" + idBill + "/subcontract_li/";
 
   fetch(endpoint, {
     method: "GET",
-
     headers: {
       "Content-Type": "application/json",
     },
   })
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       let endpoint = "/service/api/subcontract-category-other/";
 
       fetch(endpoint, {
@@ -91,9 +94,10 @@ function FetchInfosubsPeople(element, elem) {
                 const modalsunordrt_operation_all = document.querySelector(
                   ".sum_operation_suborders_all_other"
                 );
-                modalSumCtr.style.display = 'none'
-                modalsunordrt_operation_all.style.display = 'none'
-                modalsunordrt_operation_all.nextElementSibling.style.display = 'none'
+                modalSumCtr.style.display = "none";
+                modalsunordrt_operation_all.style.display = "none";
+                modalsunordrt_operation_all.nextElementSibling.style.display =
+                  "none";
 
                 const historySuborderWrap =
                   document.querySelector(".history_suborder");
@@ -117,7 +121,7 @@ function FetchInfosubsPeople(element, elem) {
 
                 var num = +item.amount;
                 var result = num.toLocaleString();
-                console.log(item)
+
                 historySuborderAmount.innerHTML = result + " ₽";
 
                 historySuborderBtn.setAttribute("data-id-cat", item.other);
@@ -137,6 +141,7 @@ function FetchInfosubsPeople(element, elem) {
 
             btnPaySubs.forEach((item) => {
               item.addEventListener("click", () => {
+                preloaderModal((isLoading = true), (isLoaded = false));
                 dataEmpty = [];
                 CreateSubcontractOtherOne(
                   dataEmpty,
@@ -146,13 +151,14 @@ function FetchInfosubsPeople(element, elem) {
                 );
               });
             });
+            preloaderModal((isLoading = false), (isLoaded = true));
           } else {
             CreateSubcontractOtherOne(data, dataCategoryPeople, element);
           }
         });
     });
 }
-
+// заполнение тайтла инфой
 function getInfoBillOperationOperOut(element) {
   const clientName = element.getAttribute("data-bill-month-client-name");
   const contractName = element.getAttribute("data-bill-month-name");
@@ -189,7 +195,7 @@ function getInfoBillOperationOperOut(element) {
     modalSumCtr.style.color = "red";
   }
 }
-
+// если один субконтракт
 function CreateSubcontractOtherOne(data, dataCategoryPeople, element, item) {
   const historySuborderWrap = document.querySelector(".history_suborder");
   historySuborderWrap.innerHTML = "";
@@ -198,14 +204,15 @@ function CreateSubcontractOtherOne(data, dataCategoryPeople, element, item) {
   let otherAmount;
   let monthBill;
   let nameCat = "";
+  console.log(item);
   if (data.length == 0) {
     idCat = item.getAttribute("data-id-cat");
     idSubcontr = item.getAttribute("data-id-subcontr");
     otherAmount = item.getAttribute("data-id-amount");
     monthBill = item.getAttribute("data-id-month-bill");
     nameCat = item.getAttribute("data-name-cat");
+    console.log(nameCat);
   } else {
- 
     data.forEach((item) => {
       if (item.other != null) {
         idCat = item.other;
@@ -232,9 +239,25 @@ function CreateSubcontractOtherOne(data, dataCategoryPeople, element, item) {
   wrapOperOther.setAttribute("data-id-sub-other", idSubcontr);
   wrapOperOther.setAttribute("data-id-sub-amount-id", otherAmount);
   wrapOperOther.setAttribute("data-bill-month-id", monthBill);
+
+  if (data.length == 0) {
+    const modalSumCtr = document.querySelector(
+      ".sum_operation_suborders_outs_other"
+    );
+    const modalsunordrt_operation_all = document.querySelector(
+      ".sum_operation_suborders_all_other"
+    );
+
+    modalSumCtr.innerHTML = otherAmount + " ₽";
+    modalsunordrt_operation_all.innerHTML = 0 + " ₽";
+    if (otherAmount != modalsunordrt_operation_all) {
+      modalSumCtr.style.color = "red";
+    }
+  }
+
   NewOperationOutOther(element);
 }
-
+// отправка добавление операций
 function AddOperationOtherOut(element, elem) {
   const btnAddOperationOut = document.querySelector(".operation_add_out_other");
   const wrapOperOther = document.querySelector(".wrapper_oper_out_other");
@@ -301,12 +324,23 @@ function AddOperationOtherOut(element, elem) {
       });
     }
 
-    const commentOperation = document.getElementById(
+    const commentOperations = document.getElementById(
       "operation_comment_out_other"
     ).value;
+    let commentOperation = "";
+    if (commentOperations != "") {
+      const nameSubs = document.querySelector(
+        ".name_suborder_modal_out"
+      ).textContent;
+      commentOperation = nameSubs + " - " + commentOperations;
+    } else {
+      commentOperation = commentOperations;
+    }
+
     const data_select = document.getElementById(
       "date-operation_out_other"
     ).value;
+
     const form = new FormData();
     form.append("amount", sumChecked);
     form.append("comment", commentOperation);
@@ -330,7 +364,7 @@ function AddOperationOtherOut(element, elem) {
         "X-CSRFToken": csrfToken,
       },
     }).then((response) => {
-      if (response.ok) {
+      if (response.ok === true) {
         const windowContent = document.getElementById(elem);
         alertSuccess(windowContent);
         const timerId = setTimeout(() => {
@@ -347,7 +381,7 @@ function AddOperationOtherOut(element, elem) {
     });
   });
 }
-
+// получение старых операций
 function NewOperationOutOther(element) {
   const wrapOperOther = document.querySelector(".wrapper_oper_out_other");
   let operationAllSum = wrapOperOther.getAttribute("data-id-sub-amount-id");
@@ -358,9 +392,9 @@ function NewOperationOutOther(element) {
   const modalsunordrt_operation_all = document.querySelector(
     ".sum_operation_suborders_all_other"
   );
-  modalSumCtr.style.display = 'block'
-  modalsunordrt_operation_all.style.display = 'block'
-  modalsunordrt_operation_all.nextElementSibling.style.display = 'block'
+  modalSumCtr.style.display = "block";
+  modalsunordrt_operation_all.style.display = "block";
+  modalsunordrt_operation_all.nextElementSibling.style.display = "block";
 
   let operationIdvalue = wrapOperOther.getAttribute("data-id-sub-other");
   let st = parseInt(operationAllSum);
@@ -385,7 +419,7 @@ function NewOperationOutOther(element) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // заполнение полученными старыми операциями
         if (data.length > 0) {
           const lastOperationWrap = document.querySelector(
             ".previous_operation_out_other"
@@ -430,14 +464,21 @@ function NewOperationOutOther(element) {
               " ₽ из " +
               numAllsum +
               " ₽";
-        
+
             let comment = item.comment;
 
             let prevOperationComm = document.createElement("div");
             prevOperationComm.className = "previous_operation_comment";
             prevOperationiNoComm.append(prevOperationComm);
             if (comment != "") {
-              prevOperationComm.innerHTML = "Комментарий: " + comment;
+              const commentSplit = comment.split("-");
+              console.log(commentSplit.length);
+              if (commentSplit.length > 1) {
+                commentSplit.shift();
+                prevOperationComm.innerHTML = "Комментарий: " + commentSplit;
+              } else {
+                prevOperationComm.innerHTML = "Комментарий: " + comment;
+              }
             }
             st -= +sumoperation;
           });
@@ -450,12 +491,11 @@ function NewOperationOutOther(element) {
           );
 
           var t = operationAllSum - sumOperationEnded;
-         
-            const sumallred = document.querySelector(
-              ".sum_operation_suborders_outs_other"
-            );
+
+          const sumallred = document.querySelector(
+            ".sum_operation_suborders_outs_other"
+          );
           if (sumOperationEnded == 0) {
-            
             sumallred.style.color = "black";
           }
           var num = +t;
@@ -465,8 +505,7 @@ function NewOperationOutOther(element) {
           var num = +operationAllSum;
           var result = num.toLocaleString();
 
-          sumallred.innerHTML = result + " ₽"
-
+          sumallred.innerHTML = result + " ₽";
 
           const sumChekedWrap = document.getElementById("sum_cheked_out_other");
           sumChekedWrap.setAttribute("data-step", "2");
@@ -478,7 +517,9 @@ function NewOperationOutOther(element) {
           const nameElemOtherSum = "other_sum_namber_out_other";
           const nameRadioOtherSum = "other_sum_out_other";
           ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
+          preloaderModal((isLoading = false), (isLoaded = true));
         } else {
+          // отрисовка модалки если нет старых операций
           const lastOperationWrap = document.querySelector(
             ".previous_operation_out_other"
           );
@@ -491,39 +532,42 @@ function NewOperationOutOther(element) {
           const nameElemOtherSum = "other_sum_namber_out_other";
           const nameRadioOtherSum = "other_sum_out_other";
           ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
+          preloaderModal((isLoading = false), (isLoaded = true));
         }
 
         // });
       });
   }
 }
-
+// удаление операций
 function DelOperationOutOther(element) {
   const delButton = document.querySelectorAll(".previous_operation_del");
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
       idOperation = item.getAttribute("data-id-peration");
-  
       endpoint = "/operations/api/operation/" + idOperation + "/";
-
-      item.parentElement.remove();
 
       fetch(endpoint, {
         method: "DELETE",
-        // body: dataJson,
+
         headers: {
           "Content-Type": "application/json",
-          // "X-CSRFToken": csrfToken,
         },
       }).then((response) => {
-        if (response.ok) {
+        if (response.ok === true) {
+          item.parentElement.remove();
           const add_operation = document.querySelector(
             ".operation_add_out_other "
           );
           add_operation.replaceWith(add_operation.cloneNode(true));
-          element.click();
 
+           // запись в локал тригера для перезагрузки после закрытия. имитация повторного клика для обновления модалки
+           localStorage.setItem("changeInfo", true);
+          element.click();
           return;
+        }else {
+          const windowContent = document.getElementById(elem);
+          DontDelite(windowContent);
         }
       });
     });

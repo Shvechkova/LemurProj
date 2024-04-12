@@ -3,12 +3,19 @@ from django.utils import timezone
 
 from apps.service.models import ServicesMonthlyBill, SubcontractMonth
 
-
-class CategoryOperation(models.Model):
-    name = models.CharField(max_length=200)
-
 class MetaCategoryOperation(models.Model):
     name = models.CharField(max_length=200)
+    
+    
+    
+class CategoryOperation(models.Model):
+    name = models.CharField(max_length=200)
+    meta_category = models.ForeignKey(
+        MetaCategoryOperation, on_delete=models.PROTECT, verbose_name="общая категория", blank=True, null=True
+    )
+    
+
+
 
 
 class NameOperation(models.Model):

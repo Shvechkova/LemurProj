@@ -4,11 +4,11 @@ const addOperationEntry = document.querySelectorAll(".add-operation-entry");
 if (addOperationEntry) {
   addOperationEntry.forEach((element) => {
     element.addEventListener("click", () => {
-preloaderModal((isLoading = true), (isLoaded = false));
+      preloaderModal((isLoading = true), (isLoaded = false));
       document.getElementById("date-operation").valueAsDate = new Date();
       // очистка окна при повторном открытии
       const lastOperationWrap = document.querySelector(".previous_operation");
-      lastOperationWrap.innerHTML = ""
+      lastOperationWrap.innerHTML = "";
       let elem = element.getAttribute("data-name");
       // let operationIdvalue = element.getAttribute(
       //   "data-bill-month-operation-entry"
@@ -69,7 +69,7 @@ function getInfoBillOperation(element) {
   modalSumcontract.innerHTML = allMonthSum + " ₽";
   modalSumcontract.style.color = "red";
 }
-// отправка операций 
+// отправка операций
 function addFetchOperationEntry(element, endpoint, elem) {
   const btnAddOperationEntry = document.querySelector(".operation_add");
   // const allMonthSum = element.getAttribute(
@@ -160,7 +160,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
         "X-CSRFToken": csrfToken,
       },
     }).then((response) => {
-      if (response.ok) {
+      if (response.ok === true) {
         const windowContent = document.getElementById(elem);
         alertSuccess(windowContent);
         const timerId = setTimeout(() => {
@@ -291,8 +291,8 @@ function getOldOperation(element, elem) {
           sumOperationEnded +
           '" /><label for="100">Остаток</label><input type="radio" id="other_sum" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" class = "pyb " type="text" id="other_sum_namber" name="" value="" /></div>';
 
-          preloaderModal((isLoading = false), (isLoaded = true));
-          // чекин другая сумма
+        preloaderModal((isLoading = false), (isLoaded = true));
+        // чекин другая сумма
         const chekinOtherSum = document.getElementById("other_sum_namber");
         chekinOtherSum.addEventListener("input", () => {
           const chekinOtherSum = document.getElementById("other_sum");
@@ -327,7 +327,7 @@ function DelOperation(element) {
       preloaderModal((isLoading = true), (isLoaded = false));
       idOperation = item.getAttribute("data-id-peration");
       endpoint = "/operations/api/operation/" + idOperation + "/";
-      item.parentElement.remove();
+      
 
       fetch(endpoint, {
         method: "DELETE",
@@ -335,16 +335,16 @@ function DelOperation(element) {
           "Content-Type": "application/json",
         },
       }).then((response) => {
-        if (response.ok) {
+        if (response.ok === true) {
+          item.parentElement.remove();
+          // заполнение инфом о операциях которые остались для повторого открытия окна с актцальными иоперациями
           let operationIdvalue = element.getAttribute(
             "data-bill-month-operation-entry"
           );
-
           const idOperationrepl = operationIdvalue.replace(
             /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
             ""
           );
-
           const idOperat = idOperationrepl.split("-");
 
           let newidoper = "";
@@ -353,14 +353,18 @@ function DelOperation(element) {
               newidoper += item + "-";
             }
           });
-
           element.setAttribute("data-bill-month-operation-entry", newidoper);
+
           const add_operation = document.querySelector(".operation_add");
           add_operation.replaceWith(add_operation.cloneNode(true));
 
+          // запись в локал тригера для перезагрузки после закрытия. имитация повторного клика для обновления модалки
+          localStorage.setItem("changeInfo", true);
           element.click();
-       
           return;
+        }else {
+          const windowContent = document.getElementById(elem);
+          DontDelite(windowContent);
         }
       });
     });

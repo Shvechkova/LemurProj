@@ -3,7 +3,8 @@ const addOperationOut = document.querySelectorAll(".suborder_out_operation");
 if (addOperationOut) {
   addOperationOut.forEach((element) => {
     element.addEventListener("click", () => {
-      console.log(2222)
+      console.log(2434441);
+      preloaderModal((isLoading = true), (isLoaded = false));
       // заполнение тайтла инфой
       // getInfoBillOperationOperOut(element);
       getBillInfoOutOper(element);
@@ -21,7 +22,7 @@ if (addOperationOut) {
 
       // открытие модалки
       const add_operation = document.querySelector(".operation_add_out");
-      add_operation.disabled = true
+      add_operation.disabled = true;
       modal(elem, add_operation);
 
       // выбор радио кнопки если вводить другое значение
@@ -76,7 +77,6 @@ function getBillInfoOutOper(element) {
     ".sum_operation_suborders_all"
   );
 
-
   modalClient.innerHTML = clientName;
   modalContract.innerHTML = contractName;
   modalData.innerHTML = contractData;
@@ -91,7 +91,6 @@ function getBillInfoOutOper(element) {
 
 // добавление операции
 function addFetchOperationOut(element, endpoint, elem) {
-  
   const btnAddOperationEntry = document.querySelector(".operation_add_out");
   // const allMonthSum = element.getAttribute(
   //   "name_suborder_modal"
@@ -134,7 +133,9 @@ function addFetchOperationOut(element, endpoint, elem) {
             const otherSumCheck = document.querySelector(
               "#other_sum_namber_out"
             );
-            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
+            sumChecked = +otherSumCheck.value
+              .replace(/[^+\d]/g, "")
+              .replace(/(\d)\++/g, "$1");
 
             return;
           }
@@ -152,17 +153,28 @@ function addFetchOperationOut(element, endpoint, elem) {
             const otherSumCheck = document.querySelector(
               "#other_sum_namber_out"
             );
-            sumChecked = +otherSumCheck.value.replace(/[^+\d]/g, '').replace(/(\d)\++/g, '$1');
+            sumChecked = +otherSumCheck.value
+              .replace(/[^+\d]/g, "")
+              .replace(/(\d)\++/g, "$1");
             return;
           }
         }
       });
     }
 
-    const commentOperation = document.getElementById(
+    const commentOperations = document.getElementById(
       "operation_comment_out"
     ).value;
-    console.log(commentOperation);
+    let commentOperation = "";
+    if (commentOperations != "") {
+      const nameSubs = document.querySelector(
+        ".name_suborder_modal_out"
+      ).textContent;
+      commentOperation = nameSubs + " - " + commentOperations;
+    } else {
+      commentOperation = commentOperations;
+    }
+
     const data_select = document.getElementById("date-operation_out").value;
     const form = new FormData();
     form.append("amount", sumChecked);
@@ -192,7 +204,7 @@ function addFetchOperationOut(element, endpoint, elem) {
       //   console.log(data);
       // });
       .then((response) => {
-        if (response.ok) {
+        if (response.ok === true) {
           const windowContent = document.getElementById(elem);
           alertSuccess(windowContent);
           const timerId = setTimeout(() => {
@@ -228,7 +240,7 @@ function newOperationOut(element, elem) {
     };
 
     const dataJson = JSON.stringify(object);
-    preloaderModal(isLoading = true, isLoaded = false)
+    preloaderModal((isLoading = true), (isLoaded = false));
     let csrfToken = getCookie("csrftoken");
     fetch("/operations/api/operation/operation_out_filter/", {
       method: "POST",
@@ -242,7 +254,7 @@ function newOperationOut(element, elem) {
       .then((data) => {
         console.log(data);
         if (data.length > 0) {
-          preloaderModal(isLoading = false, isLoaded = true)
+          // preloaderModal(isLoading = false, isLoaded = true)
           const lastOperationWrap = document.querySelector(
             ".previous_operation_out"
           );
@@ -291,11 +303,21 @@ function newOperationOut(element, elem) {
             prevOperationComm.className = "previous_operation_comment";
             prevOperationiNoComm.append(prevOperationComm);
             if (comment != "") {
-              prevOperationComm.innerHTML = "Комментарий: " + comment;
+            
+              const commentSplit = comment.split("-");
+              console.log(commentSplit.length)
+              if (commentSplit.length > 1){
+                commentSplit.shift();
+                prevOperationComm.innerHTML = "Комментарий: " + commentSplit;
+              } else {
+                prevOperationComm.innerHTML = "Комментарий: " + comment;
+              }
+              
+              // prevOperationComm.innerHTML = "Комментарий: " + commentSplit;
             }
             st -= +sumoperation;
           });
-          preloaderModal(isLoading = false, isLoaded = true)
+          // preloaderModal(isLoading = false, isLoaded = true)
 
           DelOperationOut(element);
           sumOperationEnded = st;
@@ -319,25 +341,26 @@ function newOperationOut(element, elem) {
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "2");
           sumChekedWrap.innerHTML =
-            '<h3>Сколько оплатили444?</h3><div class="input_bank_wrap"><input checked type="radio" id="100_out" name="sum" value="' +
+            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap"><input checked type="radio" id="100_out" name="sum" value="' +
             sumOperationEnded +
             '" /><label for="100_out">Остаток</label><input type="radio" id="other_sum_out" name="sum" value="1" /><input placeholder="Другая сумма" data-validate="0" type="text" class ="pyb" id="other_sum_namber_out" name="" value="" /> </div>';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";
-          replaceNam ()
+          replaceNam();
           ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
+          preloaderModal((isLoading = false), (isLoaded = true));
         } else {
-          preloaderModal(isLoading = false, isLoaded = true)
           const sumChekedWrap = document.getElementById("sum_cheked_out");
           sumChekedWrap.setAttribute("data-step", "1");
           sumChekedWrap.innerHTML =
-            '<h3>Сколько оплатили5555?</h3><div class="input_bank_wrap"><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /></label><input placeholder="Другая сумма" data-validate="0"  type="text" class="pyb" id="other_sum_namber_out" name="" value="" /></div>';
+            '<h3>Сколько оплатили?</h3><div class="input_bank_wrap"><input  type="radio" id="100_out" name="sum" value="100" /><label for="100_out">100%</label><input type="radio" id="50_out" name="sum" value="50" /><label for="50_out">50%</label><input type="radio" id="other_sum_out" name="sum" value="1" /></label><input placeholder="Другая сумма" data-validate="0"  type="text" class="pyb" id="other_sum_namber_out" name="" value="" /></div>';
 
           const nameElemOtherSum = "other_sum_namber_out";
           const nameRadioOtherSum = "other_sum_out";
-          replaceNam ()
+          replaceNam();
           ChekinOtherSum(nameElemOtherSum, nameRadioOtherSum);
+          preloaderModal((isLoading = false), (isLoaded = true));
         }
 
         // });
@@ -355,8 +378,6 @@ function DelOperationOut(element) {
       console.log(idOperation);
       endpoint = "/operations/api/operation/" + idOperation + "/";
 
-      item.parentElement.remove();
-
       fetch(endpoint, {
         method: "DELETE",
         // body: dataJson,
@@ -365,12 +386,18 @@ function DelOperationOut(element) {
           // "X-CSRFToken": csrfToken,
         },
       }).then((response) => {
-        if (response.ok) {
+        if (response.ok === true) {
+          item.parentElement.remove();
           const add_operation = document.querySelector(".operation_add_out");
           add_operation.replaceWith(add_operation.cloneNode(true));
-          element.click();
 
+          // запись в локал тригера для перезагрузки после закрытия. имитация повторного клика для обновления модалки
+          localStorage.setItem("changeInfo", true);
+          element.click();
           return;
+        }else {
+          const windowContent = document.getElementById(elem);
+          DontDelite(windowContent);
         }
       });
     });

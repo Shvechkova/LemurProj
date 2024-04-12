@@ -1,16 +1,17 @@
-window.onload = function () {
-  document.body.classList.add("loaded_hiding");
-  window.setTimeout(function () {
-    document.body.classList.add("loaded");
-    document.body.classList.remove("loaded_hiding");
-  }, 100);
-};
+
+
+// window.onload = function () {
+//   document.body.classList.add("loaded_hiding");
+//   window.setTimeout(function () {
+//     document.body.classList.add("loaded");
+//     document.body.classList.remove("loaded_hiding");
+//   }, 100);
+// };
 
 // прелоадер для модалки
 isLoading = false;
 isLoaded = true;
 function preloaderModal(isLoading, isLoaded, setTime) {
-  
   if (isLoading == true) {
     document.body.classList.add("loaded_hiding");
     document.body.classList.remove("loaded");
@@ -24,21 +25,24 @@ function preloaderModal(isLoading, isLoaded, setTime) {
     preloader.style.opacity = "0";
   }
 }
-
-function preloaderModalSetTime( setTime){
-setTimeout(preloaderModal, setTime);
+preloaderModal((isLoading = false), (isLoaded = true));
+function preloaderModalSetTime(setTime) {
+  setTimeout(preloaderModal, setTime);
 }
 
-preloaderModal(isLoading, isLoaded, );
-
+// setTimeout(preloaderModal(), 0, (isLoading = false), (isLoaded = true));
+// функция отурытия закрытия модалки
 function modal(elem, buttonAdd) {
-  
+  // получение тригера об изменении данных на странице
+  const changeInfo = localStorage.getItem("changeInfo");
+
+  // открытие модалки
   const modal_windows = document.getElementById(elem);
   modal_windows.classList.add("modal-active");
 
   const nameclose = "." + "modal_close" + "_" + elem + "";
 
-  //  закрытие по общему контейнеру
+  //  закрытие по общемц контейнеру
   let modalWrapper = document.querySelector(".modal-wrapper");
   let modalWrapperWind = document.querySelector(".modal-items");
 
@@ -53,15 +57,23 @@ function modal(elem, buttonAdd) {
       event.target != modalWrapper &&
       event.isTrusted == true
     ) {
+      // если есть изменения на странице перезагрузить
+      if (changeInfo === "true") {
+        localStorage.removeItem("changeInfo");
+        location.reload();
+      }
       modal_windows.classList.remove("modal-active");
       modal_windows.replaceWith(modal_windows.cloneNode(true));
     }
   });
+  // закрытие по кнопке
   let modalCloseAll = document.querySelector(nameclose);
-
   modalCloseAll.addEventListener("click", (event) => {
+    // если есть изменения на странице перезагрузить
+    if (changeInfo === "true") {
+      location.reload();
+    }
     modal_windows.classList.remove("modal-active");
-
     buttonAdd.replaceWith(buttonAdd.cloneNode(true));
   });
 }
@@ -72,14 +84,13 @@ function alertSuccess(element) {
   // wrap.style.padding = "100px";
   // element.querySelector(".modal-items-wrap").innerHTML = "Успех";
   const wrapper = element.querySelector(".modal-items-wrap");
-  wrapper.style.opacity = 0
+  wrapper.style.opacity = 0;
   const successItem = document.createElement("div");
   successItem.className = "alert";
-  successItem.innerHTML =
-    "<strong>Успешно</strong>";
-    successItem.style.opacity = 0
-     wrap.append(successItem);
-     successItem.style.opacity = 1;
+  successItem.innerHTML = "<strong>Успешно</strong>";
+  successItem.style.opacity = 0;
+  wrap.append(successItem);
+  successItem.style.opacity = 1;
 }
 function alertError(element) {
   // element.querySelector(".modal-items-wrap").innerHTML = "Неудача, повторите";
@@ -166,6 +177,46 @@ function validate(elem, btn) {
   });
 
   if (selectYes || selectYes) {
+    validateClass = true;
+  } else {
+    validateClass = false;
+  }
+
+  return validateClass;
+}
+// валидация когда только инпуты
+function validateOtherInput(elem, btn) {
+  
+  const modalWindows = document.getElementById(elem);
+  const allInputModal = modalWindows.querySelectorAll("input");
+  console.log(modalWindows)
+ 
+
+  const add_contract = document.querySelector(btn);
+  console.log(add_contract)
+  let inputYes;
+  let selectYes;
+  let validateClass = false;
+  allInputModal.forEach((elInput) => {
+
+    if (elInput.value == "") {
+      const c = elInput.getAttribute("data-validate");
+      if (c == 0) {
+        add_contract.disabled = false;
+        inputYes = true;
+      } else {
+        add_contract.disabled = true;
+
+        throw false;
+      }
+    } else {
+      add_contract.disabled = false;
+      inputYes = true;
+    }
+  });
+
+
+  if (inputYes) {
     validateClass = true;
   } else {
     validateClass = false;

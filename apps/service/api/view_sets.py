@@ -12,12 +12,12 @@ from apps.service.api.serializers import (
     SubcontractOtherSerializer,
 )
 
-
+# сервисы
 class ServiceView(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 
-
+# месячные счета
 class ServicesMonthlyBillView(viewsets.ModelViewSet):
     queryset = ServicesMonthlyBill.objects.all()
     serializer_class = ServicesMonthlyBillSerializer
@@ -58,17 +58,17 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
 
     #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
+# категории для адв
 class SubcontractCategoryAdvView(viewsets.ModelViewSet):
     queryset = Adv.objects.all()
     serializer_class = AdvSerializer
 
-
+# категории других субконтрактов
 class SubcontractCategoryOtherView(viewsets.ModelViewSet):
     queryset = SubcontractOther.objects.all()
     serializer_class = SubcontractOtherSerializer
 
-
+# субконтракты для месячных счетов
 class SubcontractMonthView(viewsets.ModelViewSet):
     queryset = SubcontractMonth.objects.all()
     serializer_class = SubcontractMonthSerializer

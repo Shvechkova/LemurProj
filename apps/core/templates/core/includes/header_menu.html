@@ -37,7 +37,7 @@
         {% if request.get_full_path == the_url %}
         <span class="menu-active">Хранилище</span> 
         {% else %}
-        <a class="" href="operation_storage" >Хранилище</a
+        <a class="" href="{% url 'operation:operation_storage' %}" >Хранилище</a
         >
         {% endif %} 
       </li>
@@ -68,6 +68,18 @@
         >
         {% endif %} 
       </li>  {% endcomment %}
+    </ul>
+    <ul class="header_nav_tech">
+      <li class="header_nav-link">
+        {% url 'core:tech' as the_url %} 
+ 
+        {% if request.get_full_path == the_url %}
+        <span class="menu-active">Тех.раздел</span> 
+        {% else %}
+        <a class="" href="{% url 'core:tech' %}" >Тех.раздел</a
+        >
+        {% endif %} 
+      </li>
     </ul>
   </nav>
 

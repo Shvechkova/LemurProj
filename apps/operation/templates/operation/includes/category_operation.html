@@ -6,8 +6,18 @@
 the_url %} {% endcomment %}
 <ul class="header_nav">
 
-  {% for c in category_operation %}
+  {% comment %} {% for c in category_operation %} {% endcomment %}
     <li class="header_nav-link">
+      {% url 'operation:operation_outside_categ' c.tag as the_url %}
+ 
+      {% if request.path == the_url %}
+        <span class="menu-active menu-active_service">Оперсчет</span>
+      {% else %}
+        <a class="menu_service"
+           href="{% url 'operation:operation_outside_categ' c.tag %}">Оперсчет</a>
+      {% endif %}
+    </li>
+    {% comment %} <li class="header_nav-link">
       {% url 'operation:operation_outside_categ' c.tag as the_url %}
  
       {% if request.path == the_url %}
@@ -17,5 +27,15 @@ the_url %} {% endcomment %}
            href="{% url 'operation:operation_outside_categ' c.tag %}">{{ c.name }}</a>
       {% endif %}
     </li>
-  {% endfor %}
+    <li class="header_nav-link">
+      {% url 'operation:operation_outside_categ' c.tag as the_url %}
+ 
+      {% if request.path == the_url %}
+        <span class="menu-active menu-active_service">{{ c.name }}</span>
+      {% else %}
+        <a class="menu_service"
+           href="{% url 'operation:operation_outside_categ' c.tag %}">{{ c.name }}</a>
+      {% endif %}
+    </li> {% endcomment %}
+  {% comment %} {% endfor %} {% endcomment %}
 </ul>

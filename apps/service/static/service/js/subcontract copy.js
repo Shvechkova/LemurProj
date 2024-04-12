@@ -5,6 +5,7 @@ const btnSubcontarct = document.querySelectorAll(".add_sabcontactor");
 if (btnSubcontarct) {
   btnSubcontarct.forEach((element) => {
     element.addEventListener("click", () => {
+   
       let elem = element.getAttribute("data-name");
       let idBill = element.getAttribute("data-bill-month-id");
       let sumAdv = element.getAttribute("data-bill-month-adv");
@@ -48,7 +49,7 @@ if (btnSubcontarct) {
 
       addSubcontractFetch(idBill, elem);
 
-      observerChangeCreateInput(element, elem);
+      // observerChangeCreateInput(element);
       // валидация
       const modalWindows = document.getElementById(elem);
       modalWindows.addEventListener("input", () => {
@@ -76,15 +77,6 @@ function getInfoBill(element) {
   modalClient.innerHTML = clientName;
   modalContract.innerHTML = contractName;
   modalData.innerHTML = contractData;
-  const title = document.querySelector("#page_name").value;
-  if (title == "1") {
-    const slash = document.querySelector(".modal_adv_budget_not_use_slash");
-    slash.style.display = "block";
-    console.log(advMonthSum);
-    let useBudgetAfterUse = document.querySelector(".modal_adv_budget_not_use");
-    console.log(useBudgetAfterUse);
-    useBudgetAfterUse.innerHTML = advMonthSum;
-  }
 }
 // создание инпутов для заполнение субконтракта fetch категорий
 function createInputSubcontract(element, elem) {
@@ -149,17 +141,20 @@ function createInputSubcontract(element, elem) {
 function createNextSubcontractInput(button, elem) {
   button.addEventListener("click", () => {
     let wrapperSubcontractInp = button.parentNode;
+
     var throwawayNode = wrapperSubcontractInp.removeChild(button);
+
     let dupNode = wrapperSubcontractInp.cloneNode();
     let dupSelect = wrapperSubcontractInp.firstElementChild.cloneNode(true);
 
     wrapperSubcontractInp.after(dupNode);
     dupNode.append(dupSelect);
+
     createInputSubcontract();
   });
 }
 // обсчет выводимой в татле сумме распред не распред субподряда
-function changeSum(element, elem) {
+function changeSum(element, mutationRecords) {
   const title = document.querySelector("#page_name").value;
   if (title == "1") {
     let sumAdv = element.getAttribute("data-bill-month-adv");
@@ -171,96 +166,67 @@ function changeSum(element, elem) {
     );
     let useBudget = document.querySelector(".modal_adv_budget_not_use");
     let useBudgetAfterUse = document.getElementById("sum_adv_after_use");
+
     var sum = sumAdvReplace;
     let useBudgetAfterUseIn = useBudgetAfterUse.value;
+    let sumOld = 0;
 
-    const modalWindow = document.getElementById(elem);
-
-    // wrapSubcontractors.forEach((el, value) => {
-    //   el.addEventListener("keyup", () => {
-
-    //     const slash = document.querySelector(".modal_adv_budget_not_use_slash");
-    //     slash.style.display = "block";
-
-    //     if (useBudgetAfterUseIn >= 0 && useBudgetAfterUseIn != "") {
-
-    //       if (el.value == "" || el.value == " ₽") {
-    //         intEl = 0;
-    //       } else {
-    //         intEl = parseInt(
-    //           el.value.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
-    //         );
-    //       }
-
-    //       let useBudgetAfterUseInit = parseInt(
-    //         useBudgetAfterUseIn.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
-    //       );
-
-    //       sum = useBudgetAfterUseInit - intEl;
-    //       var num = +sum;
-    //       var result = num.toLocaleString();
-
-    //       useBudget.innerHTML = result + " ₽";
-    //       useBudgetAfterUse.value = sum;
-    //     } else {
-    //       let intEl;
-    //       if (el.value == "") {
-    //         intEl = 0;
-    //       } else {
-    //         intEl = parseInt(
-    //           el.value.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
-    //         );
-    //       }
-    //       sum = sumAdvReplace - intEl;
-
-    //       var num = +sum;
-    //       var result = num.toLocaleString();
-
-    //       useBudget.innerHTML = result + " ₽";
-    //       useBudgetAfterUse.value = sum;
-    //     }
-    //   });
-    // });
-
-    modalWindow.addEventListener("keyup", () => {
-      let sumKeyup = 0;
-
-      wrapSubcontractors.forEach((el) => {
+    wrapSubcontractors.forEach((el, value) => {
+      el.addEventListener("keyup", () => {
         const slash = document.querySelector(".modal_adv_budget_not_use_slash");
+
         slash.style.display = "block";
+        if (useBudgetAfterUseIn >= 0 && useBudgetAfterUseIn != "") {
+          console.log(el.value);
+          if (el.value == "" || el.value == " ₽") {
+            console.log(el.value);
+            intEl = 0;
+          } else {
+            intEl = parseInt(
+              el.value.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
+            );
+          }
 
-        if (el.value == "" || el.value == " ₽") {
-          intEl = 0;
-        } else {
-          intEl = parseInt(
-            el.value.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
+          let useBudgetAfterUseInit = parseInt(
+            useBudgetAfterUseIn.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
           );
+
+          sum = useBudgetAfterUseInit - intEl;
+          var num = +sum;
+          var result = num.toLocaleString();
+
+          useBudget.innerHTML = result + " ₽";
+          useBudgetAfterUse.value = sum;
+        } else {
+          let intEl;
+          if (el.value == "") {
+            intEl = 0;
+          } else {
+            intEl = parseInt(
+              el.value.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
+            );
+          }
+          sum = sumAdvReplace - intEl;
+
+          var num = +sum;
+          var result = num.toLocaleString();
+
+          useBudget.innerHTML = result + " ₽";
+          useBudgetAfterUse.value = sum;
         }
-
-        let useBudgetAfterUseInit = parseInt(
-          useBudgetAfterUseIn.replace(/[^+\d]/g, "").replace(/(\d)\++/g, "$1")
-        );
-
-        sum = sumAdvReplace - intEl;
-        sumKeyup += intEl;
-        sum = sumAdvReplace - sumKeyup;
-        console.log(sumKeyup);
-        var result = sum.toLocaleString();
-        useBudget.innerHTML = result + " ₽";
-        useBudgetAfterUse.value = sum;
       });
     });
   }
 }
 
 // обсервер отслеживатель
-function observerChangeCreateInput(element, elem) {
+function observerChangeCreateInput(element) {
   const wrapSubcontractors = document.querySelector(
     ".modal_add_subcontract_wrapper"
   );
 
   let observer = new MutationObserver((mutationRecords) => {
-    changeSum(element, elem);
+    changeSum(element, mutationRecords);
   });
   observer.observe(wrapSubcontractors, {
     childList: true, // наблюдать за непосредственными детьми
@@ -295,10 +261,7 @@ function addSubcontractFetch(idBill, elem) {
             subcontractOther = choseNameSubcontract;
             subcontractAdv = null;
           }
-          let amount = contractChild[2].value
-            .replace(/[^+\d]/g, "")
-            .replace(/(\d)\++/g, "$1");
-
+          let amount = contractChild[2];
           const contractObj = {
             id: idelemOld.value,
             month_bill: idBill,
@@ -324,7 +287,6 @@ function addSubcontractFetch(idBill, elem) {
           let amount = contractChild[3].value
             .replace(/[^+\d]/g, "")
             .replace(/(\d)\++/g, "$1");
-
           const contractObj = {
             id: "",
             month_bill: idBill,
@@ -341,7 +303,6 @@ function addSubcontractFetch(idBill, elem) {
     const endpoint = "/service/api/subcontract/upd_subs/";
     let csrfToken = getCookie("csrftoken");
     let data = JSON.stringify(arrSubcontarctAll);
-    console.log();
 
     fetch(endpoint, {
       method: "POST",
@@ -403,8 +364,9 @@ function getOldSumcintract(idBill, element, elem) {
     .then((response) => response.json())
     .then((data) => {
       if (data.length == 0) {
-        preloaderModal((isLoading = false), (isLoaded = true));
-        //  observerChangeCreateInput(element);
+      
+        preloaderModal(isLoading=false, isLoaded=true);
+         observerChangeCreateInput(element);
         return;
       } else {
         let endpoint = "/service/api/subcontract-category-adv/";
@@ -420,9 +382,10 @@ function getOldSumcintract(idBill, element, elem) {
               modal_add_subcontract.className =
                 "modal_add_contract modal_add-subcontract";
               c.append(modal_add_subcontract);
+             
+              preloaderModal(isLoading=false, isLoaded = true);
 
-              preloaderModal((isLoading = false), (isLoaded = true));
-
+              
               if (value.adv != null) {
                 modal_add_subcontract.innerHTML =
                   '<input type="text" readonly class="modal-subcontracts input-130" placeholder="adv" value="площадка" data-adv="adv">';
@@ -439,7 +402,7 @@ function getOldSumcintract(idBill, element, elem) {
 
                     new Input(
                       "text",
-                      "modal-subcontracs modal-subcontract-input_sum input-200 num_budet pyb",
+                      "modal-subcontracs input-200 num_budet pyb",
                       value.amount,
                       "сумма"
                     ).appendTo(modal_add_subcontract);
@@ -455,8 +418,8 @@ function getOldSumcintract(idBill, element, elem) {
                     prevOperationDel.innerHTML = "+";
                   }
                 });
-                // observerChangeCreateInput(element);
                 replaceNam();
+                // observerChangeCreateInput(element);
               } else {
                 // старые субконтракты для категории другое
                 let endpoint = "/service/api/subcontract-category-other/";
@@ -505,8 +468,8 @@ function getOldSumcintract(idBill, element, elem) {
                     DelSubcontr(element, elem);
                     // observerChangeCreateInput(element);
                   });
-
-                preloaderModal((isLoading = false), (isLoaded = true));
+              
+                preloaderModal(isLoading=false, isLoaded=true);
               }
             });
 
@@ -540,7 +503,7 @@ function getOldSumcintract(idBill, element, elem) {
                 ".modal_adv_budget_not_use_slash"
               );
               slash.style.display = "block";
-              // observerChangeCreateInput(element);
+              observerChangeCreateInput(element);
             }
 
             let modal_add_subcontract = document.createElement("div");
@@ -580,6 +543,7 @@ function getOldSumcintract(idBill, element, elem) {
             ).appendTo(modal_add_subcontract_select);
 
             createInputSubcontract();
+            
           });
       }
     });
@@ -616,6 +580,7 @@ function DelSubcontr(element, elem) {
         },
       }).then((response) => {
         if (response.ok === true) {
+          
           item.parentElement.remove();
           const add_operation = document.querySelector(".subcontarct_add");
           add_operation.replaceWith(add_operation.cloneNode(true));

@@ -106,6 +106,7 @@ class ServicesMonthlyBill(models.Model):
         for oper in operation:  
            
             if oper.type_operation == "entry":
+              
                 sum_all_operation_entry += oper.amount
                 id_operation_entry = id_operation_entry + str(oper.id) + "-"
 
@@ -116,7 +117,7 @@ class ServicesMonthlyBill(models.Model):
                             "data": oper.data,
                             "sum":oper.amount,
                             "comment":oper.comment,
-                            # "name":oper_out.suborder.other.name,
+                            #  "name":oper.suborder.name,
                         }
                         comment_operation_entry_bank1.append(comment)
 
@@ -127,7 +128,7 @@ class ServicesMonthlyBill(models.Model):
                             "data": oper.data,
                             "sum":oper.amount,
                             "comment":oper.comment,
-                            # "name":oper_out.suborder.other.name,
+                            #  "name":oper.suborder.name,
                         }
                         comment_operation_entry_bank2.append(comment)
                     
@@ -138,7 +139,7 @@ class ServicesMonthlyBill(models.Model):
                             "data": oper.data,
                             "sum":oper.amount,
                             "comment":oper.comment,
-                            # "name":oper_out.suborder.other.name,
+                            #  "name":oper.suborder.other.name,
                         }
                         comment_operation_entry_bank3.append(comment)
 
@@ -153,6 +154,7 @@ class ServicesMonthlyBill(models.Model):
 
         for oper_out in operation:
             if oper_out.type_operation == "out":
+                # print(oper.suborder.other.name)
                 sum_all_operation_out += oper_out.amount
                 id_operation_out = id_operation_out + str(oper_out.id) + "-"
                 if oper_out.bank.id == 1:

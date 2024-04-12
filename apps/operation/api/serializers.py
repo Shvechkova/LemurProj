@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.operation.models import Operation, OperationEntry, OperationOut
+from apps.operation.models import CategoryOperation, Operation, OperationEntry, OperationOut
 
 
 class OperationEntrySerializer(serializers.ModelSerializer):
@@ -18,3 +18,9 @@ class OperationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Operation
         fields = "__all__"               
+      
+        
+class CategoryOperationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryOperation
+        fields = "__all__"                       

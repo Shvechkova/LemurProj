@@ -1,5 +1,5 @@
-from apps.operation.api.serializers import OperationEntrySerializer, OperationOutSerializer, OperationSerializer
-from apps.operation.models import Operation, OperationEntry, OperationOut
+from apps.operation.api.serializers import CategoryOperationSerializer, OperationEntrySerializer, OperationOutSerializer, OperationSerializer
+from apps.operation.models import CategoryOperation, Operation, OperationEntry, OperationOut
 
 from rest_framework import routers, serializers, viewsets, mixins, status
 from rest_framework.decorators import action
@@ -7,6 +7,11 @@ from rest_framework.response import Response
 from django.db.models import Count, Sum
 
 from apps.service.models import ServicesMonthlyBill, SubcontractMonth
+
+class CategoryOperationViews(viewsets.ModelViewSet):
+    queryset = CategoryOperation.objects.all()
+    serializer_class = CategoryOperationSerializer
+    
 
 
 # class OperationEntryViews(viewsets.ModelViewSet):

@@ -10,6 +10,7 @@ app_name = 'core'
 
 urlpatterns = [
     path("", views.index, name="home"),
+    path("tech", views.tech, name="tech"),
     # path('api/', include((router.urls))),
     
 ]

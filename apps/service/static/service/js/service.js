@@ -174,7 +174,7 @@ function addMonthBill(dataBill, elem) {
         "X-CSRFToken": csrfToken,
       },
     }).then((response) => {
-      if (response.ok) {
+      if (response.ok === true) {
         const windowContent = document.getElementById(elem);
         alertSuccess(windowContent);
         const timerId = setTimeout(() => {
@@ -268,7 +268,7 @@ function updBillChange(idBill, service_name, elem) {
         "X-CSRFToken": csrfToken,
       },
     }).then((response) => {
-      if (response.ok) {
+      if (response.ok === true) {
         const windowContent = document.getElementById(elem);
         alertSuccess(windowContent);
         const timerId = setTimeout(() => {
@@ -291,9 +291,8 @@ const btnDelBill = document.querySelectorAll(".btn_month_bill-del");
 if (btnDelBill) {
   btnDelBill.forEach((element) => {
     element.addEventListener("click", () => {
-      isLoading = true
-      isLoaded = false
-      preloaderModal(isLoading,isLoaded)
+ 
+      // preloaderModal(isLoading=false,isLoaded=true)
       const idBill = element.getAttribute("data-id-bill");
       endpoint = "/service/api/month_bill/" + idBill + "/";
       fetch(endpoint, {
@@ -302,10 +301,21 @@ if (btnDelBill) {
           "Content-Type": "application/json",
         },
       }).then((response) => {
-        if (response.ok) {
+        if (response.ok === true) {
           const itemWrap = element.parentElement;
           itemWrap.parentElement.parentElement.remove();
           location.reload();
+        }else {
+       
+          let allarm = document.createElement("div");
+          allarm.className = "allarm";
+          allarm.innerHTML = "нельзя удалить";
+          element.parentElement.after(allarm);
+          const timerId = setTimeout(() => {
+            allarm.remove()
+          }, 700);
+      
+          
         }
       });
     });
