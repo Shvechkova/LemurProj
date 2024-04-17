@@ -104,9 +104,14 @@ button {
 .df {
   display: flex;
 }
-
+.dn{
+  opacity: 0;
+}
 .di {
   display: inline;
+}
+.df_col{
+  display: flex;flex-direction: column;
 }
 
 .border {
@@ -1567,6 +1572,9 @@ transition: 0.2s;
 .add-category{
   margin-left: 0;
 }
+.oper_account_sort_wrap{
+  margin-bottom: 80px;
+}
 
 
 .oper_account{
@@ -1603,4 +1611,82 @@ transition: 0.2s;
 .modal_add_category_input{
   width: 100%;
 }
+
+.oper_account_category_title{
+  display: flex;
+  margin-bottom: 33px;
+}
+.oper_account_category_item_categ{
+  width: 293px;
+  display: flex;
+  margin-right: 70px;
+  align-items: center;
+}
+.oper_account_category_item_month{
+
+  
+}
+.oper_account_subcateg_count{
+  margin-right: 24px;
+}
+.oper_account_category_item_month +.oper_account_category_item_month{
+  margin-left: 70px;
+}
+.oper_account_items{
+  display: flex;
+  margin-bottom: 33px;
+}
+.oper_account_category_count{
+  opacity: 0;
+  padding-right: 24px;
+}
+.oper_account_item_categ{
+  display: flex;
+  width: 293px;
+  margin-right: 70px;
+  white-space: nowrap
+}
+.oper_account_item_column{
+  
+}
+.oper_account_item_month {
+
+}
+.oper_account_item_month h3 {
+  opacity: 0;
+   height: 0; 
+   z-index: -1000;
+  }
+
+.oper_account_item_month +.oper_account_item_month{
+  margin-left: 70px;
+}
+.oper_account_item {
+  z-index: 3;
+
  
+}
+.oper_account_item_num{
+  position: relative;
+}
+.oper_account_item_column_garay{
+  color: #c9c9c9;
+}
+.oper_account_item_total{
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.oper_account_total_actual_year{
+  margin-bottom: 80px;
+}
+
+.oper_account_item_num {
+  cursor: pointer;
+  width: fit-content;
+  position: relative;
+}
+.comment_operation_oper{
+  left: 100%;
+}

@@ -20,8 +20,8 @@ from itertools import groupby
 
 from apps.client.models import Client
 
-from apps.operation.models import Operation, OperationEntry
-from apps.service.forms import OperationEntryForm
+from apps.operation.models import Operation
+
 
 from apps.service.models import Adv, Service, ServicesMonthlyBill, SubcontractMonth
 from rest_framework import routers, viewsets

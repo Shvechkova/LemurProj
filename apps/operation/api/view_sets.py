@@ -1,5 +1,5 @@
-from apps.operation.api.serializers import CategoryOperationSerializer, OperationEntrySerializer, OperationOutSerializer, OperationSerializer
-from apps.operation.models import CategoryOperation, Operation, OperationEntry, OperationOut
+from apps.operation.api.serializers import CategoryOperationSerializer,  OperationSerializer
+from apps.operation.models import CategoryOperation, Operation
 
 from rest_framework import routers, serializers, viewsets, mixins, status
 from rest_framework.decorators import action

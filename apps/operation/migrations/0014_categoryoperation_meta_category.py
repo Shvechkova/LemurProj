@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
         ('operation', '0013_operaccountsname_meta_category_and_more'),
     ]
 
-    operations = [
-        migrations.AddField(
-            model_name='categoryoperation',
-            name='meta_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='operation.metacategoryoperation', verbose_name='общая категория'),
-        ),
-    ]
+    # operations = [
+    #     migrations.AddField(
+    #         model_name='categoryoperation',
+    #         name='meta_category',
+    #         field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='operation.metacategoryoperation', verbose_name='общая категория'),
+    #     ),
+    # ]

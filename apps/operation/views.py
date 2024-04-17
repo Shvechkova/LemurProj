@@ -3,20 +3,27 @@ from rest_framework import routers, serializers, viewsets, mixins, status
 from django.forms import ValidationError
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.operation.api.serializers import OperationEntrySerializer
 
-from apps.operation.models import BankOperation, OperAccountsName, Operation, OperationEntry
+
+from apps.operation.models import BankOperation, CategoryOperation, OperAccountsName, Operation, SubCategoryOperation
 from django.core.cache import cache
 from django.db.models import Count, Sum
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncYear
 from django.db.models import Prefetch
 from django.db.models import Func, F, Value
 from django.db.models import F, Q
+from itertools import groupby
+from operator import attrgetter
 
 from datetime import datetime
+import calendar
+import locale
 from dateutil.relativedelta import relativedelta
 
 from apps.service.models import Service, ServiceClient
+
+months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+          "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
 
 # Create your views here.
 
@@ -187,16 +194,216 @@ def operation_inside_categ(request, slug):
 
 # внут счет оперсчет
 def operation_inside_oper_account(request):
-    title = "34534534"
-    dateYearNow = datetime.now().year
-    dateMonthNow = datetime.now().month
-    print (dateYearNow, dateMonthNow)
-    
-    # dateYearNow = datetime(текущий_год, текущий_месяц, 1)
+    # даты
+    data = datetime.now()
+    year_now = datetime.now().year
+    month_now = datetime.now().month
+    # категории операций орперсчета
 
-    context = {
-        "title": title,
+    def category_operation_cache():
+        def cache_function():
+            category_operation = CategoryOperation.objects.filter(
+                meta_categ='oper_account').select_related("sub_categ").values("sub_categ", "meta_categ", 'name', "sub_categ__name", 'id')
+            return category_operation
+
+        return loc_mem_cache('category_operation', cache_function, 200)
+    category_operation = category_operation_cache()
+
+    # актуальные месяца нынешнего года
+    month_names = []
+    for month in range(1, month_now+1):
+        month_name = months[month - 1]
+
+        month_names.append({
+            "name_month": month_name,
+            "month": month,
+        })
+    month_names.reverse()
+    # все месяца
+    operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now,
+                                         created_timestamp__month__lte=month_now).select_related("category").annotate(month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
+    
+    o = Operation.objects.filter(meta_categ='oper_account')
+    result = {
+    k: list(vs)
+    for k, vs in groupby(o, attrgetter('category'))
     }
+    print (result)
+    
+ 
+    # # глобальные подкатегории по оперсчет
+    sub_category_operation = SubCategoryOperation.objects.filter(
+        meta_categ=4)
+
+    name_categ_list = []
+    for name_categ in category_operation:
+        name_categ_list.append({
+            "category_operation_sub_categ": name_categ['sub_categ__name'],
+            "category_operation_name": name_categ['name'],
+            "category_operation_sub_categ_id": name_categ['id'],
+            "category_operation_id": name_categ['sub_categ'],
+        })
+
+    # массив с категориями
+    name_sub_categ_list = []
+    for name_sub_categ in sub_category_operation:
+        name_sub_categ_list.append({
+            "category_sub_categ": name_sub_categ.name,
+            "category_sub_categ_id": name_sub_categ.id,
+        })
+
+    # сборка пустых заготовок для оперецаям по месяцам и категориям
+    dataset = []
+    # по колиству актуальных месяцов
+    for mont in range(1, month_now+1):
+        # для тоталов по субкатегориям мес
+        for v in name_sub_categ_list:
+            months_act = {
+                "month": mont,
+                "month_name": months[mont - 1],
+                "total_month": 0,
+                "total_month_tag": 0,
+                "sub_categ": v['category_sub_categ'],
+                "sub_categ_id": v['category_sub_categ_id']
+            }
+            dataset.append(months_act)
+        #  для каждого мес категорий месяцов
+        for cat in name_categ_list:
+            category_operations = {
+                "month": mont,
+                "month_name": months[mont - 1],
+                "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                "category_operation_name": cat['category_operation_name'],
+                "category_operation_id": cat['category_operation_sub_categ_id'],
+                "total_month_tag": 1,
+            }
+            dataset.append(category_operations)
+
+
+#    операции за актуальный год по месяцам
+    for x in range(len(dataset)):
+        dataset[x]['total'] = 0
+        dataset[x]['id_operation'] = ""
+        dataset[x]['comments'] = []
+        dataset[x]['year_now'] = year_now
+        dataset[x]['absolute_total_month'] = 0
+        dataset[x]['total_month'] = 0
+
+        for y in range(len(operation)):
+            # сборка тоталов
+            if dataset[x]['total_month_tag'] == 0:
+                if dataset[x]['year_now'] == operation[y]['created_timestamp'].year and dataset[x]['month'] == operation[y]['month'].month and dataset[x]['sub_categ'] == operation[y]['category__sub_categ__name']:
+                    dataset[x]['total_month'] = dataset[x]['total_month'] + \
+                        operation[y]['amount']
+            # сборка месяных по категориям
+            else:
+                if dataset[x]['year_now'] == operation[y]['created_timestamp'].year and dataset[x]['month'] == operation[y]['month'].month and dataset[x]['category_operation_id'] == operation[y]['category']:
+                    dataset[x]['total'] = dataset[x]['total'] + \
+                        operation[y]['amount']
+                    dataset[x]['absolute_total_month'] = dataset[x]['absolute_total_month'] + \
+                        operation[y]['amount']
+                    dataset[x]['year'] = operation[y]['created_timestamp'].year
+                    dataset[x]['id_operation'] = dataset[x]['id_operation'] + \
+                        str(operation[y]['id']) + "-"
+                    # комментарии к операциям
+                    if operation[y]['comment']:
+                        comment = {
+                            "data": operation[y]['created_timestamp'],
+                            "sum": operation[y]['amount'],
+                            "comment": operation[y]['comment'],
+                            #  "name":oper.suborder.name,
+                        }
+                        dataset[x]['comments'].append(comment)
+
+    dataset.reverse()
+
+    def old_oper(request):
+        # operation_old_year = Operation.objects.filter(meta_categ='oper_account').order_by("-created_timestamp").last()
+        # count_year = year_now - operation_old_year.created_timestamp.year
+        # print(count_year)
+
+        operation_old_year = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(
+            year=TruncYear('created_timestamp')).values('year')
+
+
+        def operation_old_operation_cache():
+            def cache_function():
+                operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
+                    'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
+                return operation_old
+
+            return loc_mem_cache('operation_old', cache_function, 200)
+        operation_old = operation_old_operation_cache()
+        
+        year_operation_all = []
+        i = 0
+        month_arr = {}
+        set = {}
+        t = 0
+        for cati in name_categ_list:
+           
+            category_operations = {
+               
+                "category_operation_sub_categ": cati['category_operation_sub_categ'],
+                "category_operation_name": cati['category_operation_name'],
+                "category_operation_id": cati['category_operation_sub_categ_id'],
+                "total_month_tag": 1,
+            }
+            set[t] = category_operations
+        for m in months:
+            i += 1
+            month = {
+                "month_name": m,
+                "month_count": i
+            }
+            
+           
+            month_arr[i] = month
+      
+        for years in operation_old_year:
+            arr = {
+                'year': years['year'].year,
+                'months':month_arr
+            }
+            
+            # month = {
+            #     'month': "fff"
+            # }
+            year_operation_all.append(arr)
+         
+
+        print(year_operation_all)
+        
+
+        # i = 0
+        # for m in months:
+        #     i += 1
+        #     month = {
+        #         "month_name": m,
+        #         "month_count": i
+        #     }
+        #     month_arr[i] = month
+
+      
+        # самая старая операция
+    old_oper(request)
+
+    # for old in operation_old_year:
+    #     old_year = old.created_timestamp.year
+
+    # print(old_year)
+    context = {
+
+        "category_operation": category_operation,
+        "month_names": month_names,
+        "dataset": dataset,
+        "data": data,
+        "year_now": year_now,
+
+
+
+    }
+
     return render(request, "operation/operation_inside_oper_acount.html", context)
 
 
