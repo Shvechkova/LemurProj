@@ -255,7 +255,7 @@ class Operation(models.Model):
 
     # bank_first = models.ForeignKey(
     #     BankOperation, on_delete=models.PROTECT, related_name='bank_first',verbose_name="банк начальный отправки операции", blank=True, null=True
-    # )
+    # )r
 
     suborder = models.ForeignKey(
         SubcontractMonth,

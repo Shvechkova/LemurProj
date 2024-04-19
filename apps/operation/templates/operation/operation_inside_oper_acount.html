@@ -3,6 +3,8 @@
     {% include "operation/includes/modal/modal_add_category_office.html" %}
     <input type="hidden" id="page_name" value="{{ title }}" />
     {% include "operation/includes/category_operation_inside.html" %}
+{% include "operation/includes/modal/modal_add_operation_oper_account.html" %}
+    
     <section class="oper_account">
         <div class="oper_account_sort_wrap">
             <h3>Сортировка</h3>
@@ -46,12 +48,33 @@
                                         <h3 class="">{{ month.name_month }} {{ data|date:"Y" }}</h3>
                                     </div>
                                 {% endfor %}
+                                {% for year in operation_old_year %}
+                                    <div class="oper_account_category_item oper_account_category_item_month oper_account_item_column title_oper_acc_year">
+                                        <h3 class="">{{ year.year|date:"Y" }}</h3>
+                                        <div class="open-modal btn_month_bill-shrink title_oper_acc_year_srink "
+                                             data-name=""
+                                             data-month="0"
+                                             data-btn-deg-entry="0"
+                                             data-btn-type-shrink="entry"
+                                             data-created-btn="04.2024"
+                                             data-cat-service="1">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewBox="0 0 16 16"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="16.0002" y="16" width="16" height="16" rx="8" transform="rotate(-180 16.0002 16)" fill="black"></rect>
+                                                <rect x="13.0002" y="9" width="10" height="2" transform="rotate(-180 13.0002 9)" fill="white"></rect>
+                                                <path d="M7.00024 3L7.00024 5.5L4.50024 8L7.00024 10.5V13L2.00024 8L7.00024 3Z" fill="white"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         {% endif %}
                         <!--заголовки категорий с закончился -->
                         <!--операции по месяцам  -->
-                        <div class="oper_account_items">
-                            <!--операции по месяцам  столбкш с названиями категой-->
+                        <div class="oper_account_items_wrap {% if forloop.first %}oper_account_items_wrap_first{% endif %}{% if forloop.last %}oper_account_items_wrap_last{% endif %}">
                             <div class="oper_account_item_categ">
                                 <div class="oper_account_subcateg_count">
                                     {% if forloop.counter < 10 %}0{% endif %}
@@ -59,50 +82,116 @@
                                 </div>
                                 <div class="oper_account_subcateg_name">{{ category.name }}</div>
                             </div>
-                            <!--сами суммы операции  -->
-                            {% for operation in dataset %}
-                                {% if operation.category_operation_name == category.name and operation.year_now == year_now %}
-                                    <div class="df_col">
-                                        <div class="oper_account_item_month  oper_account_item_column">
-                                            <div class="oper_account_item oper_account_item_column ">
-                                                <div class='oper_account_item_num {% if operation.total == 0 %}oper_account_item_column_garay{% endif %}'>
-                                                    {{ operation.total }} ₽
-                                                    {% if operation.comments %}
-                                                  
-                                                        <div class="comment_operation comment_operation_oper">?</div>
-                                                        <div class="comment_operation_hidden_wrap">
-                                                            {% for commentr1 in operation.comments  %}
-                                                                {% if commentr1 %}
-                                                                    <div class="comment_operation_hidden">
-                                                                        <div class="previous_operation_title">{{ commentr1.data|date:'j E Y' }} - {{ commentr1.sum }} ₽</div>
-                                                                        <div class="previous_operation_comment">{{ commentr1.comment }}</div>
-                                                                    </div>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %}
+                            <div class="oper_account_items">
+                                <!--операции по месяцам  столбкш с названиями категой-->
+                                {% comment %} <div class="oper_account_item_categ">
+                                <div class="oper_account_subcateg_count">
+                                    {% if forloop.counter < 10 %}0{% endif %}
+                                    {{ forloop.counter }}.
+                                </div>
+                                <div class="oper_account_subcateg_name">{{ category.name }}</div>
+                                </div> {% endcomment %}
+                                <!--сами суммы операции  -->
+                                {% for operation in dataset %}
+                                    {% if operation.category_operation_name == category.name and operation.year_now == year_now %}
+                                        <div class="df_col">
+                                            <div class="oper_account_item_month  oper_account_item_column">
+                                                <div class="oper_account_item oper_account_item_column ">
+                                                    <div class='oper_account_item_num {% if operation.total == 0 %}oper_account_item_column_garay{% endif %} add_operation_oper_account'
+                                                    data-name="modal-add_operation_oper_account"
+                         data-bill-month-id="{{ bill.id }}"
+                         data-bill-month-sum="{{ bill.contract_sum }} "
+                         data-bill-month-client-name="{{ bill.client.client_name }}"
+                         data-bill-month-sum-dont-operation="{{ bill.contract_sum }} "
+                         data-bill-month-name="{{ bill.contract_number }}"
+                         data-bill-month-operation-entry=" {{ oper_entry.id_operation_entry }} "
+                         data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}"
+                       
+                         data-id-sub-amount=""
+                         data-id-sub="{{ subs_adv.id_subs }}">
+                                                        {{ operation.total }} ₽
+                                                        {% if operation.comments %}
+                                                            <div class="comment_operation comment_operation_oper">?</div>
+                                                            <div class="comment_operation_hidden_wrap">
+                                                                {% for commentr1 in operation.comments %}
+                                                                    {% if commentr1 %}
+                                                                        <div class="comment_operation_hidden">
+                                                                            <div class="previous_operation_title">{{ commentr1.data|date:'j E Y' }} - {{ commentr1.sum }} ₽</div>
+                                                                            <div class="previous_operation_comment">{{ commentr1.comment }}</div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </div>
+                                                {% comment %} <h3 class="">{{ operation.month_name }} {{ data|date:"Y" }}</h3> {% endcomment %}
                                             </div>
-                                            {% comment %} <h3 class="">{{ operation.month_name }} {{ data|date:"Y" }}</h3> {% endcomment %}
+                                            <div class="oper_account_item_month  oper_account_item_column">
+                                                <h3 class="">{{ operation.month_name }} {{ data|date:"Y" }}</h3>
+                                            </div>
                                         </div>
-                                        <div class="oper_account_item_month  oper_account_item_column">
-                                            <h3 class="">{{ operation.month_name }} {{ data|date:"Y" }}</h3>
-                                        </div>
-                                    </div>
-                                {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <!--операции по месяцам закончились -->
+                            <div class="oper_account_items_old {% if forloop.first %}total_year_oper_first{% endif %}  {% if forloop.last %}total_year_oper_last{% endif %}">
+                                {% for all_years in operation_old_year %}
+                           
+                                    {% for operation_old in dataset_old %}
+                                   
+                                 
+                                        {% if operation_old.year|cut:" "  == all_years.year|date:"Y" %}
+                                            <div class="oper_account_items_old_all_years ">
+                                                {% for year in operation_old.item %}
+                                                    
+                                                    {% for toral_year in year.total_year_in_categ %}
+                                                        {% if toral_year.category_operation_name == category.name %}
+                                                            <div class="total_year_oper ">
+                                                                <p>{{ toral_year.total_month_categ }} ₽</p>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                 
+                                                   <div class="oper_account_items_year_month">
+                                                            {% if year.category_operation_name == category.name  %}
+{% comment %}                                                        
+                                                            <div class="df_col">
+                                                                <div class="oper_account_item_month  oper_account_item_column">
+                                                                    <div class="oper_account_item oper_account_item_column ">
+                                                                        <div class='oper_account_item_num'>
+                                                                        
+                                                                           {{year.total_month_categ}} ₽ 
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                  
+                                                                </div>
+                                                                <div class="oper_account_item_month  oper_account_item_column">
+                                                                    <h3 class="">{{ year.month_name }} {{ data|date:"Y" }}</h3>
+                                                                </div>
+                                                            </div> {% endcomment %}
+                                                         
+                                                            {% endif %}
 
-                                
-                            {% endfor %}
-
+                                                    </div> 
+                                                    {% comment %} </div> {% endcomment %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
-                        <!--операции по месяцам закончились -->
                         <!--тотал  -->
                         {% if forloop.last %}
                             <div class="oper_account_total_actual_year">
                                 <div class="oper_account_category_title">
                                     <div class="oper_account_category_item oper_account_category_item_categ">
                                         <div class="oper_account_category_count">
-                                            {% if forloop.counter < 10 %}0{% endif %}
+                                            {% if forloop.counter < 10 %}
+                                                0
+                                            {% endif %}
                                             {{ forloop.counter }}.
                                         </div>
                                         <h3 class="">Итого</h3>
@@ -121,9 +210,11 @@
                             </div>
                         {% endif %}
                         <!--тотал закончился -->
+                        <!--операции по годам  -->
                     {% endfor %}
                 {% endfor %}
             </div>
         </div>
     </section>
+    {{dataset_old}}
 {% endblock content %}

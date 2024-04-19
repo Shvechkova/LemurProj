@@ -180,7 +180,7 @@ def operation_inside_categ(request, slug):
         category_oper = OperAccountsName.objects.all()
         cat_oper = []
         for category in category_oper:
-            print(category.name)
+
             cat_oper.append(category.name)
 
     context = {
@@ -222,15 +222,13 @@ def operation_inside_oper_account(request):
     # все месяца
     operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now,
                                          created_timestamp__month__lte=month_now).select_related("category").annotate(month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
-    
-    o = Operation.objects.filter(meta_categ='oper_account')
-    result = {
-    k: list(vs)
-    for k, vs in groupby(o, attrgetter('category'))
-    }
-    print (result)
-    
- 
+
+    # o = Operation.objects.filter(meta_categ='oper_account')
+    # result = {
+    # k: list(vs)
+    # for k, vs in groupby(o, attrgetter('category'))
+    # }
+
     # # глобальные подкатегории по оперсчет
     sub_category_operation = SubCategoryOperation.objects.filter(
         meta_categ=4)
@@ -317,81 +315,163 @@ def operation_inside_oper_account(request):
 
     dataset.reverse()
 
-    def old_oper(request):
-        # operation_old_year = Operation.objects.filter(meta_categ='oper_account').order_by("-created_timestamp").last()
-        # count_year = year_now - operation_old_year.created_timestamp.year
-        # print(count_year)
+    
+  
+    operation_old_year = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
+            "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
+    def operation_old_operation_cache():
+        def cache_function():
+            operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
+                'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
+            return operation_old
 
-        operation_old_year = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(
-            year=TruncYear('created_timestamp')).values('year')
-
-
-        def operation_old_operation_cache():
-            def cache_function():
-                operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
-                    'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
-                return operation_old
-
-            return loc_mem_cache('operation_old', cache_function, 200)
-        operation_old = operation_old_operation_cache()
-        
-        year_operation_all = []
-        i = 0
-        month_arr = {}
-        set = {}
-        t = 0
-        for cati in name_categ_list:
-           
-            category_operations = {
-               
-                "category_operation_sub_categ": cati['category_operation_sub_categ'],
-                "category_operation_name": cati['category_operation_name'],
-                "category_operation_id": cati['category_operation_sub_categ_id'],
-                "total_month_tag": 1,
-            }
-            set[t] = category_operations
-        for m in months:
-            i += 1
-            month = {
-                "month_name": m,
-                "month_count": i
-            }
-            
-           
-            month_arr[i] = month
-      
-        for years in operation_old_year:
-            arr = {
-                'year': years['year'].year,
-                'months':month_arr
-            }
-            
-            # month = {
-            #     'month': "fff"
-            # }
-            year_operation_all.append(arr)
-         
-
-        print(year_operation_all)
-        
-
-        # i = 0
-        # for m in months:
-        #     i += 1
-        #     month = {
-        #         "month_name": m,
-        #         "month_count": i
-        #     }
-        #     month_arr[i] = month
-
-      
-        # самая старая операция
-    old_oper(request)
-
+        return loc_mem_cache('operation_old', cache_function, 0)
+    # operation_old = operation_old_operation_cache()
+    operation_old = operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
+        'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
     # for old in operation_old_year:
     #     old_year = old.created_timestamp.year
 
-    # print(old_year)
+    def old_operation(request):
+        operation_old_year2 = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
+            "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
+
+        month_arr1 = []
+        dataset1 = []
+        i = 0
+        for m in months:
+
+            i += 1
+            month = {
+                "name_month": m,
+                "month": i,
+            }
+
+            month_arr1.append(month)
+
+        month_arr1.reverse()
+
+        # по колиству актуальных месяцов
+        for month_arr2 in range(1, 13):
+            # для тоталов по субкатегориям мес
+            for v in name_sub_categ_list:
+                months_act = {
+                    "year": 0,
+                    "month": month_arr2,
+                    "month_name": months[month_arr2 - 1],
+                    "total_month": 0,
+                    "total_month_tag": 0,
+                    "sub_categ": v['category_sub_categ'],
+                    "sub_categ_id": v['category_sub_categ_id']
+                }
+                dataset1.append(months_act)
+            #  для каждого мес категорий месяцов
+            for cat in name_categ_list:
+                category_operations = {
+                    "year": 0,
+                    "month": month_arr2,
+                    "month_name": months[month_arr2 - 1],
+                    "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                    "category_operation_name": cat['category_operation_name'],
+                    "category_operation_id": cat['category_operation_sub_categ_id'],
+                    "total_month_tag": 1,
+                    "total_month_categ": 0,
+                }
+                dataset1.append(category_operations)
+
+        dataset_old = []
+        for year_arr_cat in operation_old_year2:
+
+            year_olds = {
+                "year": year_arr_cat['year'].year,
+                "year_stamp": year_arr_cat['year'],
+                "total_absolute_year": year_arr_cat['total_absolute_year'],
+                "total_month_tag": 3,
+                "month": None,
+                "sub_categ_id": None,
+                "total_year_in_categ": []
+            }
+            for cat in name_categ_list:
+                categ = {
+                    # "year": 0,
+                    "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                    "category_operation_name": cat['category_operation_name'],
+                    "category_operation_id": cat['category_operation_sub_categ_id'],
+                    "total_month_tag": 4,
+                    "total_month_categ": 0,
+                }
+
+                year_olds["total_year_in_categ"].append(categ)
+
+            for v in name_sub_categ_list:
+                months_act = {
+                    # "year": 0,
+                    "total_month": 0,
+                    "total_month_tag": 0,
+                    "sub_categ": v['category_sub_categ'],
+                    "sub_categ_id": v['category_sub_categ_id']
+                }
+                year_olds["total_year_in_categ"].append(months_act)
+
+            year_old = {
+                'year': year_arr_cat['year'].year,
+                "item": []
+                # year_arr_cat['year'].year: [],
+            }
+
+            year_old['item'].append(year_olds)
+            # print(year_old)
+            # dataset_old.append({
+            # "name_month": month_name,
+            # "month": month,
+            # })
+
+            # year_olds.append(dataset1)
+            for month_arrs in dataset1:
+                year_old['item'].append(month_arrs)
+
+            dataset_old.append(year_old)
+            # print(year_old)
+
+        # print(dataset_old)
+
+        for d in dataset_old:
+
+            # print(d)
+            for y in operation_old:
+                if y['created_timestamp'].year == d['year']:
+                    print(11111111111111111111111111111111111111111)
+                    # print(d['year'])
+                    # print(y['created_timestamp'].year)
+                    # print(y['month'].month)
+                    for x in d['item']:
+                            print(x['month'])
+                         
+                        # if x['year'] == y['created_timestamp'].year:
+                            if x['month'] == y['month'].month:
+                                # print(y['month'].month)
+
+                                if x['total_month_tag'] == 0:
+                                    if x["sub_categ_id"] == y['category__sub_categ__id']:
+                                        x['total_month'] += y['amount']
+
+                                if x['total_month_tag'] == 1:
+                                    if x['category_operation_id'] == y['category']:
+                                        x['total_month_categ'] += y['amount']
+                            
+            
+                            if x['month'] == None:
+                                for all in x["total_year_in_categ"]:
+                                    if all['total_month_tag'] == 4:
+                                        if all['category_operation_id'] == y['category']:
+                                            all["total_month_categ"] += y['amount']
+                                    elif all['total_month_tag'] == 0:
+                                        if all["sub_categ_id"] == y['category__sub_categ__id']:
+                                            all['total_month'] += y['amount']
+
+        return dataset_old
+    dataset_old = old_operation(request)
+    # print(dataset_old)
     context = {
 
         "category_operation": category_operation,
@@ -399,6 +479,9 @@ def operation_inside_oper_account(request):
         "dataset": dataset,
         "data": data,
         "year_now": year_now,
+        
+        "operation_old_year": operation_old_year,
+        "dataset_old": dataset_old,
 
 
 
