@@ -97,9 +97,5 @@ function addCategoryOperationFetch(battonAdd, element, modalWindow,elem) {
         }, 400);
       }
     });
-    // .then((response) => response.json())
-    // .then((data) => {
-    //   console.log(data);
-    // });
   });
 }

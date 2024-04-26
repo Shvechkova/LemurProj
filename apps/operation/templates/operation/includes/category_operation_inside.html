@@ -18,7 +18,7 @@
                      href="{% url 'operation:nalog'  %}">Налоги</a>
             {% endif %}
       </li>
-      <li class="header_nav-link">
+      {% comment %} <li class="header_nav-link">
             {% url 'operation:bank_operation' as the_url %}
             {% if request.path == the_url %}
                   <span class="menu-active menu-active_service">Банковские расходы</span>
@@ -26,7 +26,7 @@
                   <a class="menu_service"
                      href="{% url 'operation:bank_operation' %}">Банковские расходы</a>
             {% endif %}
-      </li>
+      </li> {% endcomment %}
       <li class="header_nav-link">
             {% url 'operation:salary'  as the_url %}
             {% if request.path == the_url %}

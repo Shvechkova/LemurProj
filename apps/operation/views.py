@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from rest_framework import routers, serializers, viewsets, mixins, status
 from django.forms import ValidationError
@@ -5,6 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 
+from apps import employee
+from apps.employee.models import Employee
 from apps.operation.models import BankOperation, CategoryOperation, OperAccountsName, Operation, SubCategoryOperation
 from django.core.cache import cache
 from django.db.models import Count, Sum
@@ -13,7 +16,7 @@ from django.db.models import Prefetch
 from django.db.models import Func, F, Value
 from django.db.models import F, Q
 from itertools import groupby
-from operator import attrgetter
+from operator import attrgetter, length_hint
 
 from datetime import datetime
 import calendar
@@ -41,20 +44,9 @@ def loc_mem_cache(key, function, timeout=300):
 def operation_outside(request):
     title = "внешние счета"
 
-    # category_operation = [
-    #     {"name": 'OOO',
-    #      "tag": 'OOO',
-
-    #      }, {
-    #         "name": 'ИП',
-    #         "tag": 'IP',
-    #     }, {
-    #         "name": '$',
-    #         "tag": 'Nal',
-    #     }]
     context = {
         "title": title,
-        # "category_operation": category_operation,
+
     }
     return render(request, "operation/operation_outside.html", context)
 
@@ -63,73 +55,9 @@ def operation_outside(request):
 def operation_outside_categ(request, slug):
     title = "CATEG"
 
-    # category_operation = [
-    #     {"name": 'OOO',
-    #      "tag": 'OOO',
-
-    #      }, {
-    #         "name": 'ИП',
-    #         "tag": 'IP',
-    #     }, {
-    #         "name": '$',
-    #         "tag": 'Nal',
-    #     }]
-
-    # bank_operation = BankOperation.objects.get(slugish=slug)
-    # service_category = Service.objects.all()
-    # operation_in_servise = []
-
-    # for service_categorys in service_category:
-    #     operation = Operation.objects.filter(
-    #         bank=bank_operation.id, monthly_bill__service__name=service_categorys.name, type_operation="entry").annotate(
-    #         month=TruncMonth('created_timestamp')).values("month").annotate(sum=(
-    #             Sum('amount', default=0)
-    #         )).values("month", "sum")
-    #     categor_servise = {
-    #         "name":  service_categorys.name,
-    #         'operation': operation
-    #     }
-    #     operation_in_servise.append(categor_servise)
-
-    # print(operation_in_servise)
-    # массив со всеми операциями и разницами сумм
-    # diff_sum_oper = []
-    # for x in range(len(total_month_entry)):
-    #     obj = {}
-    #     for y in range(len(operation_in_servise)):
-
-    # total_month_entry = Operation.objects.all().annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=(
-    #     Sum('amount', default=0)
-    # )).values('month')
-
-    # operation = Operation.objects.filter(
-    #     bank=bank_operation.id)
-
-    # print(operation)
-    # month_sum = []
-
-    # for x in range(len(total_month_entry)):
-    #     obj = {}
-    #     total_month_entry[x]['sum_cat_entry'] = 0
-    #     for y in range(len(operation)):
-    #         if total_month_entry[x]['month'] == operation[y]['month']:
-    #             if operation[y]['type_operation'] == 'entry':
-    #                 total_month_entry[x]['sum_cat_entry'] += operation[y]['amount']
-    #     month_sum.append(obj)
-
-    # print(total_month_entry)
-
-    # operations = Operation.objects.filter(bank=bank_operation.id, type_operation='entry').annotate(
-    #     month=TruncMonth('created_timestamp')).annotate(service="monthly_bill__service_name").values('month', 'type_operation', 'amount',"service")
-
     context = {
         "title": title,
-        # "category_operation": category_operation,
-        # "operations": operation,
-        # "bank_operation": bank_operation,
-        # "service_category": service_category,
-        # "total_month_entry": total_month_entry,
-        # "operation_in_servise": operation_in_servise,
+
 
     }
     return render(request, "operation/operation_outside_categ.html", context)
@@ -139,20 +67,9 @@ def operation_outside_categ(request, slug):
 def operation_inside(request):
     title = "внутренние счета"
 
-    category_operation = [
-        {"name": 'Оперсчет',
-         "tag": 'oper_storage',
-
-         }, {
-            "name": 'Налоги',
-            "tag": 'taxes',
-        }, {
-            "name": 'Банк.расходы',
-            "tag": 'bank_expens',
-        }]
     context = {
         "title": title,
-        "category_operation": category_operation,
+
     }
     return render(request, "operation/operation_inside.html", context)
 
@@ -160,17 +77,6 @@ def operation_inside(request):
 # внутренние счета категории
 def operation_inside_categ(request, slug):
     title = "inside"
-    category_operation = [
-        {"name": 'Оперсчет',
-         "tag": 'oper_storage',
-
-         }, {
-            "name": 'Налоги',
-            "tag": 'taxes',
-        }, {
-            "name": 'Банк.расходы',
-            "tag": 'bank_expens',
-        }]
 
     total_month_entry = Operation.objects.all().annotate(month=TruncMonth('created_timestamp')).values('month').annotate(total_amount=(
         Sum('amount', default=0)
@@ -185,7 +91,7 @@ def operation_inside_categ(request, slug):
 
     context = {
         "title": title,
-        "category_operation": category_operation,
+
         "total_month_entry": total_month_entry,
         "cat_oper": cat_oper
     }
@@ -194,10 +100,28 @@ def operation_inside_categ(request, slug):
 
 # внут счет оперсчет
 def operation_inside_oper_account(request):
+    type_url = 'operation_inside'
     # даты
     data = datetime.now()
     year_now = datetime.now().year
     month_now = datetime.now().month
+    # куки для сортировки
+    if request.COOKIES.get('sortOperAccount') and request.COOKIES.get('sortOperAccount') != "0":
+        bank_id = request.COOKIES["sortOperAccount"]
+
+        operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now, created_timestamp__month__lte=month_now, bank=bank_id).select_related("category").annotate(
+            month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
+
+        operation_old = operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now, bank=bank_id).select_related("category").annotate(month=TruncMonth(
+            'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
+
+    else:
+        bank_id = '0'
+        operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now, created_timestamp__month__lte=month_now).select_related("category").annotate(
+            month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
+        operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
+            'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
+
     # категории операций орперсчета
 
     def category_operation_cache():
@@ -220,18 +144,12 @@ def operation_inside_oper_account(request):
         })
     month_names.reverse()
     # все месяца
-    operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now,
-                                         created_timestamp__month__lte=month_now).select_related("category").annotate(month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
-
-    # o = Operation.objects.filter(meta_categ='oper_account')
-    # result = {
-    # k: list(vs)
-    # for k, vs in groupby(o, attrgetter('category'))
-    # }
+    # operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now,
+    #                                      created_timestamp__month__lte=month_now).select_related("category").annotate(month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
 
     # # глобальные подкатегории по оперсчет
     sub_category_operation = SubCategoryOperation.objects.filter(
-        meta_categ=4)
+        meta_category="oper_account")
 
     name_categ_list = []
     for name_categ in category_operation:
@@ -315,77 +233,33 @@ def operation_inside_oper_account(request):
 
     dataset.reverse()
 
-    
-  
     operation_old_year = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
-            "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
-    def operation_old_operation_cache():
-        def cache_function():
-            operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
-                'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
-            return operation_old
-
-        return loc_mem_cache('operation_old', cache_function, 0)
-    # operation_old = operation_old_operation_cache()
-    operation_old = operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
-        'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
-    # for old in operation_old_year:
-    #     old_year = old.created_timestamp.year
+        "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
 
     def old_operation(request):
-        operation_old_year2 = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
-            "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
+        # operation_old_year2 = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
+        #     "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
 
         month_arr1 = []
-        dataset1 = []
         i = 0
         for m in months:
-
             i += 1
             month = {
                 "name_month": m,
                 "month": i,
             }
-
             month_arr1.append(month)
 
         month_arr1.reverse()
 
-        # по колиству актуальных месяцов
-        for month_arr2 in range(1, 13):
-            # для тоталов по субкатегориям мес
-            for v in name_sub_categ_list:
-                months_act = {
-                    "year": 0,
-                    "month": month_arr2,
-                    "month_name": months[month_arr2 - 1],
-                    "total_month": 0,
-                    "total_month_tag": 0,
-                    "sub_categ": v['category_sub_categ'],
-                    "sub_categ_id": v['category_sub_categ_id']
-                }
-                dataset1.append(months_act)
-            #  для каждого мес категорий месяцов
-            for cat in name_categ_list:
-                category_operations = {
-                    "year": 0,
-                    "month": month_arr2,
-                    "month_name": months[month_arr2 - 1],
-                    "category_operation_sub_categ": cat['category_operation_sub_categ'],
-                    "category_operation_name": cat['category_operation_name'],
-                    "category_operation_id": cat['category_operation_sub_categ_id'],
-                    "total_month_tag": 1,
-                    "total_month_categ": 0,
-                }
-                dataset1.append(category_operations)
-
         dataset_old = []
-        for year_arr_cat in operation_old_year2:
+        for year_arr_cat in range(len(operation_old_year)):
 
             year_olds = {
-                "year": year_arr_cat['year'].year,
-                "year_stamp": year_arr_cat['year'],
-                "total_absolute_year": year_arr_cat['total_absolute_year'],
+                "years": operation_old_year[year_arr_cat]['year'].year,
+                "year": operation_old_year[year_arr_cat]['year'].year,
+                "year_stamp": operation_old_year[year_arr_cat]['year'],
+                "total_absolute_year": operation_old_year[year_arr_cat]['total_absolute_year'],
                 "total_month_tag": 3,
                 "month": None,
                 "sub_categ_id": None,
@@ -393,7 +267,8 @@ def operation_inside_oper_account(request):
             }
             for cat in name_categ_list:
                 categ = {
-                    # "year": 0,
+                    "years": operation_old_year[year_arr_cat]['year'].year,
+                    "year": operation_old_year[year_arr_cat]['year'].year,
                     "category_operation_sub_categ": cat['category_operation_sub_categ'],
                     "category_operation_name": cat['category_operation_name'],
                     "category_operation_id": cat['category_operation_sub_categ_id'],
@@ -405,7 +280,7 @@ def operation_inside_oper_account(request):
 
             for v in name_sub_categ_list:
                 months_act = {
-                    # "year": 0,
+                    "year": operation_old_year[year_arr_cat]['year'].year,
                     "total_month": 0,
                     "total_month_tag": 0,
                     "sub_categ": v['category_sub_categ'],
@@ -414,74 +289,98 @@ def operation_inside_oper_account(request):
                 year_olds["total_year_in_categ"].append(months_act)
 
             year_old = {
-                'year': year_arr_cat['year'].year,
+                'year': operation_old_year[year_arr_cat]['year'].year,
                 "item": []
                 # year_arr_cat['year'].year: [],
             }
 
             year_old['item'].append(year_olds)
-            # print(year_old)
-            # dataset_old.append({
-            # "name_month": month_name,
-            # "month": month,
-            # })
 
-            # year_olds.append(dataset1)
-            for month_arrs in dataset1:
-                year_old['item'].append(month_arrs)
+            for month_arr2 in range(1, 13):
+                # для тоталов по субкатегориям мес
+                for v in name_sub_categ_list:
+                    months_act = {
+                        "year": operation_old_year[year_arr_cat]['year'].year,
+                        "month": month_arr2,
+                        "month_name": months[month_arr2 - 1],
+                        "total_month": 0,
+                        "total_month_tag": 0,
+                        "sub_categ": v['category_sub_categ'],
+                        "sub_categ_id": v['category_sub_categ_id'],
+
+                    }
+                    year_old['item'].append(months_act)
+                #  для каждого мес категорий месяцов
+                for cat in name_categ_list:
+                    category_operations = {
+                        "year": operation_old_year[year_arr_cat]['year'].year,
+                        "month": month_arr2,
+                        "month_name": months[month_arr2 - 1],
+                        "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                        "category_operation_name": cat['category_operation_name'],
+                        "category_operation_id": cat['category_operation_sub_categ_id'],
+                        "total_month_tag": 1,
+                        "total_month_categ": 0,
+                        "id_operation": '',
+                        "comments": []
+
+
+                    }
+
+                    year_old['item'].append(category_operations)
 
             dataset_old.append(year_old)
-            # print(year_old)
 
-        # print(dataset_old)
+        for data in dataset_old:
+            year_data = data['year']
+            for item in data['item']:
+                for oper_old in operation_old:
 
-        for d in dataset_old:
+                    if item['year'] == oper_old['created_timestamp'].year:
+                        if item['month'] == oper_old['month'].month:
 
-            # print(d)
-            for y in operation_old:
-                if y['created_timestamp'].year == d['year']:
-                    print(11111111111111111111111111111111111111111)
-                    # print(d['year'])
-                    # print(y['created_timestamp'].year)
-                    # print(y['month'].month)
-                    for x in d['item']:
-                            print(x['month'])
-                         
-                        # if x['year'] == y['created_timestamp'].year:
-                            if x['month'] == y['month'].month:
-                                # print(y['month'].month)
+                            if item['total_month_tag'] == 0:
+                                if item['sub_categ_id'] == oper_old['category__sub_categ__id']:
+                                    item['total_month'] += oper_old['amount']
 
-                                if x['total_month_tag'] == 0:
-                                    if x["sub_categ_id"] == y['category__sub_categ__id']:
-                                        x['total_month'] += y['amount']
+                            if item['total_month_tag'] == 1:
+                                if item['category_operation_id'] == oper_old['category']:
+                                    item['total_month_categ'] += oper_old['amount']
+                                    # комментарии к операциям
+                                    item['id_operation'] = item['id_operation'] + \
+                                        str(oper_old['id']) + "-"
+                                    if oper_old['comment']:
+                                        comment = {
+                                            "data": oper_old['created_timestamp'],
+                                            "sum": oper_old['amount'],
+                                            "comment": oper_old['comment'],
 
-                                if x['total_month_tag'] == 1:
-                                    if x['category_operation_id'] == y['category']:
-                                        x['total_month_categ'] += y['amount']
-                            
-            
-                            if x['month'] == None:
-                                for all in x["total_year_in_categ"]:
-                                    if all['total_month_tag'] == 4:
-                                        if all['category_operation_id'] == y['category']:
-                                            all["total_month_categ"] += y['amount']
-                                    elif all['total_month_tag'] == 0:
-                                        if all["sub_categ_id"] == y['category__sub_categ__id']:
-                                            all['total_month'] += y['amount']
+                                        }
+                                        item['comments'].append(comment)
+
+                        # годовые тоталы
+                        if item['month'] == None:
+                            for all_item in item["total_year_in_categ"]:
+                                if all_item['total_month_tag'] == 4:
+                                    if all_item['category_operation_id'] == oper_old['category']:
+                                        all_item['total_month_categ'] += oper_old['amount']
+                                elif all_item['total_month_tag'] == 0:
+                                    if all_item['sub_categ_id'] == oper_old['category__sub_categ__id']:
+                                        all_item['total_month'] += oper_old['amount']
 
         return dataset_old
-    dataset_old = old_operation(request)
-    # print(dataset_old)
-    context = {
+    dataset_olds = old_operation(request)
 
+    context = {
+        'type_url': type_url,
         "category_operation": category_operation,
         "month_names": month_names,
         "dataset": dataset,
         "data": data,
         "year_now": year_now,
-        
+        "months": months,
         "operation_old_year": operation_old_year,
-        "dataset_old": dataset_old,
+        "dataset_old": dataset_olds,
 
 
 
@@ -500,22 +399,306 @@ def operation_inside_nalog(request):
     return render(request, "operation/operation_inside_nalog.html", context)
 
 
-# банк операции
-def operation_inside_bank(request):
-    title = "34534534"
-
-    context = {
-        "title": title,
-    }
-    return render(request, "operation/operation_inside_bank.html", context)
-
-
 # зарплаты
 def operation_inside_salary(request):
-    title = "34534534"
+    title = "salary"
+    type_url = 'operation_inside'
+    # даты
+    data = datetime.now()
+    year_now = datetime.now().year
+    month_now = datetime.now().month
+    date_start_year = str(year_now)+"-01-01"
+
+    # date_end__gte=date_start_year,
+
+    def employee_cache():
+        def cache_function():
+
+            employee = Employee.objects.filter(
+                Q(date_end__isnull=True) | Q(date_end__gte=date_start_year)).values("name", "last_name", 'id', "date_start", 'date_end')
+            return employee
+        return loc_mem_cache('employee', cache_function, 0)
+
+    employee = employee_cache()
+
+    def category_operation_cache():
+        def cache_function():
+            category_operation_salary = CategoryOperation.objects.filter(
+                meta_categ='salary').select_related("sub_categ").values("sub_categ", "meta_categ", 'name', "sub_categ__name", 'id',)
+            return category_operation_salary
+
+        return loc_mem_cache('category_operation_salary', cache_function, 200)
+    category_operation = category_operation_cache()
+
+    operation = Operation.objects.filter(meta_categ='salary', created_timestamp__year=year_now,
+                                         created_timestamp__month__lte=month_now).select_related("category").annotate(month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "people").order_by('month')
+
+    # актуальные месяца нынешнего года
+    month_names = []
+    for month in range(1, month_now+1):
+        month_name = months[month - 1]
+
+        month_names.append({
+            "name_month": month_name,
+            "month": month,
+        })
+
+    month_names.reverse()
+    # глобальные подкатегории по ЗП
+    sub_category_operation = SubCategoryOperation.objects.filter(
+        meta_category="salary")
+    name_sub_categ_list = []
+    for name_sub_categ in sub_category_operation:
+        name_sub_categ_list.append({
+            "category_sub_categ": name_sub_categ.name,
+            "category_sub_categ_id": name_sub_categ.id,
+        })
+
+    name_categ_list = []
+    for name_categ in category_operation:
+        name_categ_list.append({
+            "category_operation_sub_categ": name_categ['sub_categ__name'],
+            "category_operation_name": name_categ['name'],
+            "category_operation_sub_categ_id": name_categ['id'],
+            "category_operation_id": name_categ['sub_categ'],
+        })
+    employee_dataset = []
+    total_employee = []
+    for empl in employee:
+        people = {
+            "id": empl["id"],
+            "item": []
+        }
+        people_old = {
+            "id": empl["id"],
+
+            "item": []
+        }
+        for mont in reversed(range(1, month_now+1)):
+
+            for cat in name_categ_list:
+                category_operations = {
+                    "month": mont,
+                    "month_name": months[mont - 1],
+                    "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                    "category_operation_name": cat['category_operation_name'],
+                    "category_operation_id": cat['category_operation_sub_categ_id'],
+                    "total_month_tag": 1,
+                    "comments": 1,
+                    "id_operation": "",
+                    "total": 0,
+                    "year_now": year_now,
+                    "absolute_total_month": 0,
+                    "total_month": 0,
+                    "people_id": empl["id"]
+                }
+                people['item'].append(category_operations)
+            for v in name_sub_categ_list:
+                months_act = {
+                    "total_all_month": 0,
+                    "month": mont,
+                    "month_name": months[mont - 1],
+                    "total_month": 0,
+                    "total_month_tag": 0,
+                    "sub_categ": v['category_sub_categ'],
+                    "sub_categ_id": v['category_sub_categ_id'],
+                    "people_id": empl["id"]
+                }
+
+                people_old['item'].append(months_act)
+            total = {
+                "total_all_month": 0,
+                "month": mont,
+                "month_name": months[mont - 1],
+                "people_id": empl["id"],
+                "sub_categ": 0,
+            }
+
+            people_old['item'].append(total)
+        total_employee.append(people_old)
+        employee_dataset.append(people)
+
+    #    операции за актуальный год по месяцам
+    for dataset in employee_dataset:
+        for y in range(len(operation)):
+
+            if operation[y]["people"] == dataset['id']:
+                for x in range(len(dataset["item"])):
+                    if dataset["item"][x]['people_id'] == operation[y]["people"]:
+                        if dataset["item"][x]['month'] == operation[y]['month'].month and dataset["item"][x]['category_operation_id'] == operation[y]['category']:
+                            dataset["item"][x]['total'] = operation[y]['amount']
+                            dataset["item"][x]['year'] = operation[y]['created_timestamp'].year
+                            dataset["item"][x]['id_operation'] = operation[y]['id']
+
+    for dataset_old in total_employee:
+        # dataset_old['ООО'] = 0
+        # dataset_old['ЗП $'] = 0
+        # dataset_old['КВ $'] = 0
+        # dataset_old['КВ ип'] = 0
+        # dataset_old['квартальная премия'] = 0
+        # dataset_old['Долг'] = 0
+        for y in range(len(operation)):
+            if operation[y]["people"] == dataset_old['id']:
+                for x in range(len(dataset_old["item"])):
+                    if dataset_old["item"][x]['people_id'] == operation[y]["people"]:
+                        # if dataset_old["item"][x]['month'] == operation[y]['month'].month:
+                        if dataset_old["item"][x]['sub_categ'] == 0:
+                            if operation[y]['category'] == 38:
+                                i = operation[y]["month"].month
+                                if dataset_old["item"][x]['month'] == i-1:
+                                    dataset_old["item"][x]['total_all_month'] = dataset_old["item"][x]['total_all_month'] + \
+                                        operation[y]['amount']
+                            else:
+                                if dataset_old["item"][x]['month'] == operation[y]['month'].month:
+                                    dataset_old["item"][x]['total_all_month'] = dataset_old["item"][x]['total_all_month'] + \
+                                        operation[y]['amount']
+
+                        if dataset_old["item"][x]['sub_categ'] == operation[y]['category__sub_categ__name']:
+                            if operation[y]['category'] == 38:
+                                i = operation[y]["month"].month
+                                if dataset_old["item"][x]['month'] == i-1:
+                                    dataset_old["item"][x]['total_month'] = dataset_old["item"][x]['total_month'] + \
+                                        operation[y]['amount']
+                            else:
+                                if dataset_old["item"][x]['month'] == operation[y]['month'].month:
+                                    dataset_old["item"][x]['total_month'] = dataset_old["item"][x]['total_month'] + \
+                                        operation[y]['amount']
+
+            else:
+                pass
+
+    operation_old_year = Operation.objects.filter(meta_categ='salary', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
+        "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
+
+    def old_years_oper():
+        operation_old = Operation.objects.filter(meta_categ='salary', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
+            'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "people").order_by('month')
+
+        month_arr1 = []
+        i = 0
+        for m in months:
+            i += 1
+            month = {
+                "name_month": m,
+                "month": i,
+            }
+            month_arr1.append(month)
+
+        month_arr1.reverse()
+        employee_olds = []
+        total_employee_olds = []
+        for year_arr_cat in range(len(operation_old_year)):
+            for empl in employee:
+                people = {
+                    "id": empl["id"],
+                    "year": operation_old_year[year_arr_cat]['year'].year,
+                    "item": []
+                }
+                people_old = {
+                    "id": empl["id"],
+                    "year": operation_old_year[year_arr_cat]['year'].year,
+                    "item": []
+                }
+                for mont in range(1, 13):
+
+                    for cat in name_categ_list:
+                        category_operations = {
+                            "year": operation_old_year[year_arr_cat]['year'].year,
+                            "month": mont,
+                            "month_name": months[mont - 1],
+                            "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                            "category_operation_name": cat['category_operation_name'],
+                            "category_operation_id": cat['category_operation_sub_categ_id'],
+                            "total_month_tag": 1,
+                            "comments": 1,
+                            "id_operation": "",
+                            "total": 0,
+                            "absolute_total_month": 0,
+                            "total_month": 0,
+                            "people_id": empl["id"]
+                        }
+                        people['item'].append(category_operations)
+                    for v in name_sub_categ_list:
+                        months_act = {
+                            "year": operation_old_year[year_arr_cat]['year'].year,
+                            "total_all_month": 0,
+                            "month": mont,
+                            "month_name": months[mont - 1],
+                            "total_month": 0,
+                            "total_month_tag": 0,
+                            "sub_categ": v['category_sub_categ'],
+                            "sub_categ_id": v['category_sub_categ_id'],
+                            "people_id": empl["id"]
+                        }
+
+                        people_old['item'].append(months_act)
+                    total = {
+                        "year": operation_old_year[year_arr_cat]['year'].year,
+                        "total_all_month": 0,
+                        "month": mont,
+                        "month_name": months[mont - 1],
+                        "people_id": empl["id"],
+                        "sub_categ": 0,
+                    }
+
+                    people_old['item'].append(total)
+
+                for cat in name_categ_list:
+                    category_operations = {
+                        "xxx": 999,
+                        "year": operation_old_year[year_arr_cat]['year'].year,
+                        "month": 0,
+                        "month_name": 0,
+                        "category_operation_sub_categ": cat['category_operation_sub_categ'],
+                        "category_operation_name": cat['category_operation_name'],
+                        "category_operation_id": cat['category_operation_sub_categ_id'],
+                        "total_month_tag": 0,
+                        "total": 0,
+                        "absolute_total_month": 0,
+                        "total_month": 0,
+                        "people_id": empl["id"]
+                    }
+                    people['item'].append(category_operations)
+
+                total_employee_olds.append(people_old)
+                employee_olds.append(people)
+
+        for dataset in employee_olds:
+            for y in range(len(operation_old)):
+                print(operation_old[y])
+                if operation_old[y]["people"] == dataset['id']:
+
+                    for x in range(len(dataset["item"])):
+
+                        if dataset["item"][x]['people_id'] == operation_old[y]["people"]:
+                            # if dataset["item"][x]['year'] == operation[y]['created_timestamp'].year:
+                            if dataset["item"][x]['total_month_tag'] == 0:
+                                if dataset["item"][x]['category_operation_id'] == operation_old[y]['category'] and dataset["item"][x]['year'] == operation_old[y]['created_timestamp'].year:
+                                    dataset["item"][x]['absolute_total_month'] = dataset["item"][x]['absolute_total_month'] + \
+                                        operation_old[y]['amount']
+
+                                    dataset["item"][x]['id_operation'] = operation_old[y]['id']
+                            elif dataset["item"][x]['total_month_tag'] == 1:
+                                if dataset["item"][x]['month'] == operation_old[y]['month'].month and dataset["item"][x]['category_operation_id'] == operation_old[y]['category'] and dataset["item"][x]['year'] == operation_old[y]['created_timestamp'].year:
+                                    dataset["item"][x]['total'] = operation_old[y]['amount']
+
+                                    dataset["item"][x]['id_operation'] = operation_old[y]['id']
+
+        return employee_olds
+
+    old_operation = old_years_oper()
 
     context = {
         "title": title,
+        "type_url": type_url,
+        "employees": employee,
+        "month_names": month_names,
+        "data": data,
+        "category_operation": category_operation,
+        "dataset": employee_dataset,
+        "total_employee": total_employee,
+        "old_operation": old_operation,
+        "operation_old_year": operation_old_year,
     }
     return render(request, "operation/operation_inside_salary.html", context)
 

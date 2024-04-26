@@ -997,6 +997,14 @@ input[type="date"]:before {
   rotate: 180deg;
 }
 
+[data-btn-deg-year="180"] {
+  rotate: 180deg;
+}
+
+[data-btn-deg-year="0"] {
+  rotate: 0deg;
+}
+
 [data-btn-deg-entry="0"] {
   rotate: 0deg;
 }
@@ -1017,8 +1025,9 @@ input[type="date"]:before {
 }
 
 [data-shrink="none"] {
-  display: none;
+  display: none!important;
 }
+
 
 [data-shrink="block"] {
   display: block;
@@ -1093,7 +1102,15 @@ input[type="date"]:before {
   color: #fff;
   border: none;
 }
-
+.operation_comment_oper_account {
+  border-radius: 5px;
+  width: 100%;
+  height: 89px;
+  background: #f5f5f5;
+  border: none;
+  margin-top: 13px;
+  width: 430px;
+}
 #operation_comment_out {
   border-radius: 5px;
   width: 100%;
@@ -1201,7 +1218,7 @@ input[type="radio"]:checked {
   display: inline-block;
   width: 24px;
   height: 24px;
-  padding: 2px;
+  padding: 3px;
   /* background-color only for content */
   background-clip: content-box;
   border: 2px solid #bbbbbb;
@@ -1581,7 +1598,7 @@ transition: 0.2s;
   margin-top: 66px;
 }
 .oper_account_sort_bank {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid transparent;
   transition: 0.2s;
 }
 
@@ -1615,6 +1632,7 @@ transition: 0.2s;
 .oper_account_category_title{
   display: flex;
   align-items: flex-start;
+  width: max-content;
  
 
   /* margin-bottom: 33px; */
@@ -1626,7 +1644,7 @@ transition: 0.2s;
   align-items: center;
 }
 .oper_account_category_item_month{
-
+  white-space: nowrap;
   
 }
 .oper_account_subcateg_count{
@@ -1660,6 +1678,11 @@ transition: 0.2s;
    height: 0; 
    z-index: -1000;
   }
+  .oper_account_item_month h5 {
+    opacity: 0;
+     height: 0; 
+     z-index: -1000;
+    }
 
 /* .oper_account_item_month +.oper_account_item_month{
   margin-left: 70px;
@@ -1698,6 +1721,7 @@ transition: 0.2s;
 }
 .oper_account_items_wrap{
   display: flex;
+  width: max-content;
 
 }
 .oper_account_items_old{
@@ -1710,7 +1734,7 @@ transition: 0.2s;
 }
 
 .title_oper_acc_year{
-  width: 150px;
+  /* width: 150px; */
   background-color: #f4f4f4;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
@@ -1723,13 +1747,23 @@ transition: 0.2s;
   padding-bottom: 33px;
  
 }
+.title_suborder_year{
+  width: 150px; 
+}
 .title_oper_acc_year h3{
  
 }
 .title_oper_acc_year_srink{
-  margin-left: 12px;
-  width: 16px;
-  height: 16px;
+  margin-left: 5px;
+  background: #000;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  cursor: pointer;
+  font-weight: 500;
 }
 .oper_account_items_year_total{
   width: 150px;
@@ -1746,7 +1780,7 @@ transition: 0.2s;
 .oper_account_items_old_all_years{
   padding-bottom: 20px;
   margin-bottom: 0;
-  width: 150px;
+  /* width: 150px; */
   background-color: #f4f4f4;
   margin-left: 50px;
 
@@ -1760,6 +1794,10 @@ transition: 0.2s;
 }
 .total_year_oper {
   padding-left: 22px;
+  width: 172px;
+
+
+  
 }
 .total_year_oper_last > .oper_account_items_old_all_years {
   border-bottom-left-radius: 25px;
@@ -1767,4 +1805,251 @@ transition: 0.2s;
 }
 .total_year_oper_last{
   margin-bottom: 33px;
+}
+.title_suborder_year{
+  display: flex;
+  align-items: center;
+}
+.oper_account_items_old_fitst{
+  display: flex;
+}
+.oper_account_items_old_fitst:first-child{
+  display: none;
+}
+.title_suborder_year_months{
+  display: flex;
+  gap: 30px;
+  margin-right: 10px;
+}
+.rere{
+  display: none!important;
+}
+.oper_account_items_old_all_years{
+  display: flex;
+  white-space: nowrap;
+}
+.oper_account_items_year_month + .oper_account_items_year_month   {
+  margin-left: 31px;
+}
+.oper_account_items_old_all_years{
+  /* margin-right: 30px; */
+  /* padding-right: 5px; */
+}
+.oper_account_item_month_text{
+  font-size: 15px;
+  /* width: 0px; */
+}
+.oper_account_item_month_text p{
+  font-size: 15px;
+   /* width: 0px;  */
+}
+.oper_account_items_old_all_years-nobg{
+  background-color:transparent;
+  margin-top: 10px;
+}
+.oper_account_items_wrap_last, .oper_account_items_wrap_firstoper_account_items_wrap_last{
+  margin-bottom: -30px;
+}
+.modal_oper_account_title{
+  display: flex;
+  gap: 10px;
+ margin-bottom: 33px; 
+}
+.oper_account_period{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 33px; 
+ 
+}
+.date_operation-hidden{
+  opacity: 0;
+  height: 0;
+}
+ #sum_cheked_out_oper_account{
+  margin-bottom: 33px;
+  margin-top: 33px; 
+}
+.input_bank_wrap_operacc{
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+
+}
+.input_bank_wrap_oper_account{
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+}
+ .input_bank_wrap_oper_account label {
+  margin-right: 30px;
+  margin-left: 10px;
+}
+
+.input_bank_wrap_operacc label {
+  margin-right: 30px;
+  margin-left: 10px;
+}
+#other_sum_namber_oper_account{
+  width: 180px;
+    height: 44px;
+    margin-left: 10px;
+}
+.previous_operation_oper_acc{
+  margin: 28px 0;
+}
+.modal_title_employee_text{
+  margin-bottom: 30px;
+}
+.salary{
+  margin-top: 66px;
+}
+.btn_add_employee{
+  margin-left: 5px;
+  width: 16px;
+  height: 16px;
+  background: #000000;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: 500;
+}
+.salary_title{
+  display: flex;
+  margin-bottom: 33px;
+}
+.salary_title_categ{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  width: 267px;
+  margin-right: 89px;
+}
+.salary_title_months{
+  display: flex;
+  gap: 89px;
+}
+
+.salary_employee_title{
+  display: flex;
+  margin-bottom: 33px;
+  position: relative;
+}
+.salary_employee_name{
+  width: 267px;
+  margin-right: 89px;
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
+.salary_employee{
+  margin-bottom: 33px;
+}
+.salary_employee_categ_item_wrapper{
+display: flex;
+width: 267px;
+  margin-right: 89px;
+}
+.salary_employee_categ_item_wrapper_total{
+  display: flex;
+}
+.salary_employee_item_wrapper{
+  display: flex;
+  gap: 89px;
+}
+.salary_employee_wrap_alls{
+  display: flex;
+}
+.salary_employee_wrap_alls{
+  margin-bottom: 23px;
+}
+.salary_employee_categ_item_wrapper_total{
+  margin-bottom: 33px;
+}
+.salary_employee_item{
+  position: relative;
+}
+.salary_employee_item_sum{
+cursor: pointer;
+}
+.salary_employee_item_sums_active{
+  border-radius: 5px;
+  
+  background-color: #F5F5F5;
+  
+}
+.salary_employee_item_sums{
+  outline:none;
+  z-index: 200
+  ;
+border: none;
+  cursor: pointer;
+  width: -webkit-fill-available;
+
+  padding: 10px;
+  position: absolute;
+  position: absolute;
+  margin-left: -10px;
+  margin-top: -10px;
+}
+.btn_add_operation_salary{
+  width: 47px;
+height: 44px;
+font-weight: 400;
+font-size: 20px;
+text-align: center;
+color: #fff;
+background-color: #000;
+position: absolute;
+top: -10px;
+left: 100%;
+/* display: flex; */
+align-items: center;
+    justify-content: center;
+    border: 1px solid #000;
+border-radius: 5px;
+cursor: pointer;
+display: none;
+}
+.btn_add_operation_salary_active{
+  display: flex;
+}
+.change_btn_employee{
+  cursor: pointer;
+  position: absolute;
+  left: -20px; 
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.change_btn_employee:hover {
+  opacity: 1;
+}
+.input_box_start, .input_box_stop{
+  position: relative;
+  
+}
+.input_box_start label, .input_box_stop label{
+  position: absolute;
+  /* смещение относительно родительского элемента 10px вверх от верхнего края и   10px влево */
+  top: -25px;
+ 
+  background: #fff;
+  padding: 0 5px;
+  color: #c9c9c9;
+  text-wrap: nowrap;
+  font-size: 16px;
+}
+.modal_add_employee_item{
+  display: flex;
+  gap: 10px;
+}
+.input_box_stop{
+  display: none;
+}
+.salary_employee_categ_total{
+  display: flex;
 }

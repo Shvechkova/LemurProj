@@ -194,8 +194,6 @@ function getOldOperation(element, elem) {
   const idOperation = idOperationrepl.split("-");
 
   if (idOperationrepl !== "") {
-    const sumcheked = document.querySelector(".sum_cheked");
-
     let data = new FormData();
     let object = [];
     idOperation.forEach((item) => {

@@ -12,7 +12,8 @@ router = routers.DefaultRouter()
 # router.register(r"api/entry", view_sets.OperationEntryViews)
 # router.register(r"api/out", view_sets.OperationOutViews)
 router.register(r"api/operation", view_sets.OperationViews)
-router.register(r"api/add-category-office", view_sets.CategoryOperationViews)
+router.register(r"api/operation_oper_account", view_sets.OperationViews)
+router.register(r"api/add-category-office", view_sets.CategoryOperationViews) 
 
 
 urlpatterns = [
@@ -22,7 +23,7 @@ urlpatterns = [
     path("operation_inside", views.operation_inside, name="operation_inside"),
     path("oper_account", views.operation_inside_oper_account, name="oper_accaunt"),
     path("nalog", views.operation_inside_nalog, name="nalog"),
-    path("bank_operation", views.operation_inside_bank, name="bank_operation"),
+
     path("salary", views.operation_inside_salary, name="salary"),
     
     path("operation_outside", views.operation_outside, name="operation_outside"),

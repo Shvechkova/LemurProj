@@ -30,7 +30,7 @@ urlpatterns = [
     path("", include("apps.core.urls", namespace="core")),
     path("service/", include("apps.service.urls", namespace="service")),
     path("clients/", include("apps.client.urls", namespace="clients")),
-    # path("employee/", include("apps.employee.urls", namespace="operation")),
+   path("employee/", include("apps.employee.urls", namespace="employees")),
     path("operations/", include("apps.operation.urls", namespace="operation")),
     path('api/', include('rest_framework.urls'))
 ]

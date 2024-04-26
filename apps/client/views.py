@@ -42,7 +42,7 @@ def clients(request):
 
 
 # class AddClient(viewsets.ModelViewSet):
-#     queryset = Client.objects.all()
+#     queryset = Client.obj ects.all()
 #     serializer_class = ClientSerializer
 
 #     # def create(self, request, *args, **kwargs):

@@ -21,4 +21,6 @@ class Employee(models.Model):
         blank=True,
         null=True,
     )
+    date_start = models.DateField("Дата начала действия", blank=True, null=True)
+    date_end = models.DateField("Дата окончания", blank=True, null=True)
     

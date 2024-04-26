@@ -1,5 +1,4 @@
-
-
+preloaderModal((isLoading = false), (isLoaded = true));
 // window.onload = function () {
 //   document.body.classList.add("loaded_hiding");
 //   window.setTimeout(function () {
@@ -25,7 +24,7 @@ function preloaderModal(isLoading, isLoaded, setTime) {
     preloader.style.opacity = "0";
   }
 }
-preloaderModal((isLoading = false), (isLoaded = true));
+// 
 function preloaderModalSetTime(setTime) {
   setTimeout(preloaderModal, setTime);
 }
@@ -148,7 +147,7 @@ function validate(elem, btn) {
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
-    if (elInput.value == "") {
+    if (elInput.value == "" ) {
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
         add_contract.disabled = false;
@@ -389,7 +388,7 @@ function replaceNam() {
     if (elem.value != "") {
       elem.value =
         elem.value
-          .replace(/\d $/, "")
+          .replace(/\d $ /, "")
           .replace(/\D/g, "")
           .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
     }
@@ -397,7 +396,32 @@ function replaceNam() {
     elem.addEventListener("input", () => {
       elem.value =
         elem.value
-          .replace(/\d $/, "")
+          .replace(/\d $ / , "")
+          .replace(/\D/g, "")
+          .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
+
+      if (elem.value == " ₽") {
+        elem.value = "";
+      }
+    });
+  });
+}
+
+function replaceNamDot() {
+  const sel = document.querySelectorAll(".pyb");
+  sel.forEach((elem) => {
+    if (elem.value != "") {
+      elem.value =
+        elem.value
+          .replace(/\d $ /, "")
+          .replace(/\D/g, "")
+          .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
+    }
+
+    elem.addEventListener("input", () => {
+      elem.value =
+        elem.value
+          .replace(/\d $ / , "")
           .replace(/\D/g, "")
           .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
 

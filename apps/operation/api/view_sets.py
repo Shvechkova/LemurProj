@@ -1,3 +1,4 @@
+from unicodedata import category
 from apps.operation.api.serializers import CategoryOperationSerializer,  OperationSerializer
 from apps.operation.models import CategoryOperation, Operation
 
@@ -5,13 +6,17 @@ from rest_framework import routers, serializers, viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Count, Sum
+# from datetime import datetime
+# from datetime import date
+import datetime
+from dateutil.relativedelta import relativedelta
 
 from apps.service.models import ServicesMonthlyBill, SubcontractMonth
+
 
 class CategoryOperationViews(viewsets.ModelViewSet):
     queryset = CategoryOperation.objects.all()
     serializer_class = CategoryOperationSerializer
-    
 
 
 # class OperationEntryViews(viewsets.ModelViewSet):
@@ -57,50 +62,51 @@ class CategoryOperationViews(viewsets.ModelViewSet):
 class OperationViews(viewsets.ModelViewSet):
     queryset = Operation.objects.all()
     serializer_class = OperationSerializer
-    http_method_names = ["get", "post", "delete"]
-    
+    http_method_names = ["get", "post", "delete","update"]
+
     # прееопределенный делит что бы чекинить суммы в модели
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
+   
+        if instance.monthly_bill is not None:
+            typeOperation = instance.type_operation
+            idBill = instance.monthly_bill.id
 
-        typeOperation = instance.type_operation
-        idBill = instance.monthly_bill.id
-        
-        billNeedSumEntry = ServicesMonthlyBill.objects.get(
+            billNeedSumEntry = ServicesMonthlyBill.objects.get(
                 id=idBill)
-    #    чекин полный оплаты от клиента 
-        if typeOperation == 'entry':
-            
-            operation = Operation.objects.filter(
-                monthly_bill=idBill, type_operation='entry').aggregate(total=Sum('amount', default=0))
-            
-            if operation['total'] == billNeedSumEntry.contract_sum:
-                billNeedSumEntry.chekin_sum_entrees = True
-                billNeedSumEntry.save()
-            else:
-                billNeedSumEntry.chekin_sum_entrees = False
-                billNeedSumEntry.save()
+        #    чекин полный оплаты от клиента
+            if typeOperation == 'entry':
 
-        # чекин полной оплаты субподряда    
-        elif typeOperation == "out":
-            operation = Operation.objects.filter(
-                monthly_bill=idBill, type_operation='out').aggregate(total=Sum('amount', default=0))
+                operation = Operation.objects.filter(
+                    monthly_bill=idBill, type_operation='entry').aggregate(total=Sum('amount', default=0))
 
-            planinSum = SubcontractMonth.objects.filter(
-                month_bill=idBill).aggregate(total=Sum('amount', default=0))
-            
-            if operation['total'] == planinSum['total']:
-                billNeedSumEntry.chekin_sum_adv = True
-                billNeedSumEntry.save()
-            else:
-                billNeedSumEntry.chekin_sum_adv = False
-                billNeedSumEntry.save()
-        
+                if operation['total'] == billNeedSumEntry.contract_sum:
+                    billNeedSumEntry.chekin_sum_entrees = True
+                    billNeedSumEntry.save()
+                else:
+                    billNeedSumEntry.chekin_sum_entrees = False
+                    billNeedSumEntry.save()
+
+            # чекин полной оплаты субподряда
+            elif typeOperation == "out":
+                operation = Operation.objects.filter(
+                    monthly_bill=idBill, type_operation='out').aggregate(total=Sum('amount', default=0))
+
+                planinSum = SubcontractMonth.objects.filter(
+                    month_bill=idBill).aggregate(total=Sum('amount', default=0))
+
+                if operation['total'] == planinSum['total']:
+                    billNeedSumEntry.chekin_sum_adv = True
+                    billNeedSumEntry.save()
+                else:
+                    billNeedSumEntry.chekin_sum_adv = False
+                    billNeedSumEntry.save()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    
-    # все операции прихода 
+    # все операции прихода
+
     @action(detail=False, methods=["post"], url_path=r"operation_entry_list")
     def operation_entry_filter(
         self,
@@ -134,14 +140,13 @@ class OperationViews(viewsets.ModelViewSet):
                 id=idBill)
             operation = Operation.objects.filter(
                 monthly_bill=idBill, type_operation='entry').aggregate(total=Sum('amount', default=0))
-        
+
             if operation['total'] == billNeedSumEntry.contract_sum:
                 billNeedSumEntry.chekin_sum_entrees = True
                 billNeedSumEntry.save()
             else:
                 billNeedSumEntry.chekin_sum_entrees = False
                 billNeedSumEntry.save()
-       
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -161,17 +166,16 @@ class OperationViews(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             obj = serializer.save()
-            
+
             billNeedSumEntry = ServicesMonthlyBill.objects.get(
                 id=idBill)
-          
-            
+
             operation = Operation.objects.filter(
                 monthly_bill=idBill, type_operation='out').aggregate(total=Sum('amount', default=0))
-            
+
             planinSum = SubcontractMonth.objects.filter(
                 month_bill=idBill).aggregate(total=Sum('amount', default=0))
-       
+
             if operation['total'] == planinSum['total']:
                 billNeedSumEntry.chekin_sum_adv = True
                 billNeedSumEntry.save()
@@ -195,3 +199,33 @@ class OperationViews(viewsets.ModelViewSet):
         serializer = self.serializer_class(queryset, many=True)
 
         return Response(serializer.data)
+
+    @action(detail=False, methods=["post"], url_path=r"operation_oper_account")
+    def operation_oper_account(
+        self,
+        request,
+    ):
+        data = request.data
+       
+        data_month = int(data['month'])
+        data_year = int(data['year'])
+        data_bank = data['bank']
+        data_categ = data['categ_id']
+        
+       
+        date = datetime.date(data_year, data_month, 1)
+        previous_month_date = date + relativedelta(months=-1)
+    
+        if data_bank != '0':
+            queryset = Operation.objects.filter(
+            meta_categ="oper_account", category= data_categ,created_timestamp__year=previous_month_date.year, created_timestamp__month=previous_month_date.month, bank=data_bank).annotate(total=Sum('amount',default=0)).values('total')
+        else: 
+            queryset = Operation.objects.filter(
+            meta_categ="oper_account", category= data_categ,created_timestamp__year=previous_month_date.year, created_timestamp__month=previous_month_date.month).annotate(total=Sum('amount', default=0)).values('total')
+             
+    
+        # serializer = self.serializer_class(queryset, many=True)
+        
+        #  operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now, created_timestamp__month=month_now,bank=bank_id)
+
+        return Response(queryset)
