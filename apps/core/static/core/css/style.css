@@ -1747,6 +1747,13 @@ transition: 0.2s;
   padding-bottom: 33px;
  
 }
+
+.title_oper_acc_year_no_bg{
+  /* width: 150px; */
+  background-color: transparent;
+ 
+ 
+}
 .title_suborder_year{
   width: 150px; 
 }
@@ -1918,8 +1925,10 @@ transition: 0.2s;
   font-weight: 500;
 }
 .salary_title{
+  width: max-content;
   display: flex;
   margin-bottom: 33px;
+  text-wrap: nowrap;
 }
 .salary_title_categ{
   display: flex;
@@ -1931,8 +1940,11 @@ transition: 0.2s;
 .salary_title_months{
   display: flex;
   gap: 89px;
+ 
 }
-
+.salary_title_month{
+  padding-top: 10px;
+}
 .salary_employee_title{
   display: flex;
   margin-bottom: 33px;
@@ -1955,6 +1967,7 @@ width: 267px;
 }
 .salary_employee_categ_item_wrapper_total{
   display: flex;
+  margin-bottom: 33px;
 }
 .salary_employee_item_wrapper{
   display: flex;
@@ -1962,13 +1975,12 @@ width: 267px;
 }
 .salary_employee_wrap_alls{
   display: flex;
+  width: max-content;
 }
 .salary_employee_wrap_alls{
   margin-bottom: 23px;
 }
-.salary_employee_categ_item_wrapper_total{
-  margin-bottom: 33px;
-}
+
 .salary_employee_item{
   position: relative;
 }
@@ -2052,4 +2064,47 @@ display: none;
 }
 .salary_employee_categ_total{
   display: flex;
+}
+.salary_employee_item_old_all_year{
+  
+ padding-bottom: 20px;
+    margin-bottom: 0;
+    /* width: 150px; */
+    background-color: #f4f4f4;
+    margin-left: 50px;
+}
+.salary_employee_item_old_all_year_first{
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  padding-bottom: 33px;
+  padding-top: 10px;
+  margin-top: -10px;
+}
+.salary_employee_item_old_all_year_total_cat{
+  padding-bottom: 33px;
+  padding-top: 10px;
+  margin-top: -10px;
+}
+.salary_employee_item_old_all_year_first_radius{
+  border-radius: 25px;
+
+ 
+}
+.salary_employee_item_wrapper_old{
+gap: 0;
+}
+.year_old_categ_salary{
+  padding-left: 22px;
+  width: 172px;
+}
+
+.salary_employee_item_old_years{
+  font-size: 15px;
+}
+.salary_employee_item_old_years + .salary_employee_item_old_years{
+
+}
+.salary_employee_item_olds{
+  padding-right: 30px;
+  background-color: #f4f4f4;
 }

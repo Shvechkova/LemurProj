@@ -417,7 +417,7 @@ def operation_inside_salary(request):
             employee = Employee.objects.filter(
                 Q(date_end__isnull=True) | Q(date_end__gte=date_start_year)).values("name", "last_name", 'id', "date_start", 'date_end')
             return employee
-        return loc_mem_cache('employee', cache_function, 0)
+        return loc_mem_cache('employee', cache_function, 10)
 
     employee = employee_cache()
 
@@ -427,7 +427,7 @@ def operation_inside_salary(request):
                 meta_categ='salary').select_related("sub_categ").values("sub_categ", "meta_categ", 'name', "sub_categ__name", 'id',)
             return category_operation_salary
 
-        return loc_mem_cache('category_operation_salary', cache_function, 200)
+        return loc_mem_cache('category_operation_salary', cache_function, 10)
     category_operation = category_operation_cache()
 
     operation = Operation.objects.filter(meta_categ='salary', created_timestamp__year=year_now,
@@ -564,141 +564,215 @@ def operation_inside_salary(request):
                                     dataset_old["item"][x]['total_month'] = dataset_old["item"][x]['total_month'] + \
                                         operation[y]['amount']
 
-            else:
-                pass
 
     operation_old_year = Operation.objects.filter(meta_categ='salary', created_timestamp__year__lt=year_now).annotate(year=TruncYear(
         "created_timestamp")).values('year').annotate(total_absolute_year=Sum('amount', default=0)).values('year', 'total_absolute_year')
 
-    def old_years_oper():
-        operation_old = Operation.objects.filter(meta_categ='salary', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
-            'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "people").order_by('month')
+    # def old_years_oper():
+    #     operation_old = Operation.objects.filter(meta_categ='salary', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
+    #         'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "people").order_by('month')
 
-        month_arr1 = []
-        i = 0
-        for m in months:
-            i += 1
-            month = {
-                "name_month": m,
-                "month": i,
-            }
-            month_arr1.append(month)
+    #     month_arr1 = []
+    #     i = 0
+    #     for m in months:
+    #         i += 1
+    #         month = {
+    #             "name_month": m,
+    #             "month": i,
+    #         }
+    #         month_arr1.append(month)
 
-        month_arr1.reverse()
-        employee_olds = []
-        total_employee_olds = []
-        for year_arr_cat in range(len(operation_old_year)):
-            for empl in employee:
-                people = {
-                    "id": empl["id"],
-                    "year": operation_old_year[year_arr_cat]['year'].year,
-                    "item": []
-                }
-                people_old = {
-                    "id": empl["id"],
-                    "year": operation_old_year[year_arr_cat]['year'].year,
-                    "item": []
-                }
-                for mont in range(1, 13):
+    #     month_arr1.reverse()
+    #     employee_olds = []
+    #     total_employee_olds = []
+    #     for year_arr_cat in range(len(operation_old_year)):
+    #         for empl in employee:
+    #             people = {
+    #                 "id": empl["id"],
+    #                 "year": operation_old_year[year_arr_cat]['year'].year,
+    #                 "item": []
+    #             }
+    #             people_old = {
+    #                 "id": empl["id"],
+    #                 "year": operation_old_year[year_arr_cat]['year'].year,
+    #                 "item": []
+                    
+    #             }
+                
+    #             for cat in name_categ_list:
+    #                 category_operations = {
+    #                     "xxx": 1,
+    #                     "year": operation_old_year[year_arr_cat]['year'].year,
+    #                     "month": 0,
+    #                     "month_name": 0,
+    #                     "category_operation_sub_categ": cat['category_operation_sub_categ'],
+    #                     "category_operation_name": cat['category_operation_name'],
+    #                     "category_operation_id": cat['category_operation_sub_categ_id'],
+    #                     "total_month_tag": 0,
+    #                     "total": 0,
+    #                     "absolute_total_month": 0,
+    #                     "total_month": 0,
+    #                     "people_id": empl["id"]
+    #                 }
+    #                 people['item'].append(category_operations)
+                    
+                    
+                    
+    #             for mont in range(1, 13):
 
-                    for cat in name_categ_list:
-                        category_operations = {
-                            "year": operation_old_year[year_arr_cat]['year'].year,
-                            "month": mont,
-                            "month_name": months[mont - 1],
-                            "category_operation_sub_categ": cat['category_operation_sub_categ'],
-                            "category_operation_name": cat['category_operation_name'],
-                            "category_operation_id": cat['category_operation_sub_categ_id'],
-                            "total_month_tag": 1,
-                            "comments": 1,
-                            "id_operation": "",
-                            "total": 0,
-                            "absolute_total_month": 0,
-                            "total_month": 0,
-                            "people_id": empl["id"]
-                        }
-                        people['item'].append(category_operations)
-                    for v in name_sub_categ_list:
-                        months_act = {
-                            "year": operation_old_year[year_arr_cat]['year'].year,
-                            "total_all_month": 0,
-                            "month": mont,
-                            "month_name": months[mont - 1],
-                            "total_month": 0,
-                            "total_month_tag": 0,
-                            "sub_categ": v['category_sub_categ'],
-                            "sub_categ_id": v['category_sub_categ_id'],
-                            "people_id": empl["id"]
-                        }
+    #                 for cat in name_categ_list:
+    #                     category_operations = {
+    #                         "year": operation_old_year[year_arr_cat]['year'].year,
+    #                         "month": mont,
+    #                         "month_name": months[mont - 1],
+    #                         "category_operation_sub_categ": cat['category_operation_sub_categ'],
+    #                         "category_operation_name": cat['category_operation_name'],
+    #                         "category_operation_id": cat['category_operation_sub_categ_id'],
+    #                         "total_month_tag": 1,
+    #                         "comments": 1,
+    #                         "id_operation": "",
+    #                         "total": 0,
+    #                         "absolute_total_month": 0,
+    #                         "total_month": 0,
+    #                         "people_id": empl["id"]
+    #                     }
+    #                     people['item'].append(category_operations)
+    #                 for v in name_sub_categ_list:
+    #                     months_act = {
+    #                         "year": operation_old_year[year_arr_cat]['year'].year,
+    #                         "total_all_month": 0,
+    #                         "month": mont,
+    #                         "month_name": months[mont - 1],
+    #                         "total_month": 0,
+    #                         "total_month_tag": 0,
+    #                         "sub_categ": v['category_sub_categ'],
+    #                         "sub_categ_id": v['category_sub_categ_id'],
+    #                         "people_id": empl["id"]
+    #                     }
 
-                        people_old['item'].append(months_act)
-                    total = {
-                        "year": operation_old_year[year_arr_cat]['year'].year,
-                        "total_all_month": 0,
-                        "month": mont,
-                        "month_name": months[mont - 1],
-                        "people_id": empl["id"],
-                        "sub_categ": 0,
-                    }
+    #                     people_old['item'].append(months_act)
+    #                 total = {
+    #                     "year": operation_old_year[year_arr_cat]['year'].year,
+    #                     "total_all_month": 0,
+    #                     "month": mont,
+    #                     "month_name": months[mont - 1],
+    #                     "people_id": empl["id"],
+    #                     "sub_categ": 0,
+    #                 }
 
-                    people_old['item'].append(total)
+    #                 people_old['item'].append(total)
 
-                for cat in name_categ_list:
-                    category_operations = {
-                        "xxx": 999,
-                        "year": operation_old_year[year_arr_cat]['year'].year,
-                        "month": 0,
-                        "month_name": 0,
-                        "category_operation_sub_categ": cat['category_operation_sub_categ'],
-                        "category_operation_name": cat['category_operation_name'],
-                        "category_operation_id": cat['category_operation_sub_categ_id'],
-                        "total_month_tag": 0,
-                        "total": 0,
-                        "absolute_total_month": 0,
-                        "total_month": 0,
-                        "people_id": empl["id"]
-                    }
-                    people['item'].append(category_operations)
+                
+                    
+    #             for v in name_sub_categ_list:
+    #                 months_act = {
+    #                     "year": operation_old_year[year_arr_cat]['year'].year,
+    #                     "total_all_month": 0,
+    #                     "month": mont,
+    #                     "month_name": months[mont - 1],
+    #                     "total_month": 0,
+    #                     "total_month_tag": 4,
+    #                     "sub_categ": v['category_sub_categ'],
+    #                     "sub_categ_id": v['category_sub_categ_id'],
+    #                     "people_id": empl["id"]
+    #                 }
 
-                total_employee_olds.append(people_old)
-                employee_olds.append(people)
+    #                 people_old['item'].append(months_act)
+    #             absolute_total_year = {
+    #                 "year":operation_old_year[year_arr_cat]['year'].year, 
+    #                 "people_id":empl["id"],
+    #                 "absolyt_total_old_year": 0, 
+    #                 "sub_categ": None,
+    #             }
+                
+    #             people_old['item'].append(absolute_total_year)
+                
+    #             total_employee_olds.append(people_old)
+    #             employee_olds.append(people)
+    
+    #     for dataset in employee_olds:
+           
+    #         for y in range(len(operation_old)):
+            
+    #             if operation_old[y]["people"] == dataset['id']:
 
-        for dataset in employee_olds:
-            for y in range(len(operation_old)):
-                print(operation_old[y])
-                if operation_old[y]["people"] == dataset['id']:
+    #                 for x in range(len(dataset["item"])):
 
-                    for x in range(len(dataset["item"])):
+    #                     if dataset["item"][x]['people_id'] == operation_old[y]["people"]:
+    #                         # if dataset["item"][x]['year'] == operation[y]['created_timestamp'].year:
+    #                         if dataset["item"][x]['total_month_tag'] == 0:
+    #                             if dataset["item"][x]['category_operation_id'] == operation_old[y]['category'] and dataset["item"][x]['year'] == operation_old[y]['created_timestamp'].year:
+    #                                 dataset["item"][x]['absolute_total_month'] = dataset["item"][x]['absolute_total_month'] + \
+    #                                     operation_old[y]['amount']
 
-                        if dataset["item"][x]['people_id'] == operation_old[y]["people"]:
-                            # if dataset["item"][x]['year'] == operation[y]['created_timestamp'].year:
-                            if dataset["item"][x]['total_month_tag'] == 0:
-                                if dataset["item"][x]['category_operation_id'] == operation_old[y]['category'] and dataset["item"][x]['year'] == operation_old[y]['created_timestamp'].year:
-                                    dataset["item"][x]['absolute_total_month'] = dataset["item"][x]['absolute_total_month'] + \
-                                        operation_old[y]['amount']
+    #                                 dataset["item"][x]['id_operation'] = operation_old[y]['id']
+    #                         elif dataset["item"][x]['total_month_tag'] == 1:
+    #                             if dataset["item"][x]['month'] == operation_old[y]['month'].month and dataset["item"][x]['category_operation_id'] == operation_old[y]['category'] and dataset["item"][x]['year'] == operation_old[y]['created_timestamp'].year:
+    #                                 dataset["item"][x]['total'] = operation_old[y]['amount']
 
-                                    dataset["item"][x]['id_operation'] = operation_old[y]['id']
-                            elif dataset["item"][x]['total_month_tag'] == 1:
-                                if dataset["item"][x]['month'] == operation_old[y]['month'].month and dataset["item"][x]['category_operation_id'] == operation_old[y]['category'] and dataset["item"][x]['year'] == operation_old[y]['created_timestamp'].year:
-                                    dataset["item"][x]['total'] = operation_old[y]['amount']
+    #                                 dataset["item"][x]['id_operation'] = operation_old[y]['id']
+        
+        
+        
+       
+    #     for dataset_old in total_employee_olds:
+           
+    #         for y in range(len(operation_old)):
+  
+    #             if operation_old[y]["people"] == dataset_old['id'] and operation_old[y]['created_timestamp'].year == dataset_old['year']:
 
-                                    dataset["item"][x]['id_operation'] = operation_old[y]['id']
+    #                 for x in range(len(dataset_old["item"])):
+                        
+    #                     if dataset_old["item"][x]['sub_categ'] == 0:
+    #                         if operation_old[y]['category'] == 38:
+    #                             i = operation_old[y]["month"].month
+    #                             if dataset_old["item"][x]['month'] == i-1:
+    #                                 dataset_old["item"][x]['total_all_month'] = dataset_old["item"][x]['total_all_month'] + \
+    #                                     operation_old[y]['amount']
+    #                         else:
+    #                             if dataset_old["item"][x]['month'] == operation_old[y]['month'].month:
+    #                                 dataset_old["item"][x]['total_all_month'] = dataset_old["item"][x]['total_all_month'] + \
+    #                                     operation_old[y]['amount']
 
-        return employee_olds
+    #                     if dataset_old["item"][x]['sub_categ'] == operation_old[y]['category__sub_categ__name']:
+    #                         if operation_old[y]['category'] == 38:
+    #                             i = operation[y]["month"].month
+    #                             if dataset_old["item"][x]['month'] == i-1:
+    #                                 dataset_old["item"][x]['total_month'] = dataset_old["item"][x]['total_month'] + \
+    #                                     operation_old[y]['amount']
+    #                         else:
+    #                             if dataset_old["item"][x]['month'] == operation_old[y]['month'].month:
+    #                                 dataset_old["item"][x]['total_month'] = dataset_old["item"][x]['total_month'] + \
+    #                                     operation_old[y]['amount']
 
-    old_operation = old_years_oper()
+    #                     if dataset_old["item"][x]['sub_categ'] == None:
+                    
+    #                                 dataset_old["item"][x]['absolyt_total_old_year'] = dataset_old["item"][x]['absolyt_total_old_year'] + \
+    #                                     operation_old[y]['amount']
 
+                        
+    #     tot = {
+    #         'old_operation':employee_olds,
+    #         'total_employee_olds':total_employee_olds,
+    #     }
+    #     return  employee_olds,total_employee_olds
+
+   
+    # old_operation, old_operation_total  = old_years_oper()
+    # print(old_operation2)
     context = {
         "title": title,
         "type_url": type_url,
         "employees": employee,
         "month_names": month_names,
+        "months": months,
         "data": data,
         "category_operation": category_operation,
         "dataset": employee_dataset,
         "total_employee": total_employee,
-        "old_operation": old_operation,
-        "operation_old_year": operation_old_year,
+        # "old_operation": old_operation,
+        # "operation_old_year": operation_old_year,
+        # "old_operation_total":old_operation_total,
     }
     return render(request, "operation/operation_inside_salary.html", context)
 

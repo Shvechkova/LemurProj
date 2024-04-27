@@ -22,9 +22,9 @@
                     <h3 class="salary_title_month">{{ month.name_month }}  {{ data|date:"Y" }}</h3>
                 {% endfor %}
             </div>
-            <div class="oper_account_items_old_fitst">
+            {% comment %} <div class="oper_account_items_old_fitst">
                 {% for year in operation_old_year %}
-                    <div class="oper_account_category_item oper_account_category_item_month oper_account_item_column title_oper_acc_year">
+                    <div class="oper_account_category_item oper_account_category_item_month oper_account_item_column title_oper_acc_year title_oper_acc_year_no_bg ">
                         <div class="title_suborder_year">
                             <h3 class="">{{ year.year|date:"Y" }}</h3>
                             <div class="open-modal btn_year_oper_accounr-shrink title_oper_acc_year_srink "
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 {% endfor %}
-            </div>
+            </div> {% endcomment %}
         </div>
         <div class="salary_employee_wrapper">
             <div class="salary_employees">
@@ -101,30 +101,52 @@
                                     <h3>{{ employee.last_name }}</h3>
                                     <h3>{{ employee.name }}</h3>
                                 </div>
+                                <!-- тотал сотрудника  -->
                                 <div class="salary_title_months">
                                     <div class="salary_employee_categ_total_wrap">
                                         <div class="salary_employee_item_wrapper">
                                             {% for operation_old in total_employee %}
                                                 {% if operation_old.id == employee.id %}
                                                     {% for operat_old in  operation_old.item %}
-                                                        {% for month in month_names %}
-                                                            {% if month.month == operat_old.month and operat_old.sub_categ == 0 %}
+                                                
+                                                            {% if  operat_old.sub_categ == 0 %}
                                                                 <div class="salary_employee_item">
                                                                     <div class=" ">
                                                                         <h3>{{ operat_old.total_all_month }}  ₽</h3>
                                                                     </div>
                                                                     <div class="oper_account_item_month">
-                                                                        <h3 class"oper_account_item_month  ">{{ month.name_month }}  {{ data|date:"Y" }}</h3>
+                                                                        <h3 class"oper_account_item_month  ">{{ operat_old.month_name }}  {{ data|date:"Y" }}</h3>
                                                                     </div>
                                                                 </div>
                                                             {% endif %}
-                                                        {% endfor %}
+                                                     
                                                     {% endfor %}
                                                 {% endif %}
                                             {% endfor %}
                                         </div>
                                     </div>
                                 </div>
+                                <!-- тотал сотрудника прошлые годы -->
+                                {% comment %} <div class="salary_employee_item_wrapper salary_employee_item_wrapper_old ">
+                                    {% for operation_olds in old_operation_total %}
+                                        {% for year in operation_old_year %}
+                                            {% if operation_olds.id == employee.id and operation_olds.year|cut:" "  == year.year|date:"Y" %}
+                                                {% for oper_old_item in operation_olds.item %}
+                                                    {% if oper_old_item.sub_categ == None %}
+                                                        <div class="salary_employee_item salary_employee_item_old_all_year salary_employee_item_old_all_year_first salary_employee_item_old_all_year_first_radius">
+                                                            <div class=" year_old_categ_salary">
+                                                                <h3>{{ oper_old_item.absolyt_total_old_year }} ₽</h3>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                    
+                                </div> {% endcomment %}
+                                
+
                             </div>
                             <div class="salary_employee_wrap"
                                  data-created="{{ employee.id }}"
@@ -135,7 +157,7 @@
                                     {% for category in sub_categ.list %}
                                         <div class="salary_employee_wrap_alls">
                                             <div class="oper_account_category_count">
-                                                <h3>0 1.</h3>
+                                                <h3>01.</h3>
                                             </div>
                                             <div class="salary_employee_categ_item_wrapper">
                                                 <div class="salary_employee_categ_item">{{ category.name }}</div>
@@ -144,87 +166,72 @@
                                                 {% for operation in dataset %}
                                                     {% if operation.id == employee.id %}
                                                         {% for operat in  operation.item %}
-                                                            {% for month in month_names %}
-                                                                {% if month.month == operat.month and operat.category_operation_name == category.name %}
+                                                         
+                                                                {% if operat.category_operation_name == category.name %}
                                                                     <div class="salary_employee_item">
                                                                         <input class="salary_employee_item_sums pyb  {% if operat.total == 0 %}oper_account_item_column_garay{% endif %} "
                                                                                readonly
                                                                                type="text"
                                                                                Value="{{ operat.total }}"
                                                                                data-categ="{{ operat.category_operation_name }}"
-                                                                               data-operation-data-month="{{ month.month }} "
+                                                                               data-operation-data-month="{{ operat.month }}"
                                                                                data-operation-data-year="{{ data|date:"Y" }}"
                                                                                data-categ-id="{{ operat.category_operation_id }}"
                                                                                data-sum="{{ operat.total }}"
                                                                                data-id-people="{{ employee.id }}"
                                                                                data-operation-old-id="{{ operat.id_operation }}"
-                                                                               data-date="{{ month.month }}  {{ data|date:"Y"|cut:" " }}"
+                                                                               data-date="{{ operat.month }}  {{ data|date:"Y"|cut:" " }}"
                                                                                data-bank=" {% if sub_categ.grouper == "ООО" %} 1 {% elif sub_categ.grouper == "$" %} 3  {% elif operat.category_operation_name == "КВ $" %}3 {% elif  operat.category_operation_name == "КВ ИП" %}2 {% elif operat.category_operation_name == "квартальная премия" %} 4  {% elif  sub_categ.grouper == "Долг" %} 4 {% endif %}">
                                                                         <div class="oper_account_item_month">
-                                                                            <h3 class"oper_account_item_month  ">{{ month.name_month }}  {{ data|date:"Y" }}</h3>
+                                                                            <h3 class"oper_account_item_month  ">{{ operat.month_name }}  {{ data|date:"Y" }}</h3>
                                                                         </div>
                                                                         <div class="btn_add_operation_salary">ОК</div>
                                                                     </div>
                                                                 {% endif %}
-                                                            {% endfor %}
+                                                       
                                                         {% endfor %}
                                                     {% endif %}
                                                 {% endfor %}
-                                                {% comment %} <div class="salary_employee_item">
-                                                    <input class="salary_employee_item_sums pyb "readonly type="text" Value= "0">
-                                                    <div class="oper_account_item_month">
-                                                        <h3 class"oper_account_item_month  ">{{ month.name_month }}  {{ data|date:"Y" }}</h3>
-                                                    </div>
-                                                    <div class="btn_add_operation_salary">ОК</div>
-                                                </div> {% endcomment %}
-                                                {% comment %} {% endfor %} {% endcomment %}
+                                             
                                             </div>
-                                            <div class="salary_employee_item_wrapper salary_employee_item_wrapper_old">
-                                                {% for year in operation_old_year %}
-                                                    {% for operation_olds in old_operation %}
-                                                    
-                                                        {% if operation_olds.year|cut:" "  == year.year|date:"Y" %}
-                                                            <div class="oper_account_items_old_all_years">{{ operation_olds.id }}</div>
-                                                        {% endif %}
-
-                                                        {% if operation_old.id == employee.id %}
-                                                            {% for operat_old in  operation_old.item %}
-                                                                {% comment %} <div class="salary_employee_item">
-                                                                    <div class=" ">
-                                                                        <h3>90  ₽</h3>
+                                            {% comment %} <div class="salary_employee_item_wrapper salary_employee_item_wrapper_old">
+                                                {% for operation_olds in old_operation %}
+                                                    {% for year in operation_old_year %}
+                                                        {% if operation_olds.id == employee.id and operation_olds.year|cut:" "  == year.year|date:"Y" %}
+                                                            {% for oper_old_item in operation_olds.item %}
+                                                           
+                                                                {% if oper_old_item.category_operation_name == category.name and  oper_old_item.total_month_tag == 0 %}
+                                                                    <div class="salary_employee_item salary_employee_item_old_all_year">
+                                                                        <div class=" year_old_categ_salary">
+                                                                            <p>{{ oper_old_item.absolute_total_month }} ₽</p>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="oper_account_item_month">
-                                                                        <h3 class"oper_account_item_month="" "="">Апрель  2024</h3>
-                                                                    </div>
-                                                                </div> {% endcomment %}
-                                                                {% for month in month_names %}
-                                                                    {% if month.month == operat.month and operat.category_operation_name == category.name %}
-                                                                        <div class="salary_employee_item">
-                                                                            <input class="salary_employee_item_sums pyb  {% if operat.total == 0 %}oper_account_item_column_garay{% endif %} "
-                                                                                   readonly
-                                                                                   type="text"
-                                                                                   Value="{{ operat.total }}"
-                                                                                   data-categ="{{ operat.category_operation_name }}"
-                                                                                   data-operation-data-month="{{ month.month }} "
-                                                                                   data-operation-data-year="{{ data|date:"Y" }}"
-                                                                                   data-categ-id="{{ operat.category_operation_id }}"
-                                                                                   data-sum="{{ operat.total }}"
-                                                                                   data-id-people="{{ employee.id }}"
-                                                                                   data-operation-old-id="{{ operat.id_operation }}"
-                                                                                   data-date="{{ month.month }}  {{ data|date:"Y"|cut:" " }}"
-                                                                                   data-bank=" {% if sub_categ.grouper == "ООО" %} 1 {% elif sub_categ.grouper == "$" %} 3  {% elif operat.category_operation_name == "КВ $" %}3 {% elif  operat.category_operation_name == "КВ ИП" %}2 {% elif operat.category_operation_name == "квартальная премия" %} 4  {% elif  sub_categ.grouper == "Долг" %} 4 {% endif %}">
-                                                                            <div class="oper_account_item_month">
-                                                                                <h3 class"oper_account_item_month  ">{{ month.name_month }}  {{ data|date:"Y" }}</h3>
-                                                                            </div>
-                                                                            <div class="btn_add_operation_salary">ОК</div>
+                                                                {% endif %}
+                                                     
+                                                                {% if oper_old_item.category_operation_name == category.name and oper_old_item.total_month_tag == 1 %}
+                                                                
+                                                                <div class="display-none-active-title title_suborder_year_months"
+                                                                    data-shrink="none"
+                                                                    data-type-shrink="year"
+                                                                    data-created="{{ year.year|date:"Y" }}">
+                                                                    {% for month in months %}
+                                                                  
+                                                                    {% if oper_old_item.month_name == month %}
+                                                                    <div class="title_suborder_year_month">
+                                                                        <p>{{oper_old_item.total}}</p>
+                                                                          
                                                                         </div>
                                                                     {% endif %}
-                                                                {% endfor %}
+                                                                        
+                                                                    {% endfor %}
+                                                                </div>
+                                                                {% endif %}
                                                             {% endfor %}
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% endfor %}
-                                            </div>
+                                            </div> {% endcomment %}
+                                            
                                         </div>
                                     {% endfor %}
                                     <div class="salary_employee_categ_item_wrapper_total">
@@ -241,23 +248,45 @@
                                                         {% for operation_old in total_employee %}
                                                             {% if operation_old.id == employee.id %}
                                                                 {% for operat_old in  operation_old.item %}
-                                                                    {% for month in month_names %}
-                                                                        {% if month.month == operat_old.month and operat_old.sub_categ == sub_categ.grouper %}
+                                                                  
+                                                                        {% if  operat_old.sub_categ == sub_categ.grouper %}
                                                                             <div class="salary_employee_item">
                                                                                 <div class=" ">
                                                                                     <h3>{{ operat_old.total_month }}  ₽</h3>
                                                                                 </div>
                                                                                 <div class="oper_account_item_month">
-                                                                                    <h3 class"oper_account_item_month  ">{{ month.name_month }}  {{ data|date:"Y" }}</h3>
+                                                                                    <h3 class"oper_account_item_month  ">{{ operat_old.month_name }}  {{ data|date:"Y" }}</h3>
                                                                                 </div>
                                                                             </div>
                                                                         {% endif %}
-                                                                    {% endfor %}
+                                                                   
                                                                 {% endfor %}
                                                             {% endif %}
                                                         {% endfor %}
                                                     </div>
+                                                    
                                                 </div>
+                                                {% comment %} тут итоги года {% endcomment %}
+                                                {% comment %} <div class="salary_employee_item_wrapper salary_employee_item_wrapper_old ">
+                                                    {% for operation_olds in old_operation_total %}
+                                                        {% for year in operation_old_year %}
+                                                            {% if operation_olds.id == employee.id and operation_olds.year|cut:" "  == year.year|date:"Y" %}
+                                                                {% for oper_old_item in operation_olds.item %}
+                                                                    {% if oper_old_item.total_month_tag == 4 and  oper_old_item.sub_categ == sub_categ.grouper %}
+                                                                        
+                                                                        <div class="salary_employee_item salary_employee_item_old_all_year salary_employee_item_old_all_year_total_cat ">
+                                                                            <div class=" year_old_categ_salary">
+                                                                                <h3>{{ oper_old_item.total_month }} ₽</h3>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </div> {% endcomment %}
+
+
                                             </div>
                                         {% else %}
                                             <div class="salary_employee_categ_total">
@@ -268,16 +297,10 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="salary_employee_old"></div>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </section>
-    {% for operati in old_operation %}
-        {{ operati }}
-        <br>
-        <br>
-        <br>
-    {% endfor %}
+ 
 {% endblock content %}
