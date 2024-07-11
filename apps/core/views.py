@@ -14,6 +14,7 @@ def index(request):
     return render(request, "core/index.html", context)
 
 def tech(request):
+
     title = "Тех.раздел"
     
     category_adv = Adv.objects.all()
@@ -25,3 +26,5 @@ def tech(request):
     }
 
     return render(request, "core/tech.html", context)
+
+  
