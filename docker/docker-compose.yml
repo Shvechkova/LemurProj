@@ -3,11 +3,11 @@ services:
 
   web:
     build: ./python/
-    command: python ./lemurproj/manage.py runserver 0.0.0.0:8000
+    command: python ./lemurproj/manage.py runserver 0.0.0.0:3000
     volumes:
       - ../:/home/sites/lemurproj/
     ports:
-      - 8000:8000
+      - 3000:3000
     # env_file:
     #   - ./.env
 
