@@ -105,13 +105,15 @@ def operation_inside_oper_account(request):
     data = datetime.now()
     year_now = datetime.now().year
     month_now = datetime.now().month
+    print( Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now, created_timestamp__month__lte=month_now))
+    
     # куки для сортировки
     if request.COOKIES.get('sortOperAccount') and request.COOKIES.get('sortOperAccount') != "0":
         bank_id = request.COOKIES["sortOperAccount"]
 
         operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now, created_timestamp__month__lte=month_now, bank=bank_id).select_related("category").annotate(
             month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
-
+        
         operation_old = operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now, bank=bank_id).select_related("category").annotate(month=TruncMonth(
             'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
 
@@ -119,11 +121,13 @@ def operation_inside_oper_account(request):
         bank_id = '0'
         operation = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year=year_now, created_timestamp__month__lte=month_now).select_related("category").annotate(
             month=TruncMonth('created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name").order_by('month')
+        
         operation_old = Operation.objects.filter(meta_categ='oper_account', created_timestamp__year__lt=year_now).select_related("category").annotate(month=TruncMonth(
             'created_timestamp')).values('month').values("category", "month", 'amount', "id", "comment", "created_timestamp", "category__sub_categ__name", "category__sub_categ__id").order_by('month')
 
-    # категории операций орперсчета
+    print(operation)
 
+    # категории операций орперсчета
     def category_operation_cache():
         def cache_function():
             category_operation = CategoryOperation.objects.filter(
@@ -381,10 +385,8 @@ def operation_inside_oper_account(request):
         "months": months,
         "operation_old_year": operation_old_year,
         "dataset_old": dataset_olds,
-
-
-
     }
+    
 
     return render(request, "operation/operation_inside_oper_acount.html", context)
 

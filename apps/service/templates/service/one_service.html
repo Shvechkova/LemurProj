@@ -12,9 +12,9 @@
   {% include "service/includes/modal/add_operation_storage.html" %}
   <input type="hidden" id="page_name" value="{{ title }}" />
   <input type="hidden" id="page_name_abc" value="{{ title_name }}" />
-  {% comment %} <button class="button new_month" data-cat-service="{{ title }}" data-month="{{ now|date:'m' }}" data-year="{{ now|date:'Y' }}">копировать месяц</button>
+   {% comment %} <button class="button new_month" data-cat-service="{{ title }}" data-month="{{ now|date:'m' }}" data-year="{{ now|date:'Y' }}">копировать месяц</button>
   {% endcomment %}
-  {% comment %} <div class="open-modal btn_month_bill" data-name="modal-add-bill" data-cat-service="{{ title }}">+</div>   {% endcomment %}
+   <div class="open-modal btn_month_bill" data-name="modal-add-bill" data-cat-service="{{ title }}">+</div>  
   <div class="bill-sorting-date" data-sort-month="1" bill-sorting-date="1">
     <h3>Период</h3>
     <div class = "btn_sorting_month" data-sort-month="1">Сейчас</div>

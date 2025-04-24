@@ -3,6 +3,13 @@
 
 /media/
 /static/
+.vscode/* 
+**/.vscode/
+/.vscode/
+
+/coolsite_cache/
+/media/
+/static/
 
 
 __pycache__/

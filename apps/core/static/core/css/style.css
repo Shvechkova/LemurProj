@@ -1989,8 +1989,8 @@ cursor: pointer;
 }
 .salary_employee_item_sums_active{
   border-radius: 5px;
-  
   background-color: #F5F5F5;
+  color: black;
   
 }
 .salary_employee_item_sums{
