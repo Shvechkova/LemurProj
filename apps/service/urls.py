@@ -17,15 +17,7 @@ router.register(r"api/subcontract", view_sets.SubcontractMonthView)
 
 # router.register(r"v1/service", view_sets.ClientViewSet)
 
-urlpatterns = [
-    path("", views.index, name="index"),
-     path("new_month", views.new_month, name="new_month"),
-    # path("ADV", views.adv_index, name="adv"),
-    # path("<int:client_id>", views.service_one, name="service_one"),
-    path("", include(router.urls)),
-    path("<slug:slug>",(views.service_one),name="service_one"),
-    # path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-]
+
 # <int:client_id>/<slug:slug>
 
 # path("<int:client_id>/<slug:slug>", views.addContract, name="contract"),
