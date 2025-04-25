@@ -26,6 +26,7 @@ class ServicesMonthlyBillView(viewsets.ModelViewSet):
     # список счетов
     @action(detail=False, methods=["post"],  url_path=r"new_month")
     def subcontract_list(self, request):
+        print(1231)
         data = request.data
 
         bill_now_mohth = ServicesMonthlyBill.objects.filter(
