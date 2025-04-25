@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-router = routers.DefaultRouter()
+# router = routers.DefaultRouter()
 
 # router.registry.extend(client_router.registry)
 # from . import views
@@ -18,9 +18,9 @@ urlpatterns = [
     path("clients/", include("apps.client.urls", namespace="clients")),
     path("employee/", include("apps.employee.urls", namespace="employees")),
     path("operations/", include("apps.operation.urls", namespace="operation")),
-    path("bank/", include("apps.bank.urls", namespace="bank")),
+    # path("bank/", include("apps.bank.urls", namespace="bank")),
     path('api/', include('rest_framework.urls')),
-    path("apiV1/", include(router.urls)),
+    # path("apiV1/", include(router.urls)),
 ]
 
 if settings.DEBUG:
