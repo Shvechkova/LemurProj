@@ -370,6 +370,7 @@
                        data-bill-month-sum-dont-operation="{{ bill.contract_sum }} "
                        data-bill-month-name="{{ bill.contract_number }}"
                        data-bill-month-operation-entry=" {{ oper_entry.id_operation_entry }} "
+                       data-operation-old-id=" {{ oper_entry.id_operation_entry }} "
                        data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}">
                     {% if oper_entry.operation_entry_all == bill.contract_sum %}
                       <p class="result_ok">{{ bill.contract_sum }} ₽</p>
@@ -468,6 +469,7 @@
                 </div>
                 <div class="out_subs-oper-bg {% if forloop.parentloop.last %}last-loop-bg-out{% endif %}">
                   {% if title == 1 %}
+                  
                     <div class=" mr40 mr_p_oper bill-month-client-suborder_diff  add-operation-storage "
                          data-name="modal-add-operation-storage"
                          data-bill-month-id="{{ bill.id }}"
@@ -476,9 +478,10 @@
                          data-bill-month-sum-dont-operation="{{ bill.contract_sum }} "
                          data-bill-month-name="{{ bill.contract_number }}"
                          data-bill-month-operation-entry=" {{ oper_entry.id_operation_entry }} "
+                         data-operation-old-id=" {{ oper_entry.id_operation_entry }} "
                          data-bill-month-data="{{ bill.created_timestamp|date:'F Y' }}"
                          data-bill-month-diff-sum=" {{ oper_entry.diff_operation_out }} "
-                         data-id-sub-amount=""
+                         data-id-sub-amount="{{bill.diff_sum}}"
                          data-id-sub="{{ subs_adv.id_subs }}">
                       {% if oper_entry.operation_out_all == bill.diff_sum %}
                         <p class="result_ok">{{ bill.diff_sum }} ₽</p>
@@ -698,7 +701,7 @@
                 <!--тотал приход-->
                 <div class="suborder_entry-bg-result">
                   {% if total_months.total_diff_operation_entry == 0 %}
-                    <div class="bill_w-120-result-upd mr40">
+                    <div class="bill_w-120-result-upd ">
                       <h3>{{ total_months.contract_sum }}  ₽</h3>
                     </div>
                   {% else %}
@@ -732,7 +735,7 @@
                 <div class="suborder_entry-bg-result">
                   {% if  title == 1 %}
                     {% if total_months.sum_out_operation == total_months.diff_sum %}
-                      <div class="bill_w-120-result-upd mr40">
+                      <div class="bill_w-120-result-upd ">
                         <h3>{{ total_months.diff_sum }} ₽</h3>
                       </div>
                     {% elif  total_months.sum_out_operation == 0 %}

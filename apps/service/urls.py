@@ -13,10 +13,9 @@ router.register(r"api/month_bill", view_sets.ServicesMonthlyBillView)
 router.register(r"api/subcontract-category-adv", view_sets.SubcontractCategoryAdvView)
 router.register(r"api/subcontract-category-other", view_sets.SubcontractCategoryOtherView)
 router.register(r"api/subcontract", view_sets.SubcontractMonthView)
-# router.register(r"create-contract", views.CreateContract)
-# basename="service"
-# router.register(r'bill/client_list/', views.BillViewSet)
 
+
+# router.register(r"v1/service", view_sets.ClientViewSet)
 
 urlpatterns = [
     path("", views.index, name="index"),

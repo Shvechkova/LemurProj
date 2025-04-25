@@ -52,10 +52,11 @@ if (btnSubcontarct) {
       // валидация
       const modalWindows = document.getElementById(elem);
       modalWindows.addEventListener("input", () => {
-        validate(elem, ".subcontarct_add ");
+        replaceNam();
+        validate(elem, ".modal_add_subcontract");
       });
       modalWindows.addEventListener("input", () => {
-        validateBtn(elem, ".modal_add_subcontract ");
+        validateBtn(elem, ".subcontarct_add");
       });
     });
   });
@@ -244,7 +245,6 @@ function changeSum(element, elem) {
         sum = sumAdvReplace - intEl;
         sumKeyup += intEl;
         sum = sumAdvReplace - sumKeyup;
-        console.log(sumKeyup);
         var result = sum.toLocaleString();
         useBudget.innerHTML = result + " ₽";
         useBudgetAfterUse.value = sum;

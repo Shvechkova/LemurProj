@@ -24,7 +24,7 @@ function preloaderModal(isLoading, isLoaded, setTime) {
     preloader.style.opacity = "0";
   }
 }
-// 
+//
 function preloaderModalSetTime(setTime) {
   setTimeout(preloaderModal, setTime);
 }
@@ -139,25 +139,27 @@ function getCookie(name) {
 // валидация без радио кнопок
 function validate(elem, btn) {
   const modalWindows = document.getElementById(elem);
-  const allInputModal = modalWindows.querySelectorAll("input");
+  const allInputModal = modalWindows.querySelectorAll('input:not([type=hidden])');
   const allSelectModal = modalWindows.querySelectorAll("select");
-
+  console.log()
   const add_contract = document.querySelector(btn);
   let inputYes;
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
-    if (elInput.value == "" ) {
+    console.log(elInput)
+    if (elInput.value == "" || elInput.value == "0" ||  elInput.value == " ₽") {
+      console.log(elInput.value)
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
         add_contract.disabled = false;
         inputYes = true;
       } else {
         add_contract.disabled = true;
-
         throw false;
       }
     } else {
+      console.log(elInput.value)
       add_contract.disabled = false;
       inputYes = true;
     }
@@ -185,22 +187,19 @@ function validate(elem, btn) {
 }
 // валидация когда только инпуты
 function validateOtherInput(elem, btn) {
-  
   const modalWindows = document.getElementById(elem);
   const allInputModal = modalWindows.querySelectorAll("input");
-  console.log(modalWindows)
- 
+  console.log(modalWindows);
 
   const add_contract = document.querySelector(btn);
-  console.log(add_contract)
+  console.log(add_contract);
   let inputYes;
   let selectYes;
   let validateClass = false;
   allInputModal.forEach((elInput) => {
-
     if (elInput.value == "") {
       const c = elInput.getAttribute("data-validate");
-      if (c == 0) {
+      if (c == 0 ||  elInput.value == " ₽") {
         add_contract.disabled = false;
         inputYes = true;
       } else {
@@ -214,7 +213,6 @@ function validateOtherInput(elem, btn) {
     }
   });
 
-
   if (inputYes) {
     validateClass = true;
   } else {
@@ -226,6 +224,7 @@ function validateOtherInput(elem, btn) {
 
 // валидация без радио кнопок для кнопки ок дающаяя сохранить форму
 function validateBtn(elem, btn) {
+  console.log("validateBtn")
   const modalWindows = document.getElementById(elem);
 
   const add_contract = document.querySelector(btn);
@@ -240,7 +239,7 @@ function validateBtn(elem, btn) {
   let validateClass = false;
 
   allInputModal.forEach((elInput) => {
-    if (elInput.value == "") {
+    if (elInput.value == "" ) {
       const c = elInput.getAttribute("data-validate");
       if (c == 0) {
         add_contract.disabled = false;
@@ -393,15 +392,23 @@ function replaceNam() {
           .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
     }
 
-    elem.addEventListener("input", () => {
-      elem.value =
-        elem.value
-          .replace(/\d $ / , "")
-          .replace(/\D/g, "")
-          .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
-
-      if (elem.value == " ₽") {
-        elem.value = "";
+    elem.addEventListener("keydown", (event) => {
+      var key = event.keyCode;
+      if (key != 8) {
+        // elem.value =
+        //   elem.value
+        //     .replace(/\d $ / , "")
+        //     .replace(/\D/g, "")
+        //     .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
+        // if (elem.value == " ₽") {
+        //   elem.value = "";
+        // }
+      } else {
+        var s = elem.value;
+        elem.setSelectionRange(s.length - 2, s.length - 2);
+        if(elem.value == " ₽"){
+          elem.value = null
+        }
       }
     });
   });
@@ -421,7 +428,7 @@ function replaceNamDot() {
     elem.addEventListener("input", () => {
       elem.value =
         elem.value
-          .replace(/\d $ / , "")
+          .replace(/\d $ /, "")
           .replace(/\D/g, "")
           .replace(/(\d)(?=(\d{3})+([^\d]|$))/g, "$1 ") + " ₽";
 
