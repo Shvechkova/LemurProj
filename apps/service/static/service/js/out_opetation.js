@@ -36,7 +36,8 @@ if (addOperationOut) {
         chekinOtherSum.checked = true;
       });
       // добавление операции
-      newOperationOut(element, elem);
+      console.log("newOperationOut")
+      newOperationOutStorage(element, elem);
       // получение старых операций
 
       const endpointOperation = "/operations/api/operation/operation_out/";
@@ -184,6 +185,7 @@ function addFetchOperationOut(element, endpoint, elem) {
     form.append("monthly_bill", billMonthId);
     form.append("type_operation", "out");
     form.append("data", data_select);
+    form.append("meta_categ", "suborders");
 
     let object = {};
     form.forEach((value, key) => (object[key] = value));
@@ -222,10 +224,11 @@ function addFetchOperationOut(element, endpoint, elem) {
   });
 }
 
-function newOperationOut(element, elem) {
+function newOperationOutStorage(element, elem) {
+  console.log(123456789)
   let operationIdvalue = element.getAttribute("data-id-sub");
   let operationAllSum = element.getAttribute("data-id-sub-amount");
-
+  console.log("operationIdvalue",operationIdvalue)
   const idOperationrepl = operationIdvalue.replace(
     /^\D+|[^\d-]+|-(?=\D+)|\D+$/gim,
     ""
@@ -237,6 +240,7 @@ function newOperationOut(element, elem) {
     let data = new FormData();
     let object = {
       id: idOperationrepl,
+
     };
 
     const dataJson = JSON.stringify(object);

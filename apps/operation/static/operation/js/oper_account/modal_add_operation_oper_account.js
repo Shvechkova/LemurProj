@@ -179,13 +179,13 @@ function getSumOldOperAccountOperation(element, elem) {
           let operationAllSum = element.getAttribute("data-operation-sum");
           let st = 0;
           // let st = parseInt(operationAllSum.replace(/\s+/g, ""), 10);
-          console.log(st);
-          if (data.length > 0) {
+          console.log("st",st);
+          if (data.length > -1) {
             const lastOperationWrap = document.querySelector(
               ".previous_operation_oper_acc"
             );
             lastOperationWrap.innerHTML = "";
-
+            console.log("data",data)
             data.forEach((item) => {
               // полученые старых оераций
               var options = {
@@ -204,7 +204,7 @@ function getSumOldOperAccountOperation(element, elem) {
               lastOperationWrap.append(prevOperationItem);
               // кнопка удалить
               let prevOperationDel = document.createElement("div");
-              prevOperationDel.className = "previous_operation_del";
+              prevOperationDel.className = "previous_operation_del_oper";
               prevOperationItem.append(prevOperationDel);
               prevOperationDel.setAttribute("data-id-peration", item[0].id);
               prevOperationDel.innerHTML = "+";
@@ -234,8 +234,12 @@ function getSumOldOperAccountOperation(element, elem) {
             console.log(st);
             // заполнение тайтла с результатом старых операций
             sumOperationEnded = st;
+            console.log("sumOperationEnded",sumOperationEnded)
             var num = +st;
+            console.log("num",num)
+
             var result = num.toLocaleString();
+            console.log("result",result)
             const sumExpected = document.querySelector(
               ".oper_account_title_sub_categ_sum"
             );
@@ -247,7 +251,7 @@ function getSumOldOperAccountOperation(element, elem) {
 }
 
 function DelOperation(element) {
-  const delButton = document.querySelectorAll(".previous_operation_del");
+  const delButton = document.querySelectorAll(".previous_operation_del_oper");
   delButton.forEach((item) => {
     item.addEventListener("click", () => {
       preloaderModal((isLoading = true), (isLoaded = false));
@@ -261,7 +265,9 @@ function DelOperation(element) {
         },
       }).then((response) => {
         if (response.ok === true) {
+          console.log("getOldOperationOPERACCOUNT")
           item.parentElement.remove();
+          
           // заполнение инфом о операциях которые остались для повторого открытия окна с актцальными иоперациями
           let operationIdvalue = element.getAttribute("data-operation-old-id");
           const idOperationrepl = operationIdvalue.replace(

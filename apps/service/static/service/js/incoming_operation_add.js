@@ -2,6 +2,7 @@ choiceColor();
 
 const addOperationEntry = document.querySelectorAll(".add-operation-entry");
 if (addOperationEntry) {
+  console.log(1111)
   addOperationEntry.forEach((element) => {
     element.addEventListener("click", () => {
       preloaderModal((isLoading = true), (isLoaded = false));
@@ -145,6 +146,7 @@ function addFetchOperationEntry(element, endpoint, elem) {
     form.append("monthly_bill", billId);
     form.append("type_operation", "entry");
     form.append("data", data_select);
+    form.append("meta_categ", "entrering");
 
     let object = {};
     form.forEach((value, key) => (object[key] = value));
@@ -269,7 +271,9 @@ function getOldOperation(element, elem) {
           }
           st -= +sumoperation;
         });
-        DelOperation(element);
+        console.log(element)
+        console.log(1111)
+        DelOperationServise(element);
 
         // заполнение тайтла с результатом старых операций
         sumOperationEnded = st;
@@ -318,9 +322,12 @@ function getOldOperation(element, elem) {
   return idOperationrepl;
 }
 // удаление операции
-function DelOperation(element) {
+function DelOperationServise(element) {
+  console.log("DelOperation(element)")
   const delButton = document.querySelectorAll(".previous_operation_del");
+  console.log("delButton")
   delButton.forEach((item) => {
+    console.log(item)
     item.addEventListener("click", () => {
       preloaderModal((isLoading = true), (isLoaded = false));
       idOperation = item.getAttribute("data-id-peration");
@@ -334,6 +341,7 @@ function DelOperation(element) {
         },
       }).then((response) => {
         if (response.ok === true) {
+          console.log("getOldOperation")
           item.parentElement.remove();
           // заполнение инфом о операциях которые остались для повторого открытия окна с актцальными иоперациями
           let operationIdvalue = element.getAttribute(

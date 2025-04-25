@@ -194,11 +194,27 @@ class OperationViews(viewsets.ModelViewSet):
     ):
 
         data = request.data
+        print(data)
         queryset = Operation.objects.filter(
             type_operation="out", suborder=data['id'])
         serializer = self.serializer_class(queryset, many=True)
 
         return Response(serializer.data)
+    
+    @action(detail=False, methods=["post"], url_path=r"operation_out_storage")
+    def operation_out_filter_storage(
+        self,
+        request,
+    ):
+
+        data = request.data
+        queryset = Operation.objects.filter(
+            type_operation="out", monthly_bill =data['id'],meta_categ="oper_account" )
+        print(queryset)
+        serializer = self.serializer_class(queryset, many=True)
+
+        return Response(serializer.data)
+    
 
     @action(detail=False, methods=["post"], url_path=r"operation_oper_account")
     def operation_oper_account(

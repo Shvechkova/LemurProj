@@ -16,6 +16,7 @@ class BankOperation(models.Model):
 class MetaCategoryOperation(models.Model):
     name = models.CharField(max_length=200)
 
+
 # добавить вручную для оперсчет офис реклама прочее банк
 # добавить вручную для зап категории по типам
 
@@ -44,8 +45,13 @@ class SubCategoryOperation(models.Model):
         max_length=20, choices=META_CATEGORY, default="none"
     )
     bank = models.ForeignKey(
-        BankOperation, on_delete=models.PROTECT, verbose_name="банк конечный назначения операции", blank=True, null=True
+        BankOperation,
+        on_delete=models.PROTECT,
+        verbose_name="банк конечный назначения операции",
+        blank=True,
+        null=True,
     )
+
 
 # добавить вручную для зп подкатегории
 
@@ -62,9 +68,7 @@ class CategoryOperation(models.Model):
         ("entrering", "entrering"),
         ("none", "none"),
     ]
-    meta_categ = models.CharField(
-        max_length=20, choices=META_CATEGORY, default="none"
-    )
+    meta_categ = models.CharField(max_length=20, choices=META_CATEGORY, default="none")
 
     # # SUB_CATEGORY = [
     # #     ("office", "Офис"),
@@ -96,26 +100,27 @@ class NameOperation(models.Model):
 
 
 class Operation(models.Model):
-    # created_timestamp = models.DateTimeField(
-    #     auto_now_add=True, verbose_name="Дата добавления"
-    # )
-    created_timestamp = models.DateTimeField(default=timezone.now, verbose_name="Дата добавления"
-                                             )
-    data = models.DateField(verbose_name="Дата добавления вручную"
-                            )
-
-    amount = models.PositiveIntegerField(default="0")
-
-    comment = models.TextField("Комментарий", blank=True, null=True)
-
-    bank = models.ForeignKey(
-        BankOperation, on_delete=models.PROTECT, verbose_name="банк конечный назначения операции", blank=True, null=True
+    created_timestamp = models.DateTimeField(
+        default=timezone.now, verbose_name="Дата добавления"
     )
-
+    data = models.DateField(verbose_name="Дата добавления вручную")
+    amount = models.PositiveIntegerField(default="0")
+    comment = models.TextField("Комментарий", blank=True, null=True)
+    bank = models.ForeignKey(
+        BankOperation,
+        on_delete=models.PROTECT,
+        verbose_name="банк конечный назначения операции",
+        blank=True,
+        null=True,
+    )
     # bank_first = models.ForeignKey(
-    #     BankOperation, on_delete=models.PROTECT, related_name='bank_first',verbose_name="банк начальный отправки операции", blank=True, null=True
-    # )r
-
+    #     BankOperation,
+    #     on_delete=models.PROTECT,
+    #     related_name="bank_first",
+    #     verbose_name="банк начальный отправки операции",
+    #     blank=True,
+    #     null=True,
+    # )
     suborder = models.ForeignKey(
         SubcontractMonth,
         on_delete=models.PROTECT,
@@ -123,7 +128,6 @@ class Operation(models.Model):
         blank=True,
         null=True,
     )
-
     name = models.ForeignKey(
         NameOperation,
         on_delete=models.PROTECT,
@@ -145,12 +149,19 @@ class Operation(models.Model):
         blank=True,
         null=True,
     )
-
     monthly_bill = models.ForeignKey(
-        ServicesMonthlyBill, on_delete=models.PROTECT, verbose_name="месячный счет для приходов и оплат", blank=True, null=True
+        ServicesMonthlyBill,
+        on_delete=models.PROTECT,
+        verbose_name="месячный счет для приходов и оплат",
+        blank=True,
+        null=True,
     )
     people = models.ForeignKey(
-        Employee, on_delete=models.PROTECT, verbose_name="зарплата", blank=True, null=True
+        Employee,
+        on_delete=models.PROTECT,
+        verbose_name="зарплата",
+        blank=True,
+        null=True,
     )
 
     TYPE_OPERATION = [
@@ -171,9 +182,7 @@ class Operation(models.Model):
         ("entrering", "entrering"),
         ("none", "none"),
     ]
-    meta_categ = models.CharField(
-        max_length=20, choices=META_CATEGORY, default="none"
-    )
+    meta_categ = models.CharField(max_length=20, choices=META_CATEGORY, default="none")
 
 
 class OperAccounts(models.Model):
@@ -181,13 +190,13 @@ class OperAccounts(models.Model):
         auto_now_add=True, verbose_name="Дата добавления"
     )
     # Запланированные траты
-    amount = models.PositiveIntegerField(
-        "сумма оплаты по оперсчету", default="0")
+    amount = models.PositiveIntegerField("сумма оплаты по оперсчету", default="0")
 
 
 class OperAccountsName(models.Model):
-    name = models.CharField("название типа расхода по оперсчету",
-                            max_length=200, blank=True, null=True)
+    name = models.CharField(
+        "название типа расхода по оперсчету", max_length=200, blank=True, null=True
+    )
     meta_category = models.ForeignKey(
         MetaCategoryOperation,
         on_delete=models.PROTECT,
@@ -198,8 +207,12 @@ class OperAccountsName(models.Model):
 
 
 class OperAccountsNameSubcategory(models.Model):
-    name = models.CharField("название типа субкатегории расхода по оперсчету",
-                            max_length=200, blank=True, null=True)
+    name = models.CharField(
+        "название типа субкатегории расхода по оперсчету",
+        max_length=200,
+        blank=True,
+        null=True,
+    )
 
     oper_accounts_name = models.ForeignKey(
         OperAccountsName,
